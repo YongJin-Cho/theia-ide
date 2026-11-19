@@ -50,7 +50,7 @@ Please check Theia's [prerequisites](https://github.com/eclipse-theia/theia/blob
 
 Documentation on how to package Theia as a Desktop Product may be found [here](https://theia-ide.org/docs/blueprint_documentation/).
 
-For adopters building their own products based on this template, see the [Adopter Guide](ADOPTER.md) for additional considerations.
+For adopters building their own products based on this template, see the [Adopter Guide](ADOPTER.md) for additional considerations, and [Rebranding](docs/rebranding.md) for renaming the product (Welcome UI, configuration folder, appId, uriScheme, package names, icons, and more).
 
 ### Repository Structure
 
