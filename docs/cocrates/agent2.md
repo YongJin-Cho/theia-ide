@@ -29,7 +29,9 @@ Shape (include optional fields only when required; `answer` is never omitted):
 
 ## Compaction
 
-**Purpose:** shrink token use on **subsequent** model requests when the chat no longer needs the full pre-turn dialogue. Compaction is optional — not every final JSON needs it.
+**Purpose:** shrink token use on **subsequent** model requests by replacing the full pre-compaction dialogue with a short prefix. Compaction is optional — not every final JSON needs it.
+
+**Effect:** after compaction, later LM history no longer contains the old turn-by-turn chat. Continuity rests on **`compaction` + this turn’s `answer` (`<last-response>`)** (plus any turns after the compacting turn). If that pair is not enough to continue correctly, do **not** compact.
 
 **You emit JSON fields only.** The harness builds tagged messages; never write `<compaction>` or `<last-response>` yourself.
 
@@ -42,25 +44,29 @@ When this turn’s JSON includes `compaction`:
 
 The compacting turn’s `answer` is kept as `<last-response>`, so `compaction` must **not** repeat questions, choices, gate wording, or other user-facing prose from `answer`.
 
-### When to include `compaction`
+### Preconditions (all required before include)
 
-Include only when **prior turns before this one are no longer needed as the source of truth** for continuing work:
+Include `compaction` only when **every** of these holds:
 
-- Durable outcomes from this stretch of work are **on disk** (specs, ADRs, research, gates, `TODO.md`, code, verification records, etc.), and disk (re-read when needed) can replace re-reading the old chat.
-- The user’s immediate goal for this thread is **settled for now** (step done, gate recorded, or a natural chunk closed) — not mid-flight on a long procedure.
-- Anything still **only in chat or tool output** that the next turn must remember is captured in the `compaction` field (see below), not assumed to remain in trimmed history.
+1. **This request is finished** — the work the user asked for in this turn is done for now (authorized step completed, gate recorded, or a natural chunk closed). Do not compact mid-procedure while tools or the next skill step are still open.
+2. **Durable outcomes are on disk** — specs, ADRs, research, gates, `TODO.md`, code, verification records, and any other lasting artifacts from this stretch are written (or updated) so disk can replace re-reading the old chat. Chat-only conclusions are not enough.
+3. **Safe to continue from the compressed prefix** — you can honestly say the next turn can proceed with only `compaction` + this turn’s `answer` (+ later turns), without needing the deleted dialogue as source of truth. Anything still chat-only that must be remembered is either filed to disk first or captured in the `compaction` field (see Continuity).
 
-Compaction is **per chunk**, not “end of project.” After include, the next user message should be able to proceed with compaction + last-response + post-compaction turns only.
+If any precondition fails, **omit** `compaction`. Prefer write-to-disk first, then compact on a later turn once the bar is met.
+
+Compaction is **per chunk**, not “end of project.”
 
 ### When to omit `compaction`
 
-**Default: omit.** Do not compact “just in case.”
+**Default: omit.** Do not compact “just in case,” to save tokens early, or before the current request’s outcomes are filed.
 
 Omit when **chat history must stay intact** for correct continuation:
 
 - **Open procedure** — same skill step, gate, or multi-turn task still in progress; the user has not authorized the next step or you are waiting on a user-owned decision.
+- **Request not yet fully handled** — work for this turn is incomplete, or durable writes that belong to this chunk are still pending.
 - **Chat is still the only accurate record** — important facts, tradeoffs, or tool findings not yet written to durable files, and you are not ready to summarize them faithfully in `compaction`.
 - **Heavy dialogue dependence** — nuance, rejected options, or constraints live only in prior turns and would be lost without the full thread (and you cannot distill them into `compaction` yet).
+- **Unsafe compressed continuation** — you would still need the full prior thread to answer the next message correctly even after writing a careful `compaction`.
 - **Read-only exploration** — no durable writes; omit unless you are closing the exploration and filing a summary.
 
 If omitting, keep recording work to disk per **Record of work** in the persona; omission does not replace filing.
