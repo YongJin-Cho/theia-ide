@@ -52,3 +52,14 @@
 - sprint-00 목표와 PB-001도 제품 Spec 정립 및 Product Template 구현으로 갱신했다.
 - `AGENTS.md`는 개발 context 문서로 유지하고, 제품 요구사항의 SSOT는 승인된 Spec으로 분리했다.
 - **Asked user:** 제품 관점으로 수정한 `spec/PRD.md`를 검토하고 승인해 달라.
+
+## TURN-005
+
+### 사용자 요청
+> 좋아 다음 진행해줘.
+
+### Cocrates 응답
+- 사용자가 제품 관점으로 수정된 PRD를 승인한 것으로 기록했다.
+- `spec/PRD.md`를 다시 읽고 승인된 내용에 따라 AC 식별을 진행했다.
+- `spec/AC.md`에 애플리케이션 타깃 경계, 제품 확장 경계, 채택자 커스터마이징 범위, 검증 증거 수준의 4개 blocking AC를 Dependency Order와 함께 등록했다.
+- **Asked user:** `spec/AC.md`의 4개 blocking AC 목록과 Dependency Order를 검토하고 승인해 달라.

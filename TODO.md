@@ -1,7 +1,7 @@
-# TODO: 구현에서 개발 지침과 Spec 복원
+# TODO: Eclipse Theia IDE Product Template Spec 정립
 
 > **Project root:** `theia-ide`
-> **Current sprint:** sprint-00 — [구현에서 개발 지침과 Spec 복원](./scrum/sprint-00.md)
+> **Current sprint:** sprint-00 — [Eclipse Theia IDE Product Template Spec 정립](./scrum/sprint-00.md)
 > **Product Backlog:** [`scrum/product-backlog.md`](./scrum/product-backlog.md)
 > **Conversation log:** [`PROMPTS.md`](./PROMPTS.md)
 
@@ -9,11 +9,11 @@
 
 | Done | Open | Blocked | Skipped |
 |------|------|---------|---------|
-| 1    | 9    | 0       | 0       |
+| 2    | 8    | 0       | 0       |
 
-**Sprint goal:** 구현을 먼저 조사해 `AGENTS.md`를 복원하고, SDD 산출물과 제품 백로그를 만든 뒤 구현 일치 여부를 검증한다.
-**Current focus:** T-002
-**Recommended next:** T-002 — PRD 작성 및 사용자 검토
+**Sprint goal:** Eclipse Theia IDE Product Template의 구현을 조사해 제품 Spec과 제품 백로그를 정립하고 구현 일치 여부를 검증한다.
+**Current focus:** T-003
+**Recommended next:** T-003 — AC 식별 및 목록 승인
 
 ## Tasks
 
@@ -22,11 +22,11 @@
   - Artifact: `AGENTS.md`
   - Depends: —
   - Notes: 저장소 구조, 패키지 스크립트, Theia 앱/확장 구성, 패키징 제약, 검증 방법을 실제 파일에서 추출한다.
-- [ ] **T-002** — PRD 작성 및 사용자 검토
+- [x] **T-002** — PRD 작성 및 사용자 검토
   - Phase: SDD ① PRD
   - Artifact: `spec/PRD.md`
   - Depends: T-001
-  - Notes: 구현으로부터 복원하는 이번 과제의 목표·범위·성공 기준을 기록하고 검토를 요청한다.
+  - Notes: Product Template의 목표·범위·성공 기준을 기록하고 사용자 승인을 받는다.
 - [ ] **T-003** — AC 식별 및 목록 승인
   - Phase: SDD ② AC identification
   - Artifact: `spec/AC.md`
