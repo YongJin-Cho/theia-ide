@@ -1,24 +1,44 @@
 # Theia AI: IDE에 Skill 포함·배포하기
 
-조사 기준: 형제 저장소 `../theia/` (`@theia/ai-core` **1.77.0**, `@theia/ai-registry`) 및 이 제품의 Electron/browser 조립.  
-관련: [adding-ai-agents.md](./adding-ai-agents.md) §5 Skills.  
+조사 기준: 형제 저장소 `../theia/` (`@theia/ai-core` **1.77.0**, `@theia/ai-registry`) 및 Electron/browser 제품 조립 패턴.  
+관련: [adding-ai-agents.md](./adding-ai-agents.md) §5 Skills, [frontend-backend.md](./frontend-backend.md).  
 Upstream: [#17869](https://github.com/eclipse-theia/theia/issues/17869) (builtin skills — **open**).
 
 ---
 
 ## 한눈에 보기
 
-| 질문 | 답 |
-|------|----|
-| Skill이란 | `SKILL.md`(+ YAML frontmatter)가 있는 **디렉터리**. 에이전트가 `{{skills}}` / `listSkills` / `getSkillFileContent`로 소비 |
-| 공식 “builtin 번들” API | **아직 없음** (#17869 open; upstream이 기본 스킬 동봉을 원해 논의 중). 지금은 파일시스템 탐색 + `SkillDirectoryContribution` |
-| 제품에 넣으려면 | (권장) `extraResources`로 번들 → `SkillDirectoryContribution` 또는 `skillDirectories`로 스캔 / (대안) 최초 기동 시 config dir에 복사 / (대안) Agent Plugin으로 배포 |
-| 개발 중 | 워크스페이스 `.agents/skills/` 또는 preference로 로컬 폴더 지정 |
-| 1.77에서 바뀐 점 | 소비 도구에 **`listSkills`** 추가. 디렉터리 티어·배포 우회 전략은 1.76과 동일 |
+| 질문 | 플랫폼 사실 / 설계 시 기억할 점 |
+|------|--------------------------------|
+| Skill이란 | `SKILL.md`(+ YAML frontmatter)가 있는 **디렉터리**. Theia가 디렉터리를 스캔해 발견 |
+| 공식 builtin 번들 API | **없음** (#17869 open). 지금은 FS 루트 기여로 우회 |
+| Discovery SSOT | product `manifest.json`이 **아님**. frontmatter + 폴더 구조 |
+| 제품에 “내장”하려면 | 파일을 두는 것 + **런타임이 스캔할 절대 경로를 알게 하는 것** — 둘 다 설계해야 함 |
+| 개발만이면 | 워크스페이스 `.agents/skills/` 또는 preference로 충분한 경우가 많음 |
+| 1.77 | 소비 tool에 `listSkills` 추가. 티어·배포 우회는 1.76과 동일 |
 
 ---
 
-## 1. Skill이 어디서 발견되는가
+## 설계 전 결정 체크리스트
+
+구현에 들어가기 전에 아래를 **문서화·합의**하는 것을 권한다. 각 항목은 이어지는 절의 옵션과 기준을 본다.
+
+| # | 결정할 것 | 고를 때 볼 기준 |
+|---|-----------|----------------|
+| D1 | 스킬을 **제품에 번들**할 것인가, 사용자/워크스페이스에만 둘 것인가 | 오프라인·첫 실행 UX vs 패키지 크기·업데이트 복잡도 |
+| D2 | 번들한다면 **어느 배포 옵션**(§3 A–E)인가 | Electron 필수 여부, Browser/Docker 동시 지원, 사용자 편집과의 분리 |
+| D3 | 스킬 **소스 트리 위치·소유 package** | first-party extension vs `applications/*/resources` vs 공용 resource package |
+| D4 | 런타임에 절대 경로를 **누가·어떻게** 알릴 것인가 | frontend는 Node/`resourcesPath`를 가정하면 안 됨(§2). main env / backend seed / preference 중 택일 |
+| D5 | `qualifier`를 줄 것인가 | 이름 충돌 회피 vs UI에 `qualifier:name` 노출 |
+| D6 | AppImage 등 **읽기 전용** 배포를 지원하는가 | 번들 경로 직접 스캔 vs 사용자 dir 복사(plugins 패턴) |
+| D7 | 어느 **agent**가 스킬을 소비하는가 | Coder는 기본에 `{{skills}}` 없음 → 프롬프트/Capabilities를 설계에 포함 |
+| D8 | 보조 파일(`workflow/` 등)을 tool로 열 것인가 | upstream `getSkillFileContent`는 `SKILL.md`만 → 필요 시 별도 확장 설계 |
+
+합의가 안 된 채로 “파일만 넣으면 된다”고 가정하면, 패키지에는 파일이 있어도 Skills 목록이 비는 설계 결함이 난다.
+
+---
+
+## 1. 플랫폼 사실 — Skill이 어디서 발견되는가
 
 `DefaultSkillService` (`packages/ai-core/src/browser/skill-service.ts`)가 아래 순서로 디렉터리를 합친다. **같은 이름(또는 qualifiedName)이면 먼저 나온 쪽이 이긴다.**
 
@@ -27,204 +47,192 @@ Upstream: [#17869](https://github.com/eclipse-theia/theia/issues/17869) (builtin
 | 1 (높음) | `workspace` | `<workspace>/.prompts/skills/`, `<workspace>/.agents/skills/` |
 | 2 | `configured` | preference `ai-features.skills.skillDirectories` (틸드 `~` 확장) |
 | 3 | `default` | `<productConfigDir>/skills/`, `~/.agents/skills/` |
-| 4 (낮음) | `plugin` | `SkillDirectoryContribution`이 반환한 루트 (예: Agent Plugin의 `…/skills`) |
+| 4 (낮음) | `plugin` | `SkillDirectoryContribution`이 반환한 루트 |
 
-### 이 제품에서의 config dir
+**config dir:** `applications/*/package.json`의 `theia.configurationFolder`(예: `.theia`).  
+`~/.theia/skills`는 upstream README의 **예시**일 뿐, 제품마다 다르다. 설계 시 **해당 제품의** `configurationFolder`를 확인한다.
 
-`applications/*/package.json` → `theia.configurationFolder`:
+Registry **Install** → 항상 `~/.agents/skills/<name>/`.  
+Agent Plugin → `~/.agents/plugins/<id>/skills/` (`PluginSkillDirectoryContribution`, 보통 qualifier 부여).
 
-- stable / browser: **`.theia-ide`** → 기본 글로벌 스킬 폴더 = `~/.theia-ide/skills/`
-- next: **`.theia-ide-next`** → `~/.theia-ide-next/skills/`
-
-README의 `~/.theia/skills`는 “제품 configuration folder”의 예시일 뿐이다. theia-ide에서는 **`.theia-ide`** 가 기준이다.
-
-Registry에서 **Install**한 스킬은 항상 `~/.agents/skills/<name>/` (backend `SkillInstallBackendService.skillsRoot`). Agent Plugin은 `~/.agents/plugins/<id>/` 아래 `skills/` (`PluginSkillDirectoryContribution`, qualifier로 이름 충돌 회피).
-
-### 폴더·파일 규칙
+### 폴더·파일 규칙 (플랫폼)
 
 ```text
-<skills-root>/
+<skills-root>/          ← contribution/preference가 가리키는 것 (부모)
 ├── my-skill/
-│   ├── SKILL.md          # 필수. frontmatter name === 디렉터리명 (kebab-case)
+│   ├── SKILL.md        # 필수. frontmatter name === 디렉터리명 (kebab-case), description 필수
 │   └── (선택) 보조 파일
 └── another-skill/
     └── SKILL.md
 ```
 
-`SkillDirectoryContribution` / preference에 넣는 경로는 **스킬 폴더들의 부모**(위 트리의 `<skills-root>`), 개별 `my-skill/`이 아니다.
+Theia는 product-level skill manifest를 요구·해석하지 않는다. 스캔 단위는 위 트리뿐이다.
 
-소비:
+### 소비 (플랫폼)
 
-- 프롬프트에 `{{skills}}` → 이름·설명 XML (프롬프트에 미리 넣어둠)
-- **1.77:** tool `listSkills` (`~{listSkills}`) — keyword `query`로 이름·설명 필터, 매칭 많은 순. 프롬프트에 전체 목록을 넣지 않고 on-demand 조회할 때
-- 본문 → tool `getSkillFileContent` (`~{getSkillFileContent}`, 인자 `skillName`). description이 `listSkills` / available_skills를 가리키고, 스킬이 다른 스킬을 이름 또는 `/<skill-name>`으로 참조하면 같은 tool로 이어서 로드하라고 안내함. upstream은 `SKILL.md`만 읽음 — 보조 파일(`workflow/…` 등)까지 열려면 제품에서 tool rebind: [extending-get-skill-file-content.md](./extending-get-skill-file-content.md)
-- `{{skill:name}}` 변수로 특정 스킬 인라인 가능  
+- `{{skills}}` — 이름·설명 XML
+- `listSkills` / `getSkillFileContent` (1.77; 후자는 기본 `SKILL.md`만)
+- `{{skill:name}}` — 특정 스킬 인라인
 
-Coder 기본 프롬프트에는 `{{skills}}` / `listSkills`가 **없다**. Explore 등은 `{{skills}}` + `~{getSkillFileContent}`. 제품 agent가 스킬을 쓰게 하려면 프롬프트/Capabilities 경로를 맞춰야 한다.
+에이전트마다 프롬프트에 skills/tool이 들어 있지 않을 수 있다(예: Coder). **번들해도 agent가 안 쓰면 운영상 안 보이는 것과 같다** — D7.
 
 ---
 
-## 2. 배포 패키지에 포함하는 방법
+## 2. 설계 제약 — 왜 “경로”가 어려운가
 
-### 제약 (왜 “그냥 확장에 넣기”가 애매한가)
+프론트/백 분리: [frontend-backend.md](./frontend-backend.md).
 
-- Skill은 **실파일시스템 절대 경로**로 등록된다 (`Skill.location`). `getSkillFileContent`·Open UI가 그 경로를 읽는다.
-- Electron은 `asar: true`. asar 안 경로를 FileService가 안정적으로 다루게 하려면 **`extraResources` 또는 `asarUnpack`** 으로 asar 밖에 두는 편이 안전하다 (VS Code 확장 `plugins/`와 동일 패턴).
-- Browser/Docker는 백엔드가 보이는 디스크 경로만 스캔한다. 이미지에 파일을 넣고 contribution/preference로 그 경로를 가리켜야 한다.
-- Upstream [#17869](https://github.com/eclipse-theia/theia/issues/17869)는 “builtin tier + copy-on-write 커스터마이즈”를 제안 중이며 **미구현**. 지금은 파일 루트 기여로 우회한다.
+| 제약 | 설계에 미치는 영향 |
+|------|-------------------|
+| Skill은 **절대 FS 경로**로 등록 (`Skill.location`) | 번들 위치와 discovery 경로를 런타임에 맞춰야 함 |
+| `SkillDirectoryContribution`은 **frontend**에서 실행 | contribution 안에서 `node:fs`, Electron `process.resourcesPath`, 패키지 `cwd`를 **가정하면 안 됨** |
+| Electron `asar: true` | skills를 asar 안에만 두면 FileService 스캔이 불안정 → 보통 **extraResources(asar 밖)** |
+| Electron main이 backend를 fork할 때 `process.env`를 넘김 | main에서 env를 시드하면 backend `EnvVariablesServer` 스냅샷 → frontend RPC로 읽을 수 있음 |
+| Application frontend는 webpack 번들 | extension `tsc`만으로는 패키지 UI에 새 contribution이 안 들어갈 수 있음 → **application 번들 재생성**을 검증 계획에 넣음 |
+| Upstream builtin tier 없음 (#17869) | “공식 내장 API”를 기다리지 말고 우회 전략을 고른다 |
 
-### 옵션 A — `SkillDirectoryContribution` + 번들 디렉터리 (제품 전용에 가장 맞음)
+### 설계 시 피해야 할 가정
 
-1. 저장소에 예: `theia-extensions/product/skills/` 또는 `applications/*/resources/skills/`에 스킬 트리 작성.
-2. Electron: `electron-builder.yml` `extraResources`에 추가 (예: `to: app/skills`). AppImage 읽기 전용이면 VS Code `builtInPlugins`처럼 사용자 config로 복사하는 헬퍼를 검토.
-3. `theia-extensions/`에 contribution 구현:
+구현 전에 아래를 “되는 줄 알고” 설계에 넣지 않는다.
 
-```typescript
-@injectable()
-export class ProductSkillDirectoryContribution implements SkillDirectoryContribution {
-    async getSkillDirectories(): Promise<SkillDirectoryEntry[]> {
-        return [{
-            path: /* 패키징·dev 모두에서 해석 가능한 절대 경로 */,
-            tier: 'plugin',
-            qualifier: 'theia-ide' // 선택: 이름이 `theia-ide:my-skill`로 노출
-        }];
-    }
-}
-// frontend 모듈:
-bind(ProductSkillDirectoryContribution).toSelf().inSingletonScope();
-bind(SkillDirectoryContribution).toService(ProductSkillDirectoryContribution);
-```
+| 위험한 가정 | 실제 |
+|-------------|------|
+| 패키지에 파일만 넣으면 Skills UI에 자동 표시 | **파일 존재 ≠ discovery**. 스캔 루트를 런타임에 기여해야 함 |
+| frontend에서 `process.resourcesPath`로 패키지 경로를 알 수 있다 | renderer/webpack에는 없음. **main(또는 backend Node)** 에서만 안전 |
+| product `manifest.json`이 Theia discovery 계약이다 | Theia는 디렉터리 + `SKILL.md` frontmatter만 봄 |
+| extension build = 패키지 반영 | Electron은 application frontend/backend 번들까지 갱신해야 패키지 실행본에 코드가 들어감 |
+| frontmatter 없이 `SKILL.md`만 있으면 된다 | validation 실패 시 스킵되어 목록에 안 나옴 |
 
-4. applications dependency에 해당 확장 포함 후 빌드·패키징.
+---
 
-장점: 사용자 `~/.agents/skills`와 분리, 업데이트 시 번들만 갈면 됨(복사 전략을 쓰면 버전 메타 필요).  
-단점: 경로 해석(dev / 패키지 / AppImage / browser)을 제품이 책임져야 함. `plugin` 티어라 workspace·user 스킬에 가려질 수 있음(의도된 동작).
+## 3. 배포 전략 — 옵션과 고르는 기준
 
-### 옵션 B — `extraResources` + preference `ai-features.skills.skillDirectories`
+목표(D1)가 “제품 내장”이 아니면 E 또는 워크스페이스만으로 끝낼 수 있다.
 
-번들 경로를 preference **default** 또는 제품 설정으로 넣는다.  
-절대 경로가 환경마다 달라서, 보통은 **런타임에 경로를 정해 contribution이나 동적 preference로 넣는 A가 낫다.**
+### 옵션 비교
 
-### 옵션 C — 최초 기동 시 `~/.theia-ide/skills/`에 시드 복사
+| 옵션 | 요약 | 이런 때 유리 | 이런 때 불리 |
+|------|------|--------------|--------------|
+| **A** Contribution + 번들 디렉터리 | asar 밖 배치 + frontend가 절대 경로 기여 | Electron 제품 내장, 사용자 dir과 분리 | 경로 시드·Browser/AppImage를 제품이 설계해야 함 |
+| **B** preference `skillDirectories` | 설정된 경로만 추가 스캔 | 기업 공유 폴더, 개발 중 모노레포 경로 | 설치 경로가 머신마다 다름 → default에 절대경로 넣기 어려움 |
+| **C** 기동 시 config dir에 복사 | `default` 티어에 자동 포함 | PoC, contribution 최소화 | 제품 콘텐츠와 사용자 편집 혼재, 업데이트 정책 필요 |
+| **D** Agent Plugin | 플러그인 `skills/` | 레지스트리·선택 설치 | “IDE 기본 동봉” 체감과 다름 |
+| **E** Registry Install만 | 패키지에 스킬 파일 없음 | 최소 패키지, 사용자가 고름 | 오프라인·첫 실행에 스킬 없음 |
 
-`default` 티어에 자동 포함되므로 contribution 없이 동작.  
-#17869가 지적하듯 **제품 콘텐츠와 사용자 편집이 섞이고**, 앱 업데이트 시 덮어쓰기/보존 정책이 필요하다. 단순 PoC용.
+### 옵션 A를 고를 때 — 설계해야 할 세 층
 
-### 옵션 D — Agent Plugin으로 배포
-
-구조 예:
+A는 “한 클래스”가 아니라 **배치 · 경로 시드 · 기여**를 나눠 설계한다.
 
 ```text
-my-plugin/
-├── plugin.json
-└── skills/
-    └── deploy/
-        └── SKILL.md
+[배치]     빌드/패키지가 skills 트리를 런타임이 읽을 수 있는 디스크에 둔다
+[시드]     Node 쪽(main 또는 backend)이 그 절대 경로를 frontend가 알 수 있게 만든다
+[기여]     frontend SkillDirectoryContribution이 그 경로를 plugin 티어로 반환한다
+              → DefaultSkillService + FileService가 SKILL.md 스캔
 ```
 
-설치 위치: `~/.agents/plugins/<filenamified-id>/`. `PluginSkillDirectoryContribution`이 `skills/`를 `plugin` 티어로 등록(qualifier 부여).  
-제품 “내장”보다는 **레지스트리·수동 설치** 모델. 미리 풀어 두고 link/install 하는 방식으로는 가능.
+**배치 (설계 질문)**  
+- Electron: `extraResources`(또는 동등)로 asar 밖인가? 대상 상대 경로 이름은?  
+- Browser/Docker: 이미지/서버 디스크의 어느 경로인가? extension package 안 `skills/`로 충분한가?
 
-### 옵션 E — AI Registry 스킬 Install만 안내
+**시드 (설계 질문)**  
+- Electron: main 스크립트에서 `resourcesPath` 기반으로 env(또는 동등 채널)를 심을 것인가? (plugins의 `THEIA_DEFAULT_PLUGINS`와 같은 **프로세스 역할**)  
+- Browser: backend 기동 전/초기에 패키지 상대 경로를 같은 채널로 심을 것인가?  
+- frontend가 `EnvVariablesServer` / 전용 RPC / preference 중 무엇으로 읽는가? (모두 “frontend가 Node path API를 쓰지 않음”을 만족하면 됨)
 
-배포 패키지에 파일을 넣지 않고, 사용자가 Extensions에서 설치 → `~/.agents/skills`. 제품 번들과는 별개.
+**기여 (설계 질문)**  
+- 어느 extension이 `SkillDirectoryContribution`을 bind하는가?  
+- `qualifier` 문자열은? (충돌 회피 vs UI 표기)  
+- contribution은 존재 여부를 `fs`로 선검사하지 않고 경로만 반환하는가? (존재·파싱은 SkillService 책임)
 
-### theia-ide에서 손댈 위치 (구현 시)
+스케치 (이름은 예시일 뿐; 제품이 env 키·qualifier를 정함):
 
-| 목적 | 경로 |
-|------|------|
-| contribution / 시드 로직 | `theia-extensions/product` (또는 전용 확장) |
-| Electron 번들 | `applications/electron|electron-next/electron-builder.yml` `extraResources`, 필요 시 `scripts/theia-electron-main.js`·`appimage-helpers.js` |
-| Browser/Docker | 이미지에 스킬 트리 복사 + 동일 contribution/경로 |
-| Agent가 스킬을 쓰게 | agent 프롬프트에 `{{skills}}` 및/또는 `~{listSkills}` + `~{getSkillFileContent}` (또는 Capabilities) |
-
----
-
-## 3. 스킬 폴더 설정 방법
-
-### Preference
-
-- 키: `ai-features.skills.skillDirectories`
-- 타입: `string[]` (추가 루트만; workspace·config·`~/.agents/skills`는 항상 포함)
-- UI: AI Configuration / Settings
-
-예:
-
-```json
-{
-  "ai-features.skills.skillDirectories": [
-    "~/shared-skills",
-    "/opt/company/theia-skills"
-  ]
+```typescript
+// frontend — 경로는 주입/RPC/env 스냅샷에서만 온다
+async getSkillDirectories() {
+    const path = /* EnvVariablesServer 또는 제품이 정한 채널 */;
+    if (!path) return [];
+    return [{ path, tier: 'plugin', qualifier: /* D5 */ }];
 }
 ```
 
-존재하지 않는 configured 경로는 경고 로그 후 스킵.
+```javascript
+// Electron main (Node) — resourcesPath 사용이 허용되는 쪽
+process.env.<PRODUCT_BUNDLED_SKILLS> = isPackaged
+    ? path.join(process.resourcesPath, 'app', 'skills')
+    : /* unpackaged/dev 절대 경로 */;
+```
 
-### 코드 contribution
+### 옵션 B–E 선택 가이드
 
-`SkillDirectoryContribution` (`ai-core`):
+- **B:** “내장”보다 **추가 루트**가 목표면. 번들 경로 default를 preference에 박기 어렵면 A의의 시드와 조합하거나 A로 이동.  
+- **C:** 데모·내부 PoC. 정식 제품이면 업데이트 시 덮어쓰기/보존 정책을 D6과 함께 명시.  
+- **D/E:** 제품이 스킬을 “기본 동봉”하지 않아도 되면 패키징·경로 시드 비용을 피할 수 있음.
 
-- `getSkillDirectories(): MaybePromise<SkillDirectoryEntry[]>`
-- 선택 `onDidChange`로 재스캔
-- `tier: 'plugin'`, 선택 `qualifier`
+### AppImage / 읽기 전용 (D6)
 
-등록은 `@theia/ai-registry`의 `PluginSkillDirectoryContribution`과 동일하게 `bind(SkillDirectoryContribution).toService(...)`.
-
-### 우선순위·섀도잉
-
-워크스페이스에 같은 `name`의 스킬이 있으면 제품 번들(`plugin` 티어)은 보이지 않는다.  
-플러그인끼리 같은 이름은 `qualifier:name`으로 구분된다.
+읽기만 하면 번들 경로 스캔으로도 목록은 나올 수 있다. **쓰기·안정적 watch**가 필요하거나 plugins와 정책을 맞추려면, 버전 메타 기반 **사용자 디렉터리 복사**를 설계에 넣을지 따로 결정한다.
 
 ---
 
-## 4. 개발 중에는 어떻게?
+## 4. Preference·contribution API (플랫폼)
 
-| 방법 | 언제 |
+- Preference: `ai-features.skills.skillDirectories` (`string[]`) — 추가 루트만; workspace·config·`~/.agents/skills`는 항상 포함.
+- `SkillDirectoryContribution`: `getSkillDirectories()`, 선택 `onDidChange`, `tier: 'plugin'`, 선택 `qualifier`.
+- 등록: `bind(SkillDirectoryContribution).toService(...)`.
+
+워크스페이스에 같은 `name`이 있으면 제품 번들(`plugin`)은 가려진다 — 의도된 우선순위.
+
+---
+
+## 5. 개발 중 검증 vs 패키지 검증 (계획에 넣을 것)
+
+### 개발만 (번들 전)
+
+| 방법 | 용도 |
 |------|------|
-| `<repo>/.agents/skills/<name>/SKILL.md` | 프로젝트·워크스페이스 스킬. 별도 설정 없음. **가장 간단** |
-| `.prompts/skills/` | 동일 workspace 티어; 같은 이름이면 `.prompts`가 `.agents`보다 앞 |
-| Settings에 `skillDirectories` → 모노레포 `skills/` 절대경로 | 제품 번들과 같은 트리를 개발 중에도 스캔 |
-| `~/.theia-ide/skills/`에 심링크/복사 | 글로벌 스킬처럼 동작 |
-| CreateSkill agent | SKILL.md 작성 보조 (`@theia/ai-ide`) |
-| `yarn electron start` / `yarn browser start` | contribution·extraResources 없이 workspace/preference만으로도 검증 가능 |
+| `<workspace>/.agents/skills/` | 설정 없이 스킬 내용·agent 소비부터 검증 |
+| preference로 모노레포 `skills/` 절대경로 | 제품 트리와 동일 파일을 스캔 |
+| `yarn browser|electron start` | contribution·시드 초안 검증 (패키지와 경로가 다를 수 있음) |
 
-개발 체크리스트:
+체크: AI enable → Skills UI → agent 프롬프트/tools → `getSkillFileContent`.
 
-1. AI enable (`ai-features.AiEnable.enableAI`).
-2. AI Configuration → Skills(또는 Variables의 skills)에 스킬이 보이는지. (초기 스캔은 startup을 막지 않고 deferred; preference·workspace ready 후 configured 경로 포함)
-3. 테스트 agent 프롬프트에 `{{skills}}` 및/또는 `~{listSkills}` / `~{getSkillFileContent}`가 있는지 (Coder만으로는 목록·tool이 안 들어갈 수 있음).
-4. 채팅에서 스킬 사용 유도 → `listSkills`(선택) → `getSkillFileContent` 호출 여부. 중첩 참조 스킬이 있으면 두 번째 `getSkillFileContent`까지.
+### 패키지 검증 (번들을 선택한 경우 설계에 명시)
 
-패키징 검증: `yarn electron package:preview` 후 설치본에서 번들 경로·AppImage 복사·asar 밖 배치를 확인.
+구현 완료 조건으로 미리 적어 둔다.
 
----
-
-## 5. 권장 방향 (theia-ide)
-
-1. **단기 / 개발:** 워크스페이스 `.agents/skills` + (필요 시) preference로 공유 폴더.
-2. **제품 내장 배포:** 스킬 트리를 **asar 밖 `extraResources`** 로 넣고, `theia-extensions`의 **`SkillDirectoryContribution`** 으로 절대 경로 기여. AppImage는 plugins와 같은 **버전 메타 기반 사용자 디렉터리 복사**를 검토.
-3. **사용자 추가 설치:** Registry Skills / Agent Plugin 기존 경로 유지.
-4. Upstream builtin tier(#17869)가 들어오면 contribution·시드 복사를 그쪽 API로 이전 검토. (1.77 시점에도 open; 기본 동봉 스킬·slash command→skill 정리와 함께 논의 중)
+1. 산출물에 skills 트리가 **의도한 배치**(예: asar 밖)로 존재하는가.  
+2. 런타임 시드(main/backend)가 그 절대 경로를 frontend에 전달하는가.  
+3. **패키지에 들어간 frontend 번들**이 최신 contribution을 포함하는가 (extension만 빌드하고 application 번들을 안 돌리면 실패하기 쉬움).  
+4. AI enable 후 Skills 목록에 기대 스킬이 보이는가 (`qualifier:name`일 수 있음).  
+5. (선택) AppImage/읽기 전용 시나리오.
 
 ---
 
-## 핵심 파일 맵
+## 6. 권장 결정 순서 (요약)
+
+1. D1: 번들 여부. 아니면 워크스페이스 / B / E로 단순화.  
+2. 번들이면 D2: 대개 Electron 제품은 **A**, “설정만”이면 B, PoC면 C.  
+3. D3–D5: 소유 package, 시드 채널, qualifier.  
+4. D7–D8: agent 프롬프트·보조 파일 tool.  
+5. D6: 읽기 전용 배포 정책.  
+6. §5 검증 항목을 Spec/테스트 계획에 옮긴 뒤 구현.
+
+Upstream #17869가 들어오면 A의 contribution/시드를 공식 builtin API로 이전할지 재평가한다.
+
+---
+
+## 핵심 파일 맵 (조사·구현 시)
 
 | 경로 (`../theia/`) | 역할 |
 |--------------------|------|
 | `packages/ai-core/README.md` | Skills 개요 |
-| `packages/ai-core/src/common/skill.ts` | 파싱, `combineSkillDirectories`, qualifier |
-| `packages/ai-core/src/browser/skill-service.ts` | 스캔, `SkillDirectoryContribution`, deferred `ready` |
-| `packages/ai-core/src/common/ai-core-preferences.ts` | `ai-features.skills.skillDirectories` |
+| `packages/ai-core/src/common/skill.ts` | 파싱, qualifier, frontmatter 검증 |
+| `packages/ai-core/src/browser/skill-service.ts` | 스캔, `SkillDirectoryContribution` |
+| `packages/ai-core/src/common/ai-core-preferences.ts` | `skillDirectories` preference |
 | `packages/ai-ide/src/browser/skill-file-functions.ts` | `listSkills` / `getSkillFileContent` |
-| `packages/ai-ide/src/common/workspace-functions.ts` | `LIST_SKILLS_FUNCTION_ID` 등 상수 |
-| `packages/ai-registry/.../plugin-skill-directory-contribution.ts` | Agent Plugin → skills 루트 |
-| `packages/ai-registry/.../skill-install-backend-service.ts` | `~/.agents/skills` 설치 |
-| issue #17869 | 공식 builtin 스킬 제안 (open) |
+| `packages/core/src/node/env-variables/env-variables-server.ts` | backend env 스냅샷 → frontend |
+| `packages/core/src/electron-main/electron-main-application.ts` | backend fork + env 상속 |
+| `packages/ai-registry/.../plugin-skill-directory-contribution.ts` | Agent Plugin skills 루트 |
+| issue #17869 | 공식 builtin 제안 (open) |
 
-| 경로 (theia-ide) | 역할 |
-|------------------|------|
-| `applications/*/package.json` `configurationFolder` | `~/.theia-ide(-next)/skills` |
-| `applications/electron*/electron-builder.yml` | `extraResources` 패턴 (plugins 참고) |
-| `applications/electron*/scripts/theia-electron-main.js` | AppImage built-in 복사 패턴 |
+제품 쪽에서는 `applications/*/electron-builder.yml`, Electron main 진입 스크립트, first-party extension의 frontend(/backend) 모듈 지점을 **설계 결과로** 채운다. 구체 경로는 이 문서가 아니라 제품 Spec·소스의 SSOT다.

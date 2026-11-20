@@ -1,7 +1,7 @@
 # Theia AI: 새 Agent 추가 방법
 
 조사 기준: 형제 저장소 `../theia/` (`@theia/ai-core`, `@theia/ai-chat`, `@theia/ai-ide` 등) 및 이 제품 모노레포 `theia-ide/`의 조립 방식.  
-프레임워크 버전 참고: applications가 끌어오는 `@theia/ai-*` (**1.77.0**).
+프레임워크 버전 참고: applications가 끌어오는 `@theia/ai-*` (예: 1.76.0).
 
 ---
 
@@ -13,8 +13,7 @@
 | Agent / Edit 모드 | 글로벌 모드가 아니라 **agent별 `ChatMode`** (= prompt variant ID). Coder에 Edit Mode / Agent Mode가 대표 예 |
 | 상속 | Mode 없음 → `AbstractStreamParsingChatAgent` / Mode 있음 → `AbstractModeAwareChatAgent` |
 | System Prompt | `PromptVariantSet` + `{{variables}}` / `~{tools}` / `{{capability:…}}`. 변수 목록은 §4.3, Coder 구조는 §7 |
-| 프로젝트 컨텍스트 | 루트 **`AGENTS.md`** (`{{prompt:agents-md}}`). 레거시 `{{prompt:project-info}}` / ProjectInfo agent는 1.77에서 대체됨 (§4.4, §1.2) |
-| Skills / Tools / Settings | `SKILL.md`, `ToolProvider`/`~{toolId}`(`listSkills`·`listAgents` 포함), preference `ai-features.*` / `AgentSettings` |
+| Skills / Tools / Settings | `SKILL.md`, `ToolProvider`/`~{toolId}`, preference `ai-features.*` / `AgentSettings` — 도구 상세는 [ai-tools.md](./ai-tools.md) |
 | Default agent | preference `ai-features.chat.defaultChatAgent` → (optional) DI `DefaultChatAgentId` → `FallbackChatAgentId` |
 
 **theia-ide 제품 코드는 ChatAgent를 거의 커스텀하지 않는다.** `@theia/ai-ide` 등을 의존성으로 조립하고, `theia-ide-product-ext`는 AI Registry tool 이름만 브랜딩한다.
@@ -43,15 +42,14 @@
 |-------|-----------|
 | Architect | 설계·계획 (Plan/Simple 등 mode) |
 | Coder | 코딩·파일 변경 (Edit / Agent Mode) |
-| **AgentsMd** | 워크스페이스 루트 `AGENTS.md` 작성·갱신·리뷰 (1.77: 구 **ProjectInfo** 대체) |
+| ProjectInfo | 프로젝트 정보 |
 | CreateSkill | Skill 작성 |
 | Orchestrator | 다른 chat agent로 위임 |
 | Universal | 범용 |
 | AppTester / GitHub / Command | 특수 도메인 |
 | Explore / CodeReviewer / PRReview | 탐색·리뷰 |
 
-별도 패키지: `@theia/ai-claude-code`, `@theia/ai-codex` (theia-ide applications가 dependency로 포함).  
-`@theia/ai-vercel-ai`는 1.77에서 제거됨.
+별도 패키지: `@theia/ai-claude-code`, `@theia/ai-codex` (theia-ide applications가 dependency로 포함).
 
 ### 1.3 파일 기반 Custom Agent
 
@@ -106,7 +104,7 @@ UI: `ai-chat-ui`의 mode selector가 `agent.modes`를 표시.
 
 | 기반 클래스 | 언제 |
 |-------------|------|
-| **`AbstractStreamParsingChatAgent`** | Mode 구분 없음. Explore, CustomChatAgent, AgentsMd 등 |
+| **`AbstractStreamParsingChatAgent`** | Mode 구분 없음. Explore, CustomChatAgent, ProjectInfo 등 |
 | **`AbstractModeAwareChatAgent`** | Edit/Agent/Plan 등 **mode ↔ prompt variant**가 필요. Coder, Architect, CreateSkill |
 
 계층: `AbstractChatAgent` → `AbstractStreamParsingChatAgent` → (`ai-ide`) `AbstractModeAwareChatAgent`.
@@ -134,7 +132,7 @@ Mode-aware는 **선택한 variant id**로 resolve한다.
 | 문법 | 의미 |
 |------|------|
 | `{{variableName}}` | AI variable 치환 |
-| `{{variableName:arg}}` | 인자가 있는 variable (예: `{{prompt:agents-md}}`, `{{skill:my-skill}}`) |
+| `{{variableName:arg}}` | 인자가 있는 variable (예: `{{prompt:project-info}}`, `{{skill:my-skill}}`) |
 | `{{capability:fragment-id default on\|off}}` | 사용자가 켜/끌 수 있는 prompt fragment 조건부 삽입 |
 | `~{toolId}` | tool을 agent에 노출 (본문에 설명 문구로도 쓰임) |
 | `{{!-- ... --}}` | 주석 (모델에 안 감) |
@@ -153,16 +151,14 @@ Mode-aware는 **선택한 variant id**로 resolve한다.
 | `{{today}}` | ai-core | 오늘 날짜 (`{{today:Format}}` 가능) |
 | `{{skills}}` | ai-core | 발견된 skill 목록(XML: name·description). **본문은 `~{getSkillFileContent}`로** |
 | `{{skill:skillName}}` | ai-core | 특정 skill 본문 |
-| `{{prompt:fragmentId}}` | ai-core | 다른 prompt fragment를 인라인. **프로젝트 컨텍스트는 `agents-md`** (권장). `open-editors-hint` 등 |
-| `{{prompt:agents-md}}` | ai-core | 루트 `AGENTS.md` — 단일 루트면 본문 인라인, 멀티 루트면 경로만 광고 → `getFileContent`로 읽기 |
-| `{{prompt:project-info}}` | ai-core | **deprecated** (1.77). 여전히 resolve되며 지금은 `AGENTS.md` 전체 내용으로 매핑 |
+| `{{prompt:fragmentId}}` | ai-core | 다른 prompt fragment를 인라인 (예: `project-info`, `open-editors-hint`) |
 | `{{capability:…}}` | ai-core | 옵션 기능 조각 (shell, github, apptester, memory, code-review-mode…) |
 | `{{contextFiles}}` | ai-ide | 세션에 첨부/북마크된 파일 목록 |
 | `{{changeSetSummary}}` | ai-chat | 이전 제안·적용 변경 요약 |
 | `{{taskContextSummary}}` | ai-ide | 세션의 task context(계획) 요약 |
 | `{{agents}}` / `{{chatAgents}}` | ai-core / ai-chat | agent 목록 |
 | `{{contextSummary}}` / `{{contextDetails}}` | ai-chat | 채팅 컨텍스트 요약·상세 |
-| `{{openEditors}}` / `{{_ff}}` | ai-core | 열린 에디터 목록 / 짧은 경로 목록 (1.77: non-text editor·editor state 포함) |
+| `{{openEditors}}` / `{{_ff}}` | ai-core | 열린 에디터 목록 / 짧은 경로 목록 |
 | `{{editorContext}}` | ai-editor | 에디터 컨텍스트 |
 | `{{file:uri}}` | ai-core | 지정 URI 파일 내용 |
 | `{{memoryDirectory}}` | ai-ide | 워크스페이스별 agent memory 디렉터리 |
@@ -183,40 +179,13 @@ Mode-aware는 **선택한 variant id**로 resolve한다.
 
 목록은 AI Configuration → Variables에서도 볼 수 있다. 확장 패키지가 추가 contribution을 등록하면 더 늘어난다.
 
-**참고:** Coder 기본 프롬프트는 `{{skills}}`를 **쓰지 않는다**. Explore 등은 `{{skills}}`를 넣는다. Skill을 쓰려면 프롬프트에 `{{skills}}`(+ `~{listSkills}` / `~{getSkillFileContent}`)를 넣거나 Capabilities/`selected_skills` 경로를 쓰면 된다.
+**참고:** Coder 기본 프롬프트는 `{{skills}}`를 **쓰지 않는다**. Explore 등은 `{{skills}}`를 넣는다. Skill을 쓰려면 프롬프트에 `{{skills}}`(+ `~{getSkillFileContent}`)를 넣거나 Capabilities/`selected_skills` 경로를 쓰면 된다.
 
-### 4.4 프로젝트 컨텍스트: `AGENTS.md` (1.77)
-
-1.76까지는 `.prompts/project-info.prompttemplate` + **ProjectInfo** agent가 프로젝트 컨텍스트 SSOT였다.  
-1.77부터는 오픈 표준 **루트 `AGENTS.md`** 가 SSOT다.
-
-| 항목 | 1.77 기준 |
-|------|-----------|
-| 파일 | 워크스페이스 루트 `AGENTS.md` (`AGENT.md` / `CLAUDE.md` 등은 자동 fallback 아님) |
-| 프롬프트 참조 | **`{{prompt:agents-md}}`** (Coder·Architect·Explore·CodeReviewer·AppTester·PRReview 내장) |
-| 단일 루트 | `AGENTS.md` 본문이 요청에 인라인 (용량 상한 없음 — 요청마다 포함됨) |
-| 멀티 루트 | 경로만 광고 → 모델이 `getFileContent`로 필요 시 읽기 |
-| 레거시 | 기동 시 trusted root의 `.prompts/project-info.prompttemplate` → `AGENTS.md` 마이그레이션(+ `.bak`). 명령: `AI: Re-run AGENTS.md migration` |
-| deprecated | `{{prompt:project-info}}`는 계속 resolve되지만 **전체 `AGENTS.md` 인라인**으로 매핑. 새 프롬프트는 `agents-md` 사용 |
-| 관리 agent | **`AgentsMd`** (`agents-md-agent.ts`). id/prompts: `AgentsMd`, `agents-md-system`, `agents-md-template` |
-| 주의 | `AGENTS.md` 안의 `{{…}}` / `~{…}` 는 **리터럴**로 남음 (prompt template이 아님) |
-
-Adopter가 `ProjectInfoAgent` / `PROJECT_INFO_*` 심볼을 쓰던 경우 `@theia/ai-ide`의 `AgentsMd*` 동등물로 바꿔야 한다.  
-user-scope `ai-features.agentSettings`의 `ProjectInfo` 항목은 자동 마이그레이션되지만, workspace/folder scope 설정·수동 `.prompttemplate` 커스텀(`project-info-system` 등)은 이름이 바뀌지 않아 수동 rename이 필요하다.
-
-### 4.5 런타임 커스터마이즈
+### 4.4 런타임 커스터마이즈
 
 - AI Configuration View, `.prompttemplate`, agent 폴더 prompt.
 - Custom agent: `agent.md` 본문 → `{name}_prompt` fragment.
-- 프로젝트 컨텍스트: 루트 `AGENTS.md` (AgentsMd agent / 직접 편집). AI Configuration의 generic capability 편집으로 agent별 capability on/off도 UI에서 가능 (1.77).
-
-### 4.6 프롬프트 캐싱 안정성 (1.77 권장)
-
-요청마다 바뀌는 값을 system prompt에 넣으면 provider prompt cache가 깨진다.  
-upstream은 tool/agent **description**에 사용 규칙을 두고, prompt는 상대적으로 고정하는 쪽으로 이동했다 (`#18074`).
-
-- 도구 사용법·위임 시점 → tool / agent `description`에 두기 (Architect·Explore description에 위임 가이드가 이미 있음).
-- 날짜는 가능하면 `{{today}}`처럼 **하루 단위**로 안정적인 형태 사용 (`{{today:inIso8601}}`처럼 매 요청 변하는 형식은 피함 — Memory capability가 이렇게 정리됨).
+- `{{prompt:project-info}}` → 보통 `.prompts/project-info.prompttemplate` (ProjectInfo agent가 관리).
 
 ---
 
@@ -228,20 +197,15 @@ upstream은 tool/agent **description**에 사용 규칙을 두고, prompt는 상
 - Registry: `ToolInvocationRegistry`.
 - IDE 도구는 `@theia/ai-ide` frontend-module에서 다수 등록 (workspace files, search, file edit, tasks, skill content, git, user interaction 등).
 - 프롬프트에서 `~{toolId}`로 참조해야 agent가 해당 tool을 쓴다 (`Agent.functions` 문서화와 맞춤).
-- **1.77 추가:**
-  - `listSkills` — skill 이름·설명 목록 (keyword `query` 필터). 본문은 이어서 `getSkillFileContent`.
-  - `listAgents` — `delegateToAgent` 대상 chat agent 목록 (keyword 필터). `@theia/ai-chat`에 바인딩.
-- 전체 파일 쓰기(`writeFileContent` / `suggestFileContent`)는 preference `ai-features.workspaceFunctions.writeContentMaxSizeKB`로 크기 제한 (1.77).
+- **카탈로그·에이전트별 매핑·프롬프트 패턴:** [ai-tools.md](./ai-tools.md).
 
 ### Skills
 
 - `SKILL.md` + YAML frontmatter (`name`, `description`, …).
-- 탐색 경로 예: `.prompts/skills/`, `.agents/skills/`, user dirs, config-dir `skills/` (`ai-core` README; theia-ide는 `.theia-ide` 기준 — [shipping-ai-skills.md](./shipping-ai-skills.md)).
-- 프롬프트 변수 `{{skills}}`, 목록 tool `listSkills`, 본문 로드 tool `getSkillFileContent`.
-- upstream `getSkillFileContent`는 `SKILL.md`만. 스킬 보조 파일까지 읽으려면 플랫폼 수정 없이 제품 확장에서 rebind — [extending-get-skill-file-content.md](./extending-get-skill-file-content.md).
+- 탐색 경로 예: `.prompts/skills/`, `.agents/skills/`, user dirs, `~/.theia/skills/` (`ai-core` README).
+- 프롬프트 변수 `{{skills}}`, 본문 로드 tool `getSkillFileContent`.
 - CreateSkill agent가 작성 지원.
 - `AgentSettings.genericCapabilitySelections.skills` 등으로 agent/세션별 선택.
-- Explore 등은 여전히 `{{skills}}` + `~{getSkillFileContent}` 패턴. Coder 기본 프롬프트에는 skills 블록이 없다.
 
 ### Settings (preference)
 
@@ -254,7 +218,6 @@ upstream은 tool/agent **description**에 사용 규칙을 두고, prompt는 상
 | `ai-features.agentMode.enabled` | Coder Agent Mode 확인 관련 |
 | `ai-features.orchestrator.excludedAgents` | Orchestrator 위임 제외 |
 | `ai-features.skills.skillDirectories` | 추가 skill 디렉터리 |
-| `ai-features.workspaceFunctions.writeContentMaxSizeKB` | whole-file write/suggest 최대 크기(KB) |
 
 MCP: `@theia/ai-mcp` / `ai-mcp-ui` (applications dependency에 포함).
 
@@ -281,8 +244,7 @@ bind(FallbackChatAgentId).toConstantValue({ id: 'Universal' });
 
 또는 preference 스키마 default / 설정 UI로 `ai-features.chat.defaultChatAgent`를 제공한다.
 
-1.77: 채팅 Welcome에서 default-agent 피커·tool-confirmation 안내를 더 이상 렌더하지 않는다. 해당 UX는 **Getting Started walkthrough**로 이동했고, 채팅은 default agent 미설정만으로 막히지 않는다.  
-추천 로직 자체는 여전히 `default-chat-agent-recommendation-service.ts` (Coder / Architect / Universal 등).
+Welcome 추천: `default-chat-agent-recommendation-service.ts` (Coder / Architect / Universal 등).
 
 ---
 
@@ -301,7 +263,7 @@ Agent: `coder-agent.ts` — set id `coder-system`, **defaultVariant = Agent Mode
 
 - `{{contextFiles}}` — 첨부/북마크 파일
 - `{{changeSetSummary}}` — 이전 변경
-- `{{prompt:agents-md}}` — 프로젝트 컨텍스트 (`AGENTS.md`; 1.76의 `project-info` 대체)
+- `{{prompt:project-info}}` — 프로젝트 정보 fragment
 - `{{prompt:open-editors-hint}}` — 열린 에디터 힌트
 - `{{taskContextSummary}}` — task context 요약
 - `{{productName}}` (및 Next만 `{{today}}`)
@@ -346,7 +308,7 @@ Agent: `coder-agent.ts` — set id `coder-system`, **defaultVariant = Agent Mode
 |---------|------|
 | Identity + 역할 경계 | “제안만” vs “즉시 수정”을 mode/도구로 명확히 |
 | Tool 목록·사용 규칙 | `~{id}`로 노출; Read-before-edit, 검색 전략 표 |
-| Context 블록 | `contextFiles` / `agents-md` / `changeSetSummary` / `taskContextSummary` |
+| Context 블록 | `contextFiles` / `project-info` / `changeSetSummary` / `taskContextSummary` |
 | Capability 슬롯 | 옵션 기능은 `{{capability:…}}` |
 | `{{skills}}` | Coder 기본엔 없음 → 필요하면 Explore처럼 추가 |
 | Mode가 필요하면 | `AbstractModeAwareChatAgent` + variant id = mode id |
@@ -364,8 +326,8 @@ Agent: `coder-agent.ts` — set id `coder-system`, **defaultVariant = Agent Mode
 
 1. 패키지 생성 예: `theia-extensions/my-agent/` (`theia-ide-my-agent-ext`).
 2. 클래스: **Mode 없음 → `AbstractStreamParsingChatAgent`**, Mode 있음 → `AbstractModeAwareChatAgent`.
-3. prompt template 모듈에서 system prompt 문자열(및 variants) 정의 — Coder의 `coder-replace-prompt-template.ts` 패턴. 프로젝트 컨텍스트는 `{{prompt:agents-md}}`.
-4. DI 모듈:
+3. prompt template 모듈에서 system prompt 문자열(및 variants) 정의 — Coder의 `coder-replace-prompt-template.ts` 패턴.
+5. DI 모듈:
 
 ```typescript
 bind(MyChatAgent).toSelf().inSingletonScope();
@@ -374,10 +336,10 @@ bind(ChatAgent).toService(MyChatAgent);
 // 필요 시 bindToolProvider(...); bind(DefaultChatAgentId)...
 ```
 
-5. `package.json`의 `theiaExtensions`에 frontend 모듈 경로.
-6. `applications/browser|electron|electron-next/package.json` dependencies에 패키지 추가 (workspace/lerna 등록).
-7. `yarn build:extensions` → `yarn browser|electron build` (또는 `build:dev`).
-8. AI enable 후 Chat에서 `@MyAgent` 스모크. default면 preference 또는 DI 설정.
+6. `package.json`의 `theiaExtensions`에 frontend 모듈 경로.
+7. `applications/browser|electron|electron-next/package.json` dependencies에 패키지 추가 (workspace/lerna 등록).
+8. `yarn build:extensions` → `yarn browser|electron build` (또는 `build:dev`).
+9. AI enable 후 Chat에서 `@MyAgent` 스모크. default면 preference 또는 DI 설정.
 
 모드가 필요하면 `modeDefinitions`의 id와 `prompts.variants` id를 일치시킨다.
 
@@ -404,23 +366,17 @@ bind(ChatAgent).toService(MyChatAgent);
 | `packages/ai-core/src/common/agent-service.ts` | 등록·enable |
 | `packages/ai-core/src/common/prompt-service.ts` | fragment / custom agents API |
 | `packages/ai-core/src/common/skill.ts` | Skill |
-| `packages/ai-core/src/common/agents-md.ts` | `AGENTS.md` / `agents-md`·deprecated `project-info` fragment id |
 | `packages/ai-chat/src/common/chat-agents.ts` | `ChatAgent`, `AbstractChatAgent` |
 | `packages/ai-chat/src/common/chat-agent-service.ts` | default/fallback, 목록 |
 | `packages/ai-chat/src/common/ai-chat-preferences.ts` | `defaultChatAgent` 등 |
 | `packages/ai-chat/src/common/custom-chat-agent.ts` | 파일 기반 agent 런타임 |
-| `packages/ai-chat/src/browser/list-agents-tool.ts` | `listAgents` tool |
 | `packages/ai-ide/src/browser/frontend-module.ts` | 내장 agent·tool DI 허브 |
 | `packages/ai-ide/src/browser/coder-agent.ts` | Edit/Agent Mode 예 |
 | `packages/ai-ide/src/common/coder-replace-prompt-template.ts` | Coder system prompt 원문 |
-| `packages/ai-ide/src/browser/agents-md-agent.ts` | `AGENTS.md` 관리 ChatAgent (구 ProjectInfo) |
-| `packages/ai-ide/src/common/agents-md-prompt-template.ts` | AgentsMd system/template prompts |
-| `packages/ai-ide/src/browser/skill-file-functions.ts` | `listSkills` / `getSkillFileContent` |
 | `packages/ai-ide/src/browser/mode-aware-chat-agent.ts` | mode ↔ variant |
 | `packages/ai-ide/src/browser/explore-agent.ts` | Mode 없는 `AbstractStreamParsingChatAgent` 예 |
 | `packages/ai-core/src/browser/*-variable-contribution.ts` | `{{skills}}`, `{{prompt:…}}` 등 |
-| `packages/ai-core/src/browser/agents-md-frontend-application-contribution.ts` | project-info → `AGENTS.md` 마이그레이션 |
-| `doc/Migration.md` | `.agents/agents/<id>/agent.md` 레이아웃 등 |
+| `doc/Migration.md` | `.agents/agents/<id>/agent.md` 레이아웃 |
 | `examples/api-samples/src/browser/chat/*` | adopter 샘플 |
 
 theia-ide:
@@ -436,4 +392,3 @@ theia-ide:
 
 - [shipping-ai-skills.md](./shipping-ai-skills.md) — 제품에 Skill 번들·폴더 설정·개발 중 사용
 - upstream: `packages/ai-ide/README.md`, `packages/ai-core/README.md` (skills), `packages/ai-chat/README.md`, `doc/Migration.md` (custom agents 폴더)
-- upstream CHANGELOG 1.77.0 — `AGENTS.md` / AgentsMd, `listSkills`·`listAgents`, prompt cache 안정화 등
