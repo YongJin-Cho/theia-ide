@@ -4,9 +4,9 @@
 
 ## 스토리
 
-- [ ] **PB-001** — 저장소 개발 지침 복원
-  - Story: Theia 플랫폼 기반 Boilerplate Project의 구조, 개발 명령, 확장 지점, 검증 방법을 설명하는 루트 `AGENTS.md`를 복원하여 이후 작업자가 저장소를 일관되게 이해하고 변경할 수 있다.
+- [ ] **PB-001** — 저장소 구현에서 개발 지침과 요구사항 복원
+  - Story: Theia 플랫폼 기반 Boilerplate Project의 구현을 조사하여 루트 `AGENTS.md`와 사용자 승인 SDD Spec을 복원하고, Spec에서 도출한 제품 백로그를 이미 구현된 상태로 기록할 수 있다.
   - Spec: —
   - Sprint: sprint-00
   - Depends: —
-  - Notes: SDD ⑦ 구현 단계에 따라 저장소 사실을 기준으로 작성하고, 기존 파일과 명령을 임의로 변경하지 않는다.
+  - Notes: AGENTS.md 작성 후 PRD → AC 식별 → AC 검토 → ASR 통합 → Spec 작성 → Spec 검토 → 백로그 생성 → 구현 일치 검증을 수행한다.
