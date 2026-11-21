@@ -4,7 +4,7 @@
 자동 실행이 승인된 구조화 응답의 `commit` 필드를 어떤 실행 어댑터 경계에서 처리할 것인가?
 
 ## Status
-proposed
+approved
 
 ## Context
 - 상위 side effect 결정은 유효한 JSON의 `commit`을 제품 런타임이 자동 실행하도록 승인했다.
@@ -14,6 +14,7 @@ proposed
 - 이번 결정은 실행 경계를 정하는 것이며, 자동 rollback/undo 정책은 상위 ADR에 따라 별도 revert 흐름으로 남긴다.
 
 ## Decision
+**Option B — Theia SCM API 직접 사용**을 선택한다. Theia platform이 제공하는 repository/provider commit capability를 우선 사용해 shell quoting과 별도 backend 운영을 피한다. 구현 전 Theia 1.77의 실제 API와 provider capability를 확인하고, 요구사항을 충족하지 못하는 부분은 성공으로 가정하지 않고 별도 상태로 기록한다.
 
 ## Options
 ### Option A — 기존 shell/git 경계 재사용
@@ -44,16 +45,16 @@ proposed
 | 향후 확장성 | 중간 | 중간 | 높음 |
 
 ## Recommendation
-- **Option A — 기존 shell/git 경계 재사용**을 권고한다.
-- 이번 Sprint의 범위는 Theia 1.77 제품 확장에서 승인된 자동 commit 계약을 구현하는 것이며, 전용 backend를 운영할 요구사항은 없다.
-- Theia SCM API는 provider별 commit capability가 현재 요구를 안정적으로 충족하는지 추가 확인해야 하므로 기본 경로로 선택하기에는 불확실성이 있다.
-- Option A를 선택하더라도 임의 shell 문자열을 조합하지 않고, repository root를 workspace 서비스로 확정한 뒤 고정된 git 인자 배열과 검증된 commit message만 전달한다. 실행 결과·exit code·처리 식별자를 별도 상태로 기록하고 동일 응답 재처리를 차단한다.
+- **Option B — Theia SCM API 직접 사용**을 권고한다.
+- Theia가 제공하는 repository/provider 경계를 사용하면 제품 확장이 shell quoting과 프로세스 lifecycle을 직접 관리하지 않아도 된다.
+- 구현 단계에서 Theia 1.77의 공통 SCM API와 현재 provider의 commit capability, staged 변경 조회, 오류 결과를 확인한다.
+- SCM API가 제공하는 범위 안에서 repository 검증, staged 상태 확인, commit message 검증, 실행 결과·처리 식별자 기록, 동일 응답 재처리 차단을 구현한다. API가 요구사항을 충족하지 못하는 경우에는 shell/git 또는 backend로 조용히 전환하지 않고 실패 사유와 후속 결정을 기록한다.
 
 ## Consequences
-- commit adapter는 제품 확장 내부에서 repository 검증, staged 상태 확인, commit message 검증, 프로세스 실행, 결과 기록을 담당한다.
-- shell/git 경계는 입력을 단일 문자열로 연결하지 않는 API 또는 인자 배열 실행 방식을 사용해야 한다.
-- git 설치 여부, repository 상태, staged 변경 없음, hook 실패, 권한 오류를 각각 실패 상태로 구분해야 한다.
-- Theia SCM provider의 commit API를 기본 실행 경로로 사용하지 않으며, provider capability가 없는 경우에도 동작하는 CLI 경계를 우선한다.
+- commit adapter는 Theia SCM 경계에서 repository 검증, staged 상태 확인, commit message 검증, commit 요청, 결과 기록을 담당한다.
+- shell/git 프로세스 실행과 임의 shell 문자열 조합은 기본 경로에서 사용하지 않는다.
+- SCM provider capability 없음, repository 상태 오류, staged 변경 없음, commit 거부, 권한 오류를 각각 실패 상태로 구분해야 한다.
+- provider별 API 차이가 있으면 공통 adapter에서 흡수하되, 지원되지 않는 capability는 성공으로 위장하지 않는다.
 - 전용 backend service의 중앙 감사·정책 집행은 이번 범위에서 구현하지 않는다.
 
 ## Downstream Concerns
@@ -69,3 +70,4 @@ proposed
 
 ## Notes
 - 2026-11-21: 상위 side effect ADR의 후속 concern으로 생성했다. 세 실행 경계를 비교하고 Option A를 권고한다.
+- 2026-11-21: Status → approved; 사용자가 Theia platform 기능을 우선하는 Option B를 선택했다. 구현 전 Theia 1.77 SCM commit capability를 확인한다.

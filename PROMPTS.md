@@ -48,3 +48,17 @@
 - 현재 sprint-06 범위에는 기존 shell/git 경계를 내부 어댑터로 재사용하는 Option A를 권고했다. 단일 문자열 shell 조합이 아니라 검증된 repository root와 인자 배열 실행을 전제로 한다.
 - 상위 side effect ADR의 Related 링크에 후속 ADR을 연결했다.
 - **Asked user:** 세 옵션 중 선택할 방향을 승인할까요? 추천안인 Option A를 승인하면 ADR을 approved로 기록하고 T-003 구현을 재개하겠습니다.
+
+## TURN-005
+
+### User Request
+> shell/git을 이용하는 것이 간단하기는 하지만, theia platform에서 제공하는 기능이 있다면, 그것을 사용하는 것이 좋을 것 같아. Option B로 결정해줘.
+
+### Cocrates Response
+- `adr/cocrates-commit-execution-adapter.md`를 `approved`로 갱신하고 Option B — Theia SCM API 직접 사용을 결정으로 기록했다.
+- shell/git 프로세스 실행과 전용 backend service를 기본 경로에서 제외하고, Theia 1.77의 repository/provider commit capability를 구현 전에 확인하도록 Consequences에 반영했다.
+- T-003의 blocked 사유를 제거하고 Theia SCM 기반 adapter 구현으로 Current focus를 유지했다.
+- 다음 구현 단계로 Theia 1.77 SCM 공통 API와 현재 provider의 commit capability를 확인했다.
+- 공통 `commit(message)` API는 없고, `selectedRepository.input.value`와 provider의 `acceptInputCommand`를 통해 Theia SCM 명령을 실행하는 경계임을 기록했다.
+- 조사 결과를 `docs/theia/scm-commit-adapter.md`에 저장했으며, provider별 staged resource 판정과 중복 처리 상태를 T-003 구현에서 검증한다.
+- **Asked user:** —

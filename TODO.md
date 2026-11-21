@@ -9,11 +9,11 @@
 
 | Done | Open | Blocked | Skipped |
 |------|------|---------|---------|
-| 2    | 5    | 1       | 0       |
+| 2    | 5    | 0       | 0       |
 
 **Sprint goal:** 승인된 구조화 최종 응답 Spec을 구현하고 제품 확장 경계에서 검증한다.
 **Current focus:** T-003
-**Recommended next:** T-003 — session·commit side effect adapter 구현 (commit 실행 어댑터 결정 필요)
+**Recommended next:** T-003 — Theia SCM 기반 session·commit side effect adapter 구현
 
 ## Tasks
 
@@ -33,7 +33,7 @@
   - Phase: implementation
   - Artifact: `theia-extensions/product/src/`
   - Depends: T-002
-  - Notes: PB-008; R-006~R-009, C-003. (blocked: 승인된 ADR의 Downstream Concern인 commit execution adapter가 아직 결정되지 않음.)
+  - Notes: PB-008; R-006~R-009, C-003. Theia SCM API 직접 사용 Option B가 승인되었다. 공통 `commit(message)` API 대신 `selectedRepository.input.value`와 provider의 `acceptInputCommand`를 통해 실행하는 경계를 확인했다. provider별 staged resource 판정과 중복 처리 상태를 구현·검증한다.
 
 - [ ] **T-004** — compaction 저장·복원 및 메시지 순서 구현
   - Phase: implementation
