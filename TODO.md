@@ -9,11 +9,11 @@
 
 | Done | Open | Blocked | Skipped |
 |------|------|---------|---------|
-| 2    | 8    | 0       | 0       |
+| 8    | 2    | 0       | 0       |
 
 **Sprint goal:** Eclipse Theia IDE Product Template의 구현을 조사해 제품 Spec과 제품 백로그를 정립하고 구현 일치 여부를 검증한다.
-**Current focus:** T-003
-**Recommended next:** T-003 — AC 식별 및 목록 승인
+**Current focus:** T-009
+**Recommended next:** T-009 — 데모 체크리스트 및 스프린트 결과 정리
 
 ## Tasks
 
@@ -27,32 +27,32 @@
   - Artifact: `spec/PRD.md`
   - Depends: T-001
   - Notes: Product Template의 목표·범위·성공 기준을 기록하고 사용자 승인을 받는다.
-- [ ] **T-003** — AC 식별 및 목록 승인
+- [x] **T-003** — AC 식별 및 목록 승인
   - Phase: SDD ② AC identification
   - Artifact: `spec/AC.md`
   - Depends: T-002
   - Notes: PRD에서 사용자 결정이 필요한 구조적 질문을 식별한다.
-- [ ] **T-004** — AC 검토 및 결정
+- [x] **T-004** — AC 검토 및 결정
   - Phase: SDD ③ AC review
   - Artifact: `spec/AC.md` 또는 `adr/`
   - Depends: T-003
   - Notes: 모든 blocking AC를 Dependency Order에 따라 설계 또는 deferred 상태로 닫는다.
-- [ ] **T-005** — ASR 통합 및 승인
+- [x] **T-005** — ASR 통합 및 승인
   - Phase: SDD ④ ASR consolidation
   - Artifact: `spec/ASR.md`
   - Depends: T-004
   - Notes: PRD와 확정된 모든 AC 결과를 Spec 작성 기준으로 통합한다.
-- [ ] **T-006** — Spec 작성 및 검토 승인
+- [x] **T-006** — Spec 작성 및 검토 승인
   - Phase: SDD ⑤–⑥ Spec
-  - Artifact: `spec/boilerplate-context.md`, `spec-review/boilerplate-context.md`
+  - Artifact: `spec/applications-integration.md`, `spec/product-extension.md`, `spec/updater-extension.md`, `spec/launcher-extension.md`, `spec-review/`
   - Depends: T-005
-  - Notes: 구현·검증 SSOT인 R-NNN/C-NNN 요구사항을 작성하고 사용자 승인을 받는다.
-- [ ] **T-007** — 확정 Spec 기반 제품 백로그 생성 및 완료 처리
+  - Notes: 애플리케이션 통합 Spec과 product/updater/launcher 확장 Spec을 분리 작성하고, 각 Spec의 R-NNN/C-NNN 요구사항을 사용자 승인받는다.
+- [x] **T-007** — 확정 Spec 기반 제품 백로그 생성 및 완료 처리
   - Phase: backlog encoding
   - Artifact: `scrum/product-backlog.md`
   - Depends: T-006
   - Notes: Spec의 요구사항을 PB-*로 추가하고 이번 저장소에 이미 구현된 것으로 DoD 완료 처리한다.
-- [ ] **T-008** — Spec과 구현 일치 검증
+- [x] **T-008** — Spec과 구현 일치 검증
   - Phase: SDD ⑧ verification
   - Artifact: `verification/boilerplate-context.md`
   - Depends: T-007
