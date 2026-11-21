@@ -10,10 +10,14 @@ Theia IDE Product Template의 제품 Spec 작성을 위해 설계가 필요한 �
 | AC-002 | 제품 확장의 구성 및 의존성 경계 | Integration & dependencies | designed | — | ASR-003 |
 | AC-003 | 채택자 커스터마이징 표면의 지원 범위 | Deliverable form | designed | — | ASR-004 |
 | AC-004 | 제품 Spec-구현 일치 검증의 증거 수준 | Quality bar (architectural) | designed | — | ASR-007 |
+| AC-005 | Cocrates 타깃 식별자 체계 | Constraints (structural) | identified | — | — |
+| AC-006 | 제품 브랜드와 Theia 업스트림 명칭의 경계 | Structure & organization | identified | — | — |
+| AC-007 | 업데이트·배포 메타데이터의 제품 소유 범위 | Integration & dependencies | identified | — | — |
 
 ## Dependency Order (recommended review path)
 
-1. AC-001 → AC-002 → AC-003 → AC-004
+1. AC-001 → AC-005 → AC-006 → AC-007
+2. 기존 결정: AC-001 → AC-002 → AC-003 → AC-004
 
 ## AC Detail
 
@@ -55,6 +59,45 @@ Theia IDE Product Template의 제품 Spec 작성을 위해 설계가 필요한 �
 - **Resolution path:** direct-input
 - **Resolution:** Product Template이 공식적으로 보장하는 채택자 커스터마이징 표면은 애플리케이션 설정과 리소스 교체를 중심으로 한다. 여기에는 앱 이름, 아이콘, URI scheme, configuration folder, Electron app ID, splash screen, 제품별 package 설정이 포함된다. 채택자가 제품 기능의 동작을 변경해야 하는 경우 application에서 기존 서비스를 임의로 `rebind`하는 대신 별도의 Theia 확장으로 분리한다. 플러그인과 확장 조합은 애플리케이션 의존성과 플러그인 설정을 통해 조정할 수 있지만, 각 내부 서비스의 override는 기본 채택 계약으로 보장하지 않는다.
 - **Notes:** 직접 입력으로 결정했다. `ADOPTER.md`, `docs/rebranding.md`, 애플리케이션 설정을 기준으로 범위를 정한다.
+
+### AC-005 — Cocrates 타깃 식별자 체계
+
+- **Category:** Constraints (structural)
+- **Status:** identified
+- **Statement:** Browser, Stable Electron, Electron Next(`Cocrates Next`)에 사용할 `name`, `productName`, `applicationName`, `appId`, `appUserModelId`, URI scheme, configuration folder, executable·artifact 이름을 어떤 일관된 식별자 체계로 정할 것인가?
+- **Why it matters:** 앱 식별자와 사용자 데이터·딥링크·패키징 산출물은 설치·업데이트·동시 사용·기존 데이터와의 충돌에 영향을 주며, 임의의 값은 되돌리기 어려운 배포 계약이 된다.
+- **Depends on:** AC-001
+- **Related ADRs:**
+  - —
+- **Resolution path:** direct-input | adr
+- **Resolution:**
+- **Notes:** `docs/rebranding.md`는 예시 값만 제공하므로 Cocrates의 실제 reverse-domain 식별자, Next 접미사 규칙, 기존 Theia 사용자 데이터와의 마이그레이션·분리 정책을 확정해야 한다.
+
+### AC-006 — 제품 브랜드와 Theia 업스트림 명칭의 경계
+
+- **Category:** Structure & organization
+- **Status:** identified
+- **Statement:** 소스 코드 식별자·내부 패키지명·업스트림 도구명에 남아 있는 `theia`/`theia-ide` 문자열 중 어떤 것을 Cocrates 제품 표면에서 반드시 제거하고, 어떤 내부 호환 명칭을 유지할 것인가?
+- **Why it matters:** 모든 문자열을 기계적으로 바꾸면 업스트림 API·패키지 계약을 깨뜨릴 수 있고, 반대로 경계를 정의하지 않으면 사용자에게 Theia 브랜드가 남는다.
+- **Depends on:** AC-005
+- **Related ADRs:**
+  - —
+- **Resolution path:** direct-input
+- **Resolution:**
+- **Notes:** PRD는 사용자 표면에서 Theia IDE 브랜드를 제거하되 업스트림 도구명은 필요한 곳에 남길 수 있다고 정의했으므로, 사용자 표면·배포 메타데이터·내부 호환 식별자의 판정 기준을 구체화해야 한다.
+
+### AC-007 — 업데이트·배포 메타데이터의 제품 소유 범위
+
+- **Category:** Integration & dependencies
+- **Status:** identified
+- **Statement:** updater URL, electron-builder publish 설정, CI release artifact/image 이름, Docker registry 경로와 문서 링크를 Cocrates 배포 인프라로 확정할 것인가, 아니면 템플릿 변수·자리표시자로 남길 것인가?
+- **Why it matters:** 잘못된 updater·publish URL은 설치된 사용자를 잘못된 릴리스로 연결할 수 있고, 실제 Cocrates 배포 인프라 정보가 없는 상태에서 임의 URL을 넣으면 구현 후 재작업이 발생한다.
+- **Depends on:** AC-005
+- **Related ADRs:**
+  - —
+- **Resolution path:** direct-input | adr
+- **Resolution:**
+- **Notes:** `docs/rebranding.md`는 자체 CDN/릴리스 서버로 바꾸라고 안내하지만 실제 Cocrates 배포 엔드포인트는 아직 제공되지 않았다.
 
 ### AC-004 — 제품 Spec-구현 일치 검증의 증거 수준
 

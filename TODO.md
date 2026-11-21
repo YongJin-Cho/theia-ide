@@ -9,11 +9,11 @@
 
 | Done | Open | Blocked | Skipped |
 |------|------|---------|---------|
-| 1    | 9    | 0       | 0       |
+| 2    | 8    | 0       | 0       |
 
 **Sprint goal:** Browser, Stable Electron, Electron Next를 Cocrates 브랜드로 전환하기 위한 승인된 요구사항과 Spec을 확정한다.
-**Current focus:** T-002
-**Recommended next:** T-002 — PRD delta 승인
+**Current focus:** T-003
+**Recommended next:** T-003 — 리브랜딩 blocking AC 식별
 
 ## Tasks
 
@@ -22,7 +22,7 @@
   - Artifact: `spec/PRD.md`
   - Depends: —
   - Notes: Browser·Stable Electron·Electron Next(`Cocrates Next`) 전체 타깃과 리브랜딩 범위를 제품 수준으로 추가한다.
-- [ ] **T-002** — PRD delta 승인
+- [x] **T-002** — PRD delta 승인
   - Phase: SDD ① PRD gate
   - Artifact: `spec/PRD.md`
   - Depends: T-001
