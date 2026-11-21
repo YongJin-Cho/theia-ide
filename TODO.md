@@ -1,7 +1,7 @@
-# TODO: Cocrates 전체 타깃 리브랜딩 구현·검증
+# TODO: Cocrates AI Agent·Skills 패키징 요구사항 확정
 
 > **Project root:** `theia-ide`
-> **Current sprint:** — (sprint-03 계획 및 승인 대기)
+> **Current sprint:** — (sprint-03 계획 및 Sprint plan approval 대기)
 > **Product Backlog:** [`scrum/product-backlog.md`](./scrum/product-backlog.md)
 > **Conversation log:** [`PROMPTS.md`](./PROMPTS.md)
 
@@ -13,7 +13,7 @@
 
 **Sprint goal:** —
 **Current focus:** —
-**Recommended next:** sprint-03 계획 수립 및 승인
+**Recommended next:** sprint-03 계획 승인
 
 ## Tasks
 

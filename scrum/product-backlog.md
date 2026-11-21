@@ -46,3 +46,10 @@
   - Sprint: sprint-02
   - Depends: PB-002, PB-003, PB-004, PB-005
   - Notes: 승인된 횡단 브랜딩 SSOT와 review 결과(11 pass, 0 fail, 0 needs-clarification)를 반영했다. sprint-02에서 Browser/Stable Electron/Electron Next 구현, 패키징, lint 및 Electron E2E를 완료했다. 재빌드 후 Stable과 Electron Next E2E가 각각 10 passing이며 sprint-02 경계에서 완료 처리했다.
+
+  - [ ] **PB-007** — Cocrates Default Chat Agent 및 내장 Skills 배포
+  - Story: 사용자가 `@Cocrates`를 명시하지 않아도 Cocrates가 기본 Chat Agent로 동작하고, `docs/cocrates/agent1.md` 시스템 프롬프트와 `adr`, `todo`, `sdd` 스킬을 Browser·Stable Electron·Electron Next 제품 패키지에서 사용할 수 있다. 스킬 보조 파일은 확장된 `getSkillFileContent`로 안전하게 읽을 수 있다.
+  - Spec: `spec/cocrates-ai-agent-skills.md` §Requirements, §Constraints
+  - Sprint: sprint-03
+  - Depends: PB-002, PB-003
+  - Notes: 현재 sprint-03 Spec→backlog 범위. 실제 세 스킬 명세 본문은 사용자가 제공한 뒤 지정 폴더에 복사하며, 이번 범위는 배치·발견·도구·에이전트 계약과 구현·검증 DoD를 확정한다.
