@@ -9,11 +9,11 @@
 
 | Done | Open | Blocked | Skipped |
 |------|------|---------|---------|
-| 6    | 4    | 0       | 0       |
+| 8    | 2    | 0       | 0       |
 
 **Sprint goal:** Browser, Stable Electron, Electron Next를 Cocrates 브랜드로 전환하기 위한 승인된 요구사항과 Spec을 확정한다.
-**Current focus:** T-007
-**Recommended next:** T-007 — 전용 Cocrates 브랜딩 Spec 검토 승인
+**Current focus:** T-009
+**Recommended next:** T-009 — 스프린트 완료 검토
 
 ## Tasks
 
@@ -47,16 +47,16 @@
   - Artifact: `spec/ASR.md`
   - Depends: T-005
   - Notes: 기존 ASR-001~ASR-009에 승인된 리브랜딩 결정 ASR-010~ASR-012를 통합하고 사용자 승인을 받았다.
-- [ ] **T-007** — 전용 Cocrates 브랜딩 Spec 검토 승인
+- [x] **T-007** — 전용 Cocrates 브랜딩 Spec 검토 승인
   - Phase: SDD ⑤–⑥ Spec
   - Artifact: `spec/cocrates-branding.md`, `spec-review/cocrates-branding.md`
   - Depends: T-006
-  - Notes: 횡단 브랜딩 Spec 초안과 review 기록을 작성했다. 사용자 승인 후 T-007을 완료하고 백로그 인코딩으로 진행한다.
-- [ ] **T-008** — `PB-006` 백로그 반영 및 스프린트 결과 정리
+  - Notes: 사용자가 `spec/cocrates-branding.md`를 구현·검증 SSOT로 승인했다. Review 결과는 11 pass, 0 fail, 0 needs-clarification이다.
+- [x] **T-008** — `PB-006` 백로그 반영 및 스프린트 결과 정리
   - Phase: backlog encoding
   - Artifact: `scrum/product-backlog.md`, `scrum/sprint-01.md`
   - Depends: T-007
-  - Notes: 승인된 리브랜딩 Spec의 제품 스토리와 다음 실행 범위를 정리한다.
+  - Notes: `PB-006`에 승인된 `spec/cocrates-branding.md`와 `spec-review/cocrates-branding.md`를 기록했다. 구현·패키징·런타임 검증은 다음 실행 스프린트 범위로 유지한다.
 - [ ] **T-009** — 스프린트 완료 검토
   - Phase: sprint completion gate
   - Artifact: `PROMPTS.md`, `TODO.md`

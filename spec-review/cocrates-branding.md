@@ -44,8 +44,8 @@
 
 ## User Review
 
-- **Status:** pending user approval
-- **Decision requested:** `spec/cocrates-branding.md`를 Cocrates 전체 타깃 리브랜딩 구현·검증의 SSOT로 승인
+- **Status:** approved by user
+- **Decision:** `spec/cocrates-branding.md`를 Cocrates 전체 타깃 리브랜딩 구현·검증의 SSOT로 승인
 - **Scope of approval:**
   - `spec/cocrates-branding.md`
   - 관련 브랜딩 적용 범위에 한해 기존 네 컴포넌트별 Spec과의 정합성

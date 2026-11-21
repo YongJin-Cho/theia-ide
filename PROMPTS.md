@@ -143,3 +143,28 @@
 - `spec-review/cocrates-branding.md`에 SSOT 충분성·정합성 검토 결과를 기록했으며 blocking gap은 발견되지 않았다.
 - `TODO.md`의 현재 초점을 전용 브랜딩 Spec 검토 승인으로 갱신했다.
 - **Asked user:** `spec/cocrates-branding.md`를 리브랜딩 구현·검증의 SSOT로 승인하고 다음 백로그 인코딩 단계로 진행할지 결정해 달라.
+
+## TURN-012
+
+### 사용자 요청
+> `spec/cocrates-branding.md`를 리브랜딩 구현·검증의 SSOT로 승인하고 다음 백로그 인코딩 단계로 진행해줘.
+
+### Cocrates 응답
+- 사용자의 Spec 승인을 기록하고 T-007을 완료 처리했다.
+- `spec-review/cocrates-branding.md`의 상태를 사용자 승인으로 갱신했다.
+- 승인된 `spec/cocrates-branding.md`의 경로·섹션과 검토 결과를 `PB-006`에 반영했다.
+- 현재 T-008 백로그 반영 및 스프린트 결과 정리 단계로 이동했다.
+- 구현·패키징·런타임 변경은 아직 시작하지 않았다.
+- **Asked user:** —
+
+## TURN-013
+
+### 사용자 요청
+> 승인된 브랜딩 Spec을 `PB-006` 백로그에 반영하고 스프린트 결과를 정리해줘.
+
+### Cocrates 응답
+- `PB-006`을 승인된 `spec/cocrates-branding.md`와 Spec review 기록을 가리키도록 갱신했다.
+- T-008을 완료 처리하고 현재 초점을 스프린트 완료 검토 T-009로 이동했다.
+- sprint-01의 목표인 승인된 리브랜딩 요구사항·Spec 확정은 달성했다.
+- 구현·패키징·런타임 검증은 스프린트 외 범위이며 다음 Backlog→Implementation 스프린트로 이월한다.
+- **Asked user:** sprint-01 완료 검토를 승인하고 Sprint Boundary를 진행할지 결정해 달라.

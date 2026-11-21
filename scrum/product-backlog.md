@@ -42,7 +42,7 @@
 
 - [ ] **PB-006** — Cocrates 전체 타깃 리브랜딩 요구사항 및 Spec 확정
   - Story: 제품 담당자가 Browser, Stable Electron, Electron Next를 Cocrates 브랜드로 일관되게 배포할 수 있도록 앱 이름·패키지 식별자·URI scheme·configuration folder·제품 확장 UI·launcher/updater·CI·문서의 승인된 리브랜딩 요구사항과 Spec을 갖는다. Electron Next는 `Cocrates Next` 변형으로 유지한다.
-  - Spec: `docs/rebranding.md` 및 sprint-01에서 갱신될 `spec/`·`spec-review/`
+  - Spec: `spec/cocrates-branding.md` §Requirements, §Constraints, §Out of Scope; `spec-review/cocrates-branding.md`
   - Sprint: sprint-01
   - Depends: PB-002, PB-003, PB-004, PB-005
-  - Notes: sprint-01 Spec→backlog 변경 스토리. 구현·패키징·런타임 검증은 승인된 Spec 이후 실행 스프린트에서 수행한다.
+  - Notes: 승인된 횡단 브랜딩 SSOT와 review 결과(11 pass, 0 fail, 0 needs-clarification)를 반영했다. 구현·패키징·런타임 검증은 다음 Backlog→Implementation 스프린트에서 수행한다.
