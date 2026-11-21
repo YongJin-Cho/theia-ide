@@ -9,8 +9,13 @@
 
 import { AbstractStreamParsingChatAgent, ChatAgentLocation } from '@theia/ai-chat/lib/common/chat-agents.js';
 import { ChatService } from '@theia/ai-chat/lib/common/chat-service.js';
-import { LanguageModelMessage, LanguageModelResponse } from '@theia/ai-core/lib/common/language-model.js';
-import { getTextOfResponse } from '@theia/ai-core/lib/common/language-model-util.js';
+import {
+    isLanguageModelStreamResponse,
+    isLanguageModelStreamResponsePart,
+    isTextResponsePart,
+    LanguageModelMessage,
+    LanguageModelResponse,
+} from '@theia/ai-core/lib/common/language-model.js';
 import { ChatModel, MarkdownChatResponseContentImpl, MutableChatRequestModel } from '@theia/ai-chat/lib/common/chat-model.js';
 import { LanguageModelRequirement } from '@theia/ai-core/lib/common';
 import { CommandService } from '@theia/core/lib/common/command';
@@ -89,32 +94,103 @@ export class CocratesChatAgent extends AbstractStreamParsingChatAgent {
     }
 
     protected override async addContentsToResponse(response: LanguageModelResponse, request: MutableChatRequestModel): Promise<void> {
-        const text = await getTextOfResponse(response);
-        const structured = parseCocratesStructuredResponse(text);
-        if (structured) {
-            const sideEffects = new CocratesStructuredResponseSideEffects(
-                this.chatService,
-                this.scmService,
-                this.commandService,
-                this.storageService,
-                this.workspaceService,
-                this.logger,
-                );
-            const result = await sideEffects.apply(structured, request);
-            const answer = result.errors.length > 0
-                ? `${structured.answer}\n\n${result.errors.map(error => `> ${error}`).join('\n')}`
-                : structured.answer;
-            request.response.response.addContent(new MarkdownChatResponseContentImpl(answer));
-            if (structured.compaction !== undefined) {
-                request.response.response.addContent(new CocratesCompactionChatResponseContentImpl(
-                    structured.compaction,
-                    structured.answer,
-                ));
-            }
+        if (isLanguageModelStreamResponse(response)) {
+            await this.addStreamResponsePreservingToolCalls(response, request);
+            return;
+        }
+
+        const text = 'text' in response && typeof response.text === 'string'
+            ? response.text
+            : 'content' in response && typeof response.content === 'string'
+                ? response.content
+                : undefined;
+        if (text !== undefined && await this.addStructuredResponse(text, request)) {
             return;
         }
 
         await super.addContentsToResponse(response, request);
+    }
+
+    protected async addStreamResponsePreservingToolCalls(
+        response: Extract<LanguageModelResponse, { stream: AsyncIterable<unknown> }>,
+        request: MutableChatRequestModel,
+    ): Promise<void> {
+        let text = '';
+        let completeTextBuffer = '';
+        let startIndex = request.response.response.content.length;
+        let hasNonTextContent = false;
+
+        for await (const token of response.stream) {
+            if (!isLanguageModelStreamResponsePart(token)) {
+                this.logger.debug(`Unknown token: '${JSON.stringify(token)}'. Skipping`);
+                continue;
+            }
+
+            if (isTextResponsePart(token)) {
+                text += token.content;
+                completeTextBuffer += token.content;
+                const parsedContents = this.parseContents(completeTextBuffer, request);
+                const contentBeforeMarker = startIndex > 0
+                    ? request.response.response.content.slice(0, startIndex)
+                    : [];
+                request.response.response.clearContent();
+                request.response.response.addContents(contentBeforeMarker);
+                request.response.response.addContents(parsedContents);
+                continue;
+            }
+
+            hasNonTextContent = true;
+            const parsedContent = this.parse(token, request);
+            if (Array.isArray(parsedContent)) {
+                request.response.response.addContents(parsedContent);
+            } else {
+                request.response.response.addContent(parsedContent);
+            }
+            startIndex = request.response.response.content.length;
+            completeTextBuffer = '';
+        }
+
+        // A response containing tool calls must retain the normal ChatAgent content. Only
+        // replace a pure text stream with the product's structured-response presentation.
+        if (!hasNonTextContent) {
+            const contentBeforeMarker = startIndex > 0
+                ? request.response.response.content.slice(0, startIndex)
+                : [];
+            request.response.response.clearContent();
+            request.response.response.addContents(contentBeforeMarker);
+            if (await this.addStructuredResponse(text, request)) {
+                return;
+            }
+            request.response.response.addContents(this.parseContents(text, request));
+        }
+    }
+
+    protected async addStructuredResponse(text: string, request: MutableChatRequestModel): Promise<boolean> {
+        const structured = parseCocratesStructuredResponse(text);
+        if (!structured) {
+            return false;
+        }
+
+        const sideEffects = new CocratesStructuredResponseSideEffects(
+            this.chatService,
+            this.scmService,
+            this.commandService,
+            this.storageService,
+            this.workspaceService,
+            this.logger,
+        );
+        const result = await sideEffects.apply(structured, request);
+        const answer = result.errors.length > 0
+            ? `${structured.answer}\n\n${result.errors.map(error => `> ${error}`).join('\n')}`
+            : structured.answer;
+        request.response.response.addContent(new MarkdownChatResponseContentImpl(answer));
+        if (structured.compaction !== undefined) {
+            request.response.response.addContent(new CocratesCompactionChatResponseContentImpl(
+                structured.compaction,
+                structured.answer,
+            ));
+        }
+        return true;
     }
 }
 
