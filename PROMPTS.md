@@ -19,3 +19,14 @@
 - 저장소에 보관된 `docs/cocrates/agent2.md`와 Theia 구조화 출력·compaction 조사 문서를 기준으로 구현 범위를 정리했다.
 - 현재는 Sprint plan approval 게이트에서 대기한다.
 - **Asked user:** sprint-05 계획을 승인하고 실행 보드와 Spec→backlog 단계를 시작할까요?
+
+## TURN-002
+
+### User Request
+> sprint-05 계획을 승인하고 다음 단계 진행해줘.
+
+### Cocrates Response
+- sprint-05 실행 보드에 T-001~T-010을 시드했다.
+- PB-008 delta PRD를 `spec/PRD.md`에 추가했다.
+- 현재 PRD 승인 게이트(T-002)에서 대기한다.
+- **Asked user:** `spec/PRD.md`의 PB-008 delta 범위를 승인하고 blocking AC 식별을 시작할까요?

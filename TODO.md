@@ -1,7 +1,7 @@
-# TODO: Cocrates AI Agent·Skills 구현 및 검증
+# TODO: Cocrates 구조화 최종 응답 및 메시지 압축
 
 > **Project root:** `theia-ide`
-> **Current sprint:** sprint-04 — [Cocrates AI Agent·Skills 구현 및 검증](./scrum/sprint-04.md)
+> **Current sprint:** sprint-05 — [Cocrates 구조화 최종 응답 및 메시지 압축](./scrum/sprint-05.md)
 > **Product Backlog:** [`scrum/product-backlog.md`](./scrum/product-backlog.md)
 > **Conversation log:** [`PROMPTS.md`](./PROMPTS.md)
 
@@ -9,49 +9,57 @@
 
 | Done | Open | Blocked | Skipped |
 |------|------|---------|---------|
-| 7    | 0    | 0       | 0       |
+| 1    | 9    | 0       | 0       |
 
-**Sprint goal:** 승인된 PB-007 Spec을 구현하고 Browser·Stable Electron·Electron Next에서 Cocrates Agent·Skills·도구 계약을 검증한다.
-**Current focus:** —
-**Recommended next:** —
+**Sprint goal:** Cocrates Agent의 구조화 JSON 최종 응답과 `answer` 표시, `session`·`commit`·`compaction` side effect를 구현·검증한다.
+**Current focus:** T-002
+**Recommended next:** T-002 — PRD 승인 게이트
 
 ## Tasks
 
-- [x] **T-001** — 기존 AI Agent·Skills API와 제품 확장 구현 경계 조사
-  - Phase: implementation discovery
-  - Artifact: `docs/cocrates/agent-skills-implementation-notes.md`
+- [x] **T-001** — PB-008 delta PRD 작성
+  - Phase: PRD
+  - Artifact: `spec/PRD.md`
   - Depends: —
-  - Notes: 승인된 Spec과 저장소의 기존 API/DI/package 구조를 대조해 구현 위치와 검증 진입점을 기록했다.
-- [x] **T-002** — Skills 런타임 경로 시드 채널 결정
-  - Phase: design decision
-  - Artifact: `adr/cocrates-skills-runtime-path-channel.md`
+  - Notes: `agent2.md` 기반 구조화 최종 응답, side effect, compaction 이력 요구사항을 기존 PRD에 추가했다.
+- [ ] **T-002** — PRD 승인 게이트
+  - Phase: PRD gate
+  - Artifact: `spec/PRD.md`
   - Depends: T-001
-  - Notes: Option B(전용 backend RPC)를 사용해 `CocratesSkillsPathService`가 번들 Skills 경로를 반환하도록 결정·승인했다.
-  - [x] **T-003** — Cocrates ChatAgent 및 생성 시스템 프롬프트 구현
-  - Phase: implementation
-  - Artifact: `theia-extensions/product/`
+  - Notes: 사용자 go-ahead 후 AC 식별을 같은 턴에 시작한다.
+- [ ] **T-003** — PB-008 blocking AC 식별
+  - Phase: AC identification
+  - Artifact: `spec/AC.md`
   - Depends: T-002
-  - Notes: `AbstractStreamParsingChatAgent` 기반 Agent를 이중 등록하고 Cocrates default preference를 추가했다. `agent1.md`를 빌드 시 TypeScript prompt fragment로 생성한다. product extension build와 lint를 통과했다.
-  - [x] **T-004** — Skills 번들·발견·타깃 패키징 구현
-  - Phase: implementation
-  - Artifact: `theia-extensions/product/`, `applications/`
-  - Depends: T-002, T-003
-  - Notes: backend RPC `CocratesSkillsPathService`와 frontend `SkillDirectoryContribution`을 연결했다. 개발 경로와 Electron `resources/app/skills` 경로를 지원하고 Stable/Next electron-builder에 asar 외부 리소스를 추가했다. product extension build와 lint를 통과했다.
-- [x] **T-005** — `getSkillFileContent` 확장 구현
-  - Phase: implementation
-  - Artifact: `theia-extensions/product/`
-  - Depends: T-001, T-002
-  - Notes: 기존 `getSkillFileContent` ID를 유지한 DI rebind를 추가했다. `path`로 skill-root 상대 보조 파일을 읽고 `SKILL.md` frontmatter 제거 호환성, 파일/디렉터리 오류, 절대경로·root 탈출 가드를 구현했다. product extension build와 lint를 통과했다.
-- [x] **T-006** — PB-007 구현·패키징·검증 기록
-  - Phase: verification
-  - Artifact: `verification/cocrates-ai-agent-skills.md`
-  - Depends: T-003, T-004, T-005
-  - Notes: 제품 확장 build/lint와 저장소 lint, Browser production build, Stable/Next Electron 공식 build/package, 양 Electron E2E를 검증 기록에 반영했다. 초기 개별 `tsc -b` 작업의 TS5101 결과와 package 전 9 passing/1 failing 결과는 공식 파이프라인 결과가 아니므로 정정했으며, 최종 공식 E2E는 양 타깃 모두 10 passing이다. 사용자 제공 `adr`·`todo`·`sdd` Skills와 Electron 패키지의 `resources/app/skills` 포함도 확인했다. Browser UI smoke는 launch configuration의 debug adapter 제약으로 보류했다.
-- [x] **T-007** — Sprint Boundary → sprint-05
+- [ ] **T-004** — AC 목록 승인 게이트
+  - Phase: AC gate
+  - Artifact: `spec/AC.md`
+  - Depends: T-003
+- [ ] **T-005** — blocking AC 순차 검토 및 ADR/Direct Input 결정
+  - Phase: AC review
+  - Artifact: `spec/AC.md`, `adr/`
+  - Depends: T-004
+- [ ] **T-006** — ASR 통합
+  - Phase: ASR consolidation
+  - Artifact: `spec/ASR.md`
+  - Depends: T-005
+- [ ] **T-007** — PB-008 Spec 작성
+  - Phase: Spec writing
+  - Artifact: `spec/cocrates-structured-final-response.md`
+  - Depends: T-006
+- [ ] **T-008** — Spec review 및 승인
+  - Phase: Spec review
+  - Artifact: `spec-review/cocrates-structured-final-response.md`
+  - Depends: T-007
+- [ ] **T-009** — PB-008 backlog 기록 및 Sprint Boundary 준비
+  - Phase: backlog encoding
+  - Artifact: `scrum/product-backlog.md`
+  - Depends: T-008
+- [ ] **T-010** — Sprint Boundary → sprint-06
   - Phase: cross-cutting
-  - Artifact: `scrum/TODO-04.md`, `scrum/PROMPTS-04.md`
-  - Depends: T-001, T-002, T-003, T-004, T-005, T-006
-  - Notes: end-of-sprint gate (review + go-ahead) → board와 prompts archive, backlog update, 다음 계획
+  - Artifact: `scrum/TODO-05.md`, `scrum/PROMPTS-05.md`
+  - Depends: T-009
+  - Notes: end-of-sprint gate (review + go-ahead) → archive board + prompts, update backlog, load next sprint
 
 ## Completed sprints
 
@@ -65,6 +73,6 @@
 
 ## Notes
 
-- sprint-04 계획을 사용자가 승인했으며 Backlog→Implementation 실행 보드를 시드했다.
-- T-002는 Skills 런타임 경로 시드 채널을 구현 전에 확정하는 사용자 결정 게이트다.
-- 실제 `adr`, `todo`, `sdd` 스킬 명세 본문은 사용자 제공 전까지 작성·복사하지 않는다.
+- sprint-05 계획을 사용자가 승인했고, 승인 즉시 Spec→backlog 실행 보드를 시드했다.
+- PB-008은 기존 PB-007 Cocrates Agent 구현을 확장하는 delta 요구사항이다.
+- `agent2.md`의 원본 경로는 사용자 요청의 `~/docs` 대신 저장소에 보관된 `docs/cocrates/agent2.md`를 기준으로 한다.

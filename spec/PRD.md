@@ -43,6 +43,26 @@
 - `getSkillFileContent`가 기본적으로 기존처럼 `SKILL.md` 본문을 반환하고, skill root 밖 경로를 거부하면서 보조 파일을 반환한다.
 - 승인된 Spec과 검증 기록이 구현·패키징 결과를 재현할 수 있는 기준을 제공한다.
 
+## Sprint-05 구조화 최종 응답 변경
+
+이번 변경에서는 Cocrates Agent가 일반 Markdown 최종 응답과 구조화된 JSON object 최종 응답을 모두 처리하도록 확장한다. JSON object 응답에서는 `answer`만 사용자에게 Markdown으로 표시하고, `session`, `commit`, `compaction` 필드는 제품 런타임이 각각 세션 제목 변경, git commit, 다음 대화 메시지 이력 구성으로 처리한다.
+
+### 구조화 응답 범위
+
+- Cocrates 시스템 프롬프트의 `<instruction>` 섹션에 `docs/cocrates/agent2.md`의 구조화 최종 응답 계약을 빌드 시 포함한다.
+- 일반 Markdown 최종 응답은 기존처럼 사용자에게 표시하고, JSON object 최종 응답은 `answer` 필드만 Chat UI에 Markdown으로 표시한다.
+- JSON의 `session` 필드는 현재 Chat 세션 제목 변경으로 처리하고, `commit` 필드는 정의된 안전 경계를 통과한 git commit으로 처리한다.
+- JSON의 `compaction` 필드가 있으면 다음 대화 요청에 `user: <compaction message>`, `assistant: <last answer>`, `user: <input>` 이력 형태를 제공한다.
+- malformed JSON, side effect 실패, compaction 부재 및 기존 Skills/도구 계약을 보존하는 호환 동작을 제공한다.
+
+### 구조화 응답 성공 기준
+
+- Agent 시스템 프롬프트가 `agent2.md`의 최종 JSON 라우팅 규칙을 포함한다.
+- JSON 응답의 `answer` 외 필드는 일반 Chat UI 본문에 노출되지 않는다.
+- `session`, `commit`, `compaction` 처리가 성공·실패를 구분하며, 임의의 부작용을 조용히 성공 처리하지 않는다.
+- compaction 다음 요청의 메시지 순서가 지정된 user/assistant/user 계약과 일치한다.
+- 일반 Markdown, 기존 Agent 등록, Skills 발견 및 `getSkillFileContent` 동작이 회귀하지 않는다.
+
 ## Goals
 
 - Electron과 브라우저 실행 대상에 Theia IDE 기능과 제품 브랜딩을 조합한다.
