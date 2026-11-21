@@ -9,11 +9,11 @@
 
 | Done | Open | Blocked | Skipped |
 |------|------|---------|---------|
-| 5    | 5    | 0       | 0       |
+| 6    | 4    | 0       | 0       |
 
 **Sprint goal:** Browser, Stable Electron, Electron Next를 Cocrates 브랜드로 전환하기 위한 승인된 요구사항과 Spec을 확정한다.
-**Current focus:** T-006
-**Recommended next:** T-006 — ASR delta 통합 및 승인
+**Current focus:** T-007
+**Recommended next:** T-007 — 전용 Cocrates 브랜딩 Spec 작성 및 검토
 
 ## Tasks
 
@@ -42,16 +42,16 @@
   - Artifact: `spec/AC.md` 또는 `adr/`
   - Depends: T-004
   - Notes: 모든 blocking AC를 Dependency Order에 따라 설계 또는 deferred로 닫는다.
-- [ ] **T-006** — ASR delta 통합 및 승인
+- [x] **T-006** — ASR delta 통합 및 승인
   - Phase: SDD ④ ASR consolidation
   - Artifact: `spec/ASR.md`
   - Depends: T-005
-  - Notes: 기존 ASR-001~ASR-009에 승인된 리브랜딩 결정 ASR-010~ASR-012를 통합했다. 현재 `spec/ASR.md` 사용자 승인 게이트다.
-- [ ] **T-007** — 리브랜딩 Spec 갱신 및 검토 승인
+  - Notes: 기존 ASR-001~ASR-009에 승인된 리브랜딩 결정 ASR-010~ASR-012를 통합하고 사용자 승인을 받았다.
+- [ ] **T-007** — 전용 Cocrates 브랜딩 Spec 작성 및 검토 승인
   - Phase: SDD ⑤–⑥ Spec
-  - Artifact: `spec/applications-integration.md`, `spec/product-extension.md`, `spec/updater-extension.md`, `spec/launcher-extension.md`, `spec-review/`
+  - Artifact: `spec/cocrates-branding.md`, `spec-review/cocrates-branding.md`
   - Depends: T-006
-  - Notes: 구현·검증 가능한 R-NNN/C-NNN 요구사항으로 갱신하고 사용자 승인을 받는다.
+  - Notes: 기존 컴포넌트별 Spec은 유지하고, 네 타깃에 걸친 브랜딩 요구사항을 전용 Spec 하나에서 SSOT로 관리한다. 파일 구조 확인 후 초안을 작성한다.
 - [ ] **T-008** — `PB-006` 백로그 반영 및 스프린트 결과 정리
   - Phase: backlog encoding
   - Artifact: `scrum/product-backlog.md`, `scrum/sprint-01.md`

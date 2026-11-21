@@ -120,3 +120,14 @@
 - AC-005~AC-007에 각각 ASR back-link를 기록하고 `spec/ASR.md`를 다음 단계인 Spec 갱신의 입력으로 정리했다.
 - 현재 T-006은 ASR 승인 게이트이며, 구현은 아직 시작하지 않았다.
 - **Asked user:** `spec/ASR.md`의 기존 요구사항과 리브랜딩 delta 통합 결과를 검토하고 승인해줘.
+
+## TURN-010
+
+### 사용자 요청
+> ok. Cocrates branding 관련 스펙은 별도 파일로 작성하고 관리하는 것이 좋겠어.
+
+### Cocrates 응답
+- `spec/ASR.md`의 리브랜딩 delta 통합을 승인한 것으로 기록하고 T-006을 완료 처리했다.
+- 기존 네 컴포넌트별 Spec은 유지하고, 브랜딩 요구사항을 횡단하는 전용 `spec/cocrates-branding.md`를 새 SSOT로 관리하는 방향으로 T-007을 전환했다.
+- T-007의 검토 산출물을 `spec-review/cocrates-branding.md`로 지정했다.
+- **Asked user:** 전용 브랜딩 Spec 하나(`spec/cocrates-branding.md`)로 관리하는 권장 구조를 확인해 달라. 이 구조를 승인하면 초안 작성과 Spec review를 진행한다.
