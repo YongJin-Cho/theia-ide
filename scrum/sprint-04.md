@@ -47,4 +47,4 @@
 
 ## 계획 상태
 
-Sprint plan approval 대기. 승인 후 `TODO.md`와 `PROMPTS.md`를 sprint-04 실행 보드·로그로 시드한다.
+사용자가 sprint-04 계획을 승인했다. `TODO.md`와 `PROMPTS.md`를 sprint-04 실행 보드·로그로 시드하고 구현을 시작했다.
