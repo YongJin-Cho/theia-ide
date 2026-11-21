@@ -1,6 +1,6 @@
 # Architecturally Significant Requirements
 
-Eclipse Theia IDE Product Template의 PRD와 승인된 AC 결과를 통합한 설계 기준이다. 최종 Spec은 애플리케이션 통합과 제품 확장, AI Agent·Skills 계약을 분리해 작성한다. 본 문서는 사용자 승인 전 ASR 통합본이다.
+Eclipse Theia IDE Product Template의 PRD와 승인된 AC 결과를 통합한 설계 기준이다. 최종 Spec은 애플리케이션 통합과 제품 확장, AI Agent·Skills 계약을 분리해 작성한다. 사용자가 ASR 통합 결과를 승인했으며, 이 문서는 Spec 작성의 입력으로 확정되었다.
 
 ## Summary
 

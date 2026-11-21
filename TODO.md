@@ -9,11 +9,11 @@
 
 | Done | Open | Blocked | Skipped |
 |------|------|---------|---------|
-| 3    | 5    | 0       | 0       |
+| 4    | 4    | 0       | 0       |
 
 **Sprint goal:** Cocrates Default Chat Agent와 내장 Skills 배포를 위한 승인된 Spec과 구현 backlog를 확정한다.
-**Current focus:** T-004
-**Recommended next:** T-004 — ASR 통합 및 승인
+**Current focus:** T-005
+**Recommended next:** T-005 — 구현·검증 Spec 작성
 
 ## Tasks
 
@@ -32,16 +32,16 @@
   - Artifact: `spec/AC.md`, `adr/`
   - Depends: T-002
   - Notes: AC-008~AC-011의 모든 blocking 결정을 설계 완료했다.
-- [ ] **T-004** — ASR 통합 및 승인
+- [x] **T-004** — ASR 통합 및 승인
   - Phase: ④ ASR consolidation
   - Artifact: `spec/ASR.md`
   - Depends: T-003
-  - Notes: PRD와 설계 완료 AC의 결과를 통합
-- [ ] **T-005** — 구현·검증 Spec 작성
+  - Notes: 모든 PRD·설계 완료 AC 결과를 통합하고 사용자 승인을 받았다.
+- [x] **T-005** — 구현·검증 Spec 작성
   - Phase: ⑤ Spec writing
   - Artifact: `spec/cocrates-ai-agent-skills.md`
   - Depends: T-004
-  - Notes: R-* / C-* 요구사항과 타깃별 패키징 계약 작성
+  - Notes: R-001~R-020과 C-001~C-007을 작성했다. Spec review 승인을 기다린다.
 - [ ] **T-006** — Spec review 및 승인
   - Phase: ⑥ Spec review
   - Artifact: `spec-review/cocrates-ai-agent-skills.md`

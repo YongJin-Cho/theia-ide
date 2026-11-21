@@ -97,3 +97,15 @@
 - 모든 blocking AC(AC-008~AC-011)가 `designed`이고 연결된 ADR이 `approved`인지 확인해 G3/G4를 통과했다.
 - `spec/ASR.md`에 AI Agent·Skills 관련 ASR-013~ASR-016을 통합하고, T-003을 완료 처리한 뒤 T-004를 현재 focus로 이동했다.
 - **Asked user:** 통합된 `spec/ASR.md`를 검토하고 ASR을 승인해 Spec 작성 단계로 진행할지 결정해줘.
+
+## TURN-009
+
+### User Request
+> ASR을 승인하고 Spec 작성 단계로 진행해줘.
+
+### Cocrates Response
+- 사용자의 ASR 승인을 `spec/ASR.md`에 반영하고 ASR을 Spec 작성의 확정 입력으로 기록했다.
+- `spec/cocrates-ai-agent-skills.md`를 작성해 승인된 ASR-001~ASR-016을 R-001~R-020 요구사항과 C-001~C-007 제약으로 구체화했다.
+- Cocrates ChatAgent 등록, 생성 system prompt, Skills 번들·발견·asar 외부 리소스, 기존 tool ID rebind·path·경로 가드·오류 JSON, 타깃별 검증 기준을 독립적으로 기술했다.
+- T-004를 완료하고 T-005를 완료 처리했으며, T-006 Spec review를 다음 작업으로 이동했다.
+- **Asked user:** `spec/cocrates-ai-agent-skills.md`를 검토하고 Spec을 구현·검증의 SSOT로 승인할지 결정해줘.
