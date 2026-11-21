@@ -8,10 +8,14 @@
  ********************************************************************************/
 
 import { AbstractStreamParsingChatAgent, ChatAgentLocation } from '@theia/ai-chat/lib/common/chat-agents.js';
+import { LanguageModelResponse } from '@theia/ai-core/lib/common/language-model.js';
+import { getTextOfResponse } from '@theia/ai-core/lib/common/language-model-util.js';
+import { MarkdownChatResponseContentImpl, MutableChatRequestModel } from '@theia/ai-chat/lib/common/chat-model.js';
 import { LanguageModelRequirement } from '@theia/ai-core/lib/common';
 import { ILogger } from '@theia/core';
 import { inject, injectable, named } from '@theia/core/shared/inversify';
 import { COCRATES_SYSTEM_PROMPT_ID, cocratesSystemPrompt } from './cocrates-chat-agent-prompt.js';
+import { parseCocratesStructuredResponse } from './cocrates-structured-response.js';
 
 export const CocratesChatAgentId = 'Cocrates';
 
@@ -39,5 +43,16 @@ export class CocratesChatAgent extends AbstractStreamParsingChatAgent {
     @inject(ILogger)
     @named('theia-ide:CocratesChatAgent')
     protected readonly logger: ILogger;
+
+    protected override async addContentsToResponse(response: LanguageModelResponse, request: MutableChatRequestModel): Promise<void> {
+        const text = await getTextOfResponse(response);
+        const structured = parseCocratesStructuredResponse(text);
+        if (structured) {
+            request.response.response.addContent(new MarkdownChatResponseContentImpl(structured.answer));
+            return;
+        }
+
+        await super.addContentsToResponse(response, request);
+    }
 }
 

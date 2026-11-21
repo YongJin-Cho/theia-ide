@@ -75,3 +75,4 @@
 - 일반 앱과 Next 앱은 서로 다른 configuration folder와 Electron 식별자를 사용한다. 둘 중 하나를 바꾸면 해당 앱의 `package.json`과 리소스를 함께 확인한다.
 - 저장소 README는 이 프로젝트를 Cocrates 제품이자 데스크톱 Theia 제품용 템플릿으로 설명한다. 제품 기능보다 플랫폼 조합·패키징·확장 연결이 이 저장소의 중심 책임이다.
 - 제품 표면은 Cocrates/Cocrates Next로 표시하지만 `@theia/*`, Theia API, 업스트림 도구명은 호환성 때문에 유지한다.
+- 구조화 응답 파서는 `theia-extensions/product/src/browser/cocrates-structured-response.ts`에 두며, prompt-only JSON은 완료된 응답에서만 추출한다. malformed JSON이나 `answer`가 없는 object는 기존 Markdown 경로로 폴백한다.
