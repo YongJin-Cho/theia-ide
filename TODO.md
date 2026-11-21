@@ -9,11 +9,11 @@
 
 | Done | Open | Blocked | Skipped |
 |------|------|---------|---------|
-| 1    | 6    | 0       | 0       |
+| 2    | 5    | 0       | 0       |
 
 **Sprint goal:** 승인된 PB-007 Spec을 구현하고 Browser·Stable Electron·Electron Next에서 Cocrates Agent·Skills·도구 계약을 검증한다.
-**Current focus:** T-002
-**Recommended next:** T-002 — Skills 런타임 경로 시드 채널 결정
+**Current focus:** T-003
+**Recommended next:** T-003 — Cocrates ChatAgent 및 생성 시스템 프롬프트 구현
 
 ## Tasks
 
@@ -22,12 +22,12 @@
   - Artifact: `docs/cocrates/agent-skills-implementation-notes.md`
   - Depends: —
   - Notes: 승인된 Spec과 저장소의 기존 API/DI/package 구조를 대조해 구현 위치와 검증 진입점을 기록했다.
-- [ ] **T-002** — Skills 런타임 경로 시드 채널 결정
+- [x] **T-002** — Skills 런타임 경로 시드 채널 결정
   - Phase: design decision
   - Artifact: `adr/cocrates-skills-runtime-path-channel.md`
   - Depends: T-001
-  - Notes: 구현 전 사용자 결정 게이트. 제품 번들 경로를 backend/main에서 frontend discovery tier로 전달하는 채널의 대안을 비교하고 승인받는다.
-- [ ] **T-003** — Cocrates ChatAgent 및 생성 시스템 프롬프트 구현
+  - Notes: Option B(전용 backend RPC)를 사용해 `CocratesSkillsPathService`가 번들 Skills 경로를 반환하도록 결정·승인했다.
+  - [ ] **T-003** — Cocrates ChatAgent 및 생성 시스템 프롬프트 구현
   - Phase: implementation
   - Artifact: `theia-extensions/product/`
   - Depends: T-002
