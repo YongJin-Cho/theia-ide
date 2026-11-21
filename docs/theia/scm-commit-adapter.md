@@ -33,4 +33,3 @@ Theia 1.77의 공통 SCM 계층에는 제품이 직접 호출할 `commit(message
 - 형제 Theia v1.77 소스 `packages/scm/src/browser/scm-repository.ts`
 - 형제 Theia v1.77 소스 `packages/scm/src/browser/scm-service.ts`
 - 형제 Theia v1.77 소스 `packages/scm/src/browser/scm-contribution.ts`의 `acceptInput()`
-- `theia-ide/adr/cocrates-commit-execution-adapter.md`
