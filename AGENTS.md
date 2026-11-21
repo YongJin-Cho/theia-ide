@@ -59,10 +59,13 @@
 
 - 정적 검사는 `yarn lint`를 사용한다.
 - 전체 테스트는 `yarn test`를 사용한다.
-- Electron E2E는 `yarn electron package:preview` 후 `yarn electron test` 순서로 실행한다.
-- 브라우저 변경은 `yarn browser start` 후 `http://localhost:3000/`에서 기동 여부를 확인한다.
+- Electron E2E는 대상 애플리케이션의 Preview 패키징을 먼저 실행한 뒤 테스트한다.
+  - 일반 Electron: `yarn electron package:preview` → `yarn electron test`
+  - Electron Next: `yarn electron-next package:preview` → `yarn electron-next test`
+  - `package:preview`는 기존 `dist`를 정리하고 native module을 rebuild한 뒤 E2E가 사용할 fresh `dist/linux-unpacked` 산출물을 생성한다. 개발 빌드(`yarn build:applications:dev`, `yarn build:applications:next:dev`)만 실행한 뒤 Electron E2E를 실행하지 않는다.
+- 브라우저 변경은 Electron 패키징과 별도의 lifecycle로 검증한다. `yarn browser start`로 서버를 실행하고 `http://localhost:3000/`에서 기동 및 핵심 동작을 확인한 뒤 서버를 종료한다.
 - 애플리케이션 빌드 검증은 개발 환경에서는 `yarn build:dev`, 배포 대상에서는 `yarn build`를 사용한다.
-- 패키징 관련 변경은 `yarn package:applications` 또는 해당 Electron 패키지의 `package:preview`로 확인한다.
+- 패키징 관련 변경은 `yarn package:applications` 또는 해당 Electron 패키지의 `package:preview`로 확인한다. Preview/E2E 이후 다음 테스트를 실행할 때는 대상 애플리케이션 Preview 패키징으로 `dist` 산출물을 새로 만든다.
 - 명령, 구조, 구현이 Spec의 요구사항과 일치하는지 확인하고 결과는 `verification/`에 기록한다. 단순 문서 복원은 실제 파일·스크립트·README 대조를 우선하며, 환경 제약으로 실행하지 못한 명령은 검증 기록에 명시한다.
 
 ## Notes
