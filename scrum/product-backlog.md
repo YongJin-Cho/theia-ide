@@ -1,6 +1,7 @@
 # 제품 백로그 — Eclipse Theia IDE Product Template
 
 > **실행 보드:** [`../TODO.md`](../TODO.md)
+> **Updated:** 현재 세션
 
 ## 스토리
 
@@ -38,3 +39,10 @@
   - Sprint: sprint-00
   - Depends: PB-002
   - Notes: 현재 `theia-extensions/launcher` 구현과 Electron 의존성 구성이 DoD를 충족한다.
+
+- [ ] **PB-006** — Cocrates 전체 타깃 리브랜딩 요구사항 및 Spec 확정
+  - Story: 제품 담당자가 Browser, Stable Electron, Electron Next를 Cocrates 브랜드로 일관되게 배포할 수 있도록 앱 이름·패키지 식별자·URI scheme·configuration folder·제품 확장 UI·launcher/updater·CI·문서의 승인된 리브랜딩 요구사항과 Spec을 갖는다. Electron Next는 `Cocrates Next` 변형으로 유지한다.
+  - Spec: `docs/rebranding.md` 및 sprint-01에서 갱신될 `spec/`·`spec-review/`
+  - Sprint: sprint-01
+  - Depends: PB-002, PB-003, PB-004, PB-005
+  - Notes: sprint-01 Spec→backlog 변경 스토리. 구현·패키징·런타임 검증은 승인된 Spec 이후 실행 스프린트에서 수행한다.
