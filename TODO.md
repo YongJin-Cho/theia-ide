@@ -9,11 +9,11 @@
 
 | Done | Open | Blocked | Skipped |
 |------|------|---------|---------|
-| 1    | 7    | 0       | 0       |
+| 2    | 6    | 0       | 0       |
 
 **Sprint goal:** Cocrates Default Chat Agent와 내장 Skills 배포를 위한 승인된 Spec과 구현 backlog를 확정한다.
-**Current focus:** T-002
-**Recommended next:** T-002 — Blocking AC 목록 검토 및 승인
+**Current focus:** T-003
+**Recommended next:** T-003 — AC-008 Cocrates ChatAgent 등록 결정
 
 ## Tasks
 
@@ -22,7 +22,7 @@
   - Artifact: `spec/PRD.md`
   - Depends: —
   - Notes: 기존 Product Template PRD에 PB-007의 Cocrates Agent·Skills 패키징 delta를 추가했다. 사용자 승인 대기.
-- [ ] **T-002** — Blocking AC 식별 및 승인
+- [x] **T-002** — Blocking AC 식별 및 승인
   - Phase: ② AC identification
   - Artifact: `spec/AC.md`
   - Depends: T-001

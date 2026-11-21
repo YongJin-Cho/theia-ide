@@ -13,6 +13,10 @@ Theia IDE Product Template의 제품 Spec 작성을 위해 설계가 필요한 �
 | AC-005 | Cocrates 타깃 식별자 체계 | Constraints (structural) | designed | adr/cocrates-target-identifiers.md | ASR-010 |
 | AC-006 | 제품 브랜드와 Theia 업스트림 명칭의 경계 | Structure & organization | designed | — | ASR-011 |
 | AC-007 | 업데이트·배포 메타데이터의 제품 소유 범위 | Integration & dependencies | designed | — | ASR-012 |
+| AC-008 | Cocrates ChatAgent 등록 및 기본 Agent 선택 | Integration & dependencies | designed | adr/cocrates-chat-agent-registration.md |  |
+| AC-009 | 내장 Skills의 배치·발견·패키징 전략 | Structure & organization | identified | — |  |
+| AC-010 | Cocrates 시스템 프롬프트의 소스 연결 방식 | Integration & dependencies | identified | — |  |
+| AC-011 | `getSkillFileContent` 보조 파일 API 및 경로 안전성 | Quality bar (architectural) | identified | — |  |
 
 ## Dependency Order (recommended review path)
 
@@ -119,25 +123,25 @@ Theia IDE Product Template의 제품 Spec 작성을 위해 설계가 필요한 �
 ### AC-008 — Cocrates ChatAgent 등록 및 기본 Agent 선택
 
 - **Category:** Integration & dependencies
-- **Status:** identified
+- **Status:** designed
 - **Statement:** Cocrates ChatAgent를 어느 제품 확장 모듈에 등록하고, `ai-features.chat.defaultChatAgent` preference 또는 DI fallback 중 어떤 Theia 계약으로 Default Chat Agent를 보장할 것인가?
 - **Why it matters:** Agent 등록 위치와 기본 Agent 선택 경로가 분리되면 mention을 사용하지 않은 채팅에서 Cocrates가 선택되지 않거나 Browser/Electron 타깃별 동작이 달라질 수 있다.
 - **Depends on:** AC-001, AC-002
 - **Related ADRs:**
-  - —
-- **Resolution path:** direct-input | adr
-- **Resolution:**
-- **Notes:** `adding-ai-agents.md`의 Agent/ChatAgent 이중 등록과 default preference·DI fallback 우선순위를 검토한다.
+  - `theia-ide/adr/cocrates-chat-agent-registration.md` — approved
+- **Resolution path:** adr
+- **Resolution:** Option A를 선택한다. 제품 확장에 `AbstractStreamParsingChatAgent` 기반 Cocrates ChatAgent를 구현하고 `Agent`와 `ChatAgent`를 모두 등록한다. `ai-features.chat.defaultChatAgent` preference에 Cocrates Agent ID를 제공해 mention 없는 채팅에서도 Cocrates를 기본 Agent로 선택한다. 별도 Agent mode는 추가하지 않는다.
+- **Notes:** 사용자가 Option A를 선택했다. Agent mode는 직접 입력으로 resolved되었고, system prompt와 Skill packaging은 각각 AC-010과 AC-009에서 후속 검토한다.
 
 ### AC-009 — 내장 Skills의 배치·발견·패키징 전략
 
 - **Category:** Structure & organization
-- **Status:** identified
+- **Status:** reviewing
 - **Statement:** 사용자가 나중에 제공할 `adr`, `todo`, `sdd` 스킬 트리를 Browser·Stable Electron·Electron Next에서 어떻게 배치하고 런타임 discovery root를 제공할 것인가?
 - **Why it matters:** 스킬 파일을 패키지에 복사하는 것만으로는 `DefaultSkillService`가 발견하지 못할 수 있다. Electron asar·AppImage 읽기 전용 경로와 Browser/Docker 경로까지 함께 결정하지 않으면 배포물에서 Skills 목록이 비게 된다.
 - **Depends on:** AC-008
 - **Related ADRs:**
-  - —
+  - `theia-ide/adr/cocrates-skills-packaging.md` — proposed
 - **Resolution path:** adr
 - **Resolution:**
 - **Notes:** `shipping-ai-skills.md`의 Contribution + 번들 디렉터리, preference, config dir 복사, plugin/registry 대안을 비교한다.
