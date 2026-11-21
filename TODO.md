@@ -9,11 +9,11 @@
 
 | Done | Open | Blocked | Skipped |
 |------|------|---------|---------|
-| 3    | 4    | 0       | 0       |
+| 4    | 3    | 0       | 0       |
 
 **Sprint goal:** 승인된 구조화 최종 응답 Spec을 구현하고 제품 확장 경계에서 검증한다.
-**Current focus:** T-004
-**Recommended next:** T-004 — compaction 저장·복원 및 메시지 순서 구현
+**Current focus:** T-005
+**Recommended next:** T-005 — 기존 Agent·Skills·도구 계약 회귀 점검
 
 ## Tasks
 
@@ -35,11 +35,11 @@
   - Depends: T-002
   - Notes: PB-008; R-006~R-009, C-003. Theia SCM API 직접 사용 Option B를 유지했다. repository root의 workspace 포함 여부, commit message, provider commit capability, staged 여부와 무관한 commit 대상 resource, 제품 로컬 `StorageService` 기반 `in-flight`/`succeeded`/`failed` 상태와 동시 실행 lock을 구현했다. scoped build는 통과했고, lint는 기존 prompt 파일 오류로 실패했다. provider가 예외 없이 보고하는 내부 실패는 공통 API 한계로 기록했다. 상세: `verification/cocrates-structured-final-response.md`.
 
-- [ ] **T-004** — compaction 저장·복원 및 메시지 순서 구현
+- [x] **T-004** — compaction 저장·복원 및 메시지 순서 구현
   - Phase: implementation
   - Artifact: `theia-extensions/product/src/`
   - Depends: T-002
-  - Notes: PB-008; R-010~R-013, C-004~C-005. provider marker와 분리된 제품 상태를 저장하고 user→assistant→user 순서를 재구성하며 UI에는 노출하지 않는다.
+  - Notes: PB-008; R-010~R-013, C-004~C-005. 제품 전용 직렬화 response content를 추가하고, 복원 가능한 compaction/answer를 다음 Cocrates 요청에서 `user → assistant → user`로 재구성한다. provider marker와 분리되며 UI 문자열에는 노출되지 않는다. 제품 확장 build 통과.
 
 - [ ] **T-005** — 기존 Agent·Skills·도구 계약 회귀 점검
   - Phase: demo

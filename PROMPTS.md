@@ -129,3 +129,15 @@
 - 제품 확장 build는 통과했다. lint는 기존 `cocrates-chat-agent-prompt.ts` 오류로 실패했으며 T-003 파일 오류는 없었다.
 - 검증 기록을 갱신하고 T-003을 완료 처리했으며, Current focus를 T-004로 이동했다.
 - **Asked user:** —
+
+## TURN-012
+
+### User Request
+> T-004 진행해줘.
+
+### Cocrates Response
+- 제품 전용 `cocratesCompaction` response content를 추가해 `compaction`과 직전 `answer`를 세션 응답에 직렬화했다.
+- 다음 Cocrates 요청에서는 저장된 상태를 provider server-side marker와 분리해 `user: compaction → assistant: answer → user: 현재 입력` 순서로 재구성하며, compaction content 자체는 Chat UI에 노출하지 않는다.
+- frontend deserializer를 등록해 세션 재로드 후에도 상태와 순서를 복원하도록 했다.
+- 제품 확장 build(`build - theia-extensions/product`)가 통과했으며 T-004를 완료 처리하고 T-005를 Current focus로 이동했다. 검증 결과는 `verification/cocrates-structured-final-response.md`에 기록했다.
+- **Asked user:** —

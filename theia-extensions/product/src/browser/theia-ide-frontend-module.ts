@@ -31,6 +31,15 @@ import { CocratesChatAgent } from './cocrates-chat-agent.js';
 import { CocratesSkillDirectoryContribution } from './cocrates-skill-directory-contribution.js';
 import { ExtendedGetSkillFileContent } from './extended-get-skill-file-content.js';
 import {
+    ChatContentDeserializerContribution,
+    ChatContentDeserializerRegistry,
+} from '@theia/ai-chat/lib/common/chat-content-deserializer.js';
+import {
+    CocratesCompactionContentData,
+    CocratesCompactionChatResponseContentImpl,
+    COCRATES_COMPACTION_CONTENT_KIND,
+} from './cocrates-compaction-content.js';
+import {
     CocratesSkillsPathService,
     CocratesSkillsPathServicePath,
 } from '../common/cocrates-skills-path-service.js';
@@ -50,6 +59,18 @@ export default new ContainerModule((bind, _unbind, isBound, rebind) => {
     ).inSingletonScope();
     bind(CocratesSkillDirectoryContribution).toSelf().inSingletonScope();
     bind(SkillDirectoryContribution).toService(CocratesSkillDirectoryContribution);
+
+    bind(ChatContentDeserializerContribution).toConstantValue({
+        registerDeserializers: (registry: ChatContentDeserializerRegistry): void => {
+            registry.register({
+                kind: COCRATES_COMPACTION_CONTENT_KIND,
+                deserialize: (data: CocratesCompactionContentData) => new CocratesCompactionChatResponseContentImpl(
+                    data.compaction,
+                    data.answer,
+                ),
+            });
+        },
+    });
 
     bind(CocratesChatAgent).toSelf().inSingletonScope();
     bind(Agent).toService(CocratesChatAgent);

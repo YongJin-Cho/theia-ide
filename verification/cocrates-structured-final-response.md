@@ -47,3 +47,29 @@
 - provider가 예외 없이 보고하는 내부 commit 실패를 판정하려면 provider별 결과 API가 필요하지만, 이는 현재 Theia 공통 경계 밖의 후속 concern이다.
 - 제품 확장 lint의 기존 오류(`cocrates-chat-agent-prompt.ts`)는 T-003 파일과 무관하므로 T-006에서 기존 오류로 기록한다.
 - T-003은 완료 처리했고, provider 결과 한계는 후속 범위로 기록했다.
+
+## T-004 검증 — compaction 저장·복원 및 메시지 순서
+
+**범위:** `R-010`~`R-013`, `C-004`~`C-005`
+
+| Spec 항목 | 상태 | 근거 |
+|---|---|---|
+| R-010 | pass | `cocrates-compaction-content.ts`의 제품 전용 response content가 `compaction`과 직전 `answer`를 `toSerializable()`로 저장한다. Theia의 provider `CompactionChatResponseContent`와 별도 `kind`를 사용한다. |
+| R-011 | pass | `CocratesChatAgent.getMessages()`가 저장된 최신 제품 compaction을 찾으면 기존 transcript를 사용하지 않고 `user: compaction`, `assistant: answer`, `user: 현재 입력`을 순서대로 반환한다. |
+| R-012 | pass | 제품 content의 `asString()`/`asDisplayString()`이 `undefined`를 반환하므로 일반 Chat UI 본문에는 나타나지 않는다. `answer`만 별도의 Markdown content로 표시된다. |
+| R-013 | pass | compaction content는 Theia chat response 직렬화에 포함되고, frontend `ChatContentDeserializerContribution`으로 세션 복원 시 같은 제품 content를 재생성한다. compaction이 없으면 `super.getMessages()`로 기존 동작을 사용한다. |
+| C-004 | pass | 제품 content kind와 provider marker(`compaction`)를 분리하고, provider marker를 제품 local state로 해석하지 않는다. |
+| C-005 | pass | branch·agent 전환별 무효화 정책을 추가하지 않았으며, 현재 active Cocrates 요청에서 최신 저장 상태를 보수적으로 재구성한다. |
+
+### T-004 실행 검증
+
+| Check | Result | Evidence / Notes |
+|---|---|---|
+| 제품 확장 build | pass | `build - theia-extensions/product` 통과 (`tsc -b`, exit 0). |
+| 자동화 테스트 | not-verifiable | 현재 제품 확장에 T-004 전용 단위/통합 테스트 task가 없다. T-006에서 전체 가능한 검증 경로를 다시 실행한다. |
+
+### T-004 구현 메모
+
+- 저장 content는 UI 표시 문자열을 제공하지 않지만 `toLanguageModelMessage()`는 provider-agnostic text message 두 개를 반환한다.
+- compaction 이후 요청에서는 의도적으로 저장된 compaction 경계 뒤에 현재 입력만 추가한다. 이미지/context variable의 일반적인 전체 history 재조립은 이번 Spec의 텍스트 순서 계약 밖이며, 회귀 점검에서 확인 대상이다.
+- 세션 복원은 Theia의 기존 chat session store와 deserializer lifecycle을 사용하므로 별도 제품 `StorageService` 상태를 만들지 않는다.
