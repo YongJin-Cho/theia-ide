@@ -17,6 +17,8 @@ Cocrates를 Default Chat Agent로 제공하고 `adr`, `todo`, `sdd` 스킬을 �
 
 **스프린트 외:** 사용자가 제공하기로 한 `adr`, `todo`, `sdd` 스킬 명세의 실제 본문 작성·복사, Theia upstream 직접 수정, 새로운 AI 모델·외부 배포 호스트 확정, Cocrates Agent의 별도 모드 설계.
 
+**계획 승인:** 사용자가 `ok`로 sprint-03 계획과 Spec→backlog 실행을 승인했다.
+
 ## 완료 정의
 
 1. `docs/theia/adding-ai-agents.md`, `shipping-ai-skills.md`, `extending-get-skill-file-content.md`, `docs/cocrates/agent1.md`를 근거로 한 PRD·AC·ASR·Spec이 작성되고 사용자 승인을 받는다.

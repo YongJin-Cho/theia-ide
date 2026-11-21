@@ -15,3 +15,15 @@
 - 실제 `adr`, `todo`, `sdd` 스킬 명세 본문은 사용자가 나중에 제공한다는 제약을 계획과 백로그에 기록했다.
 - `sprint-03.md`를 작성했지만 Sprint plan approval 전이므로 `TODO.md` 실행 보드는 아직 시드하지 않았다.
 - **Asked user:** sprint-03 계획을 승인하고 Spec→backlog 실행을 시작할지 결정해 달라.
+
+## TURN-002
+
+### User Request
+> sprint-03 계획을 승인하고 Spec→backlog 실행을 시작해줘.
+
+### Cocrates Response
+- sprint-03 계획 승인을 기록했다.
+- `TODO.md`를 T-001부터 T-008까지의 Spec→backlog 실행 보드로 시드했다.
+- 기존 `spec/PRD.md`에 PB-007의 AI Agent·Skills 변경 범위와 성공 기준을 추가했다.
+- 현재 T-001 PRD 검토 및 승인 단계로 이동했다.
+- **Asked user:** `spec/PRD.md`의 AI Agent·Skills 변경 범위를 검토하고 다음 AC 식별 단계로 진행할지 결정해 달라.

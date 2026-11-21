@@ -23,6 +23,26 @@
 - launcher, updater, AI registry, CI와 문서가 새 제품 식별자를 사용하고, Theia 업스트림 도구명은 필요한 곳에만 남는다.
 - 승인된 리브랜딩 Spec을 기준으로 소스 변경, 패키징, Browser/Electron 실행 검증을 재현할 수 있다.
 
+## Sprint-03 AI Agent·Skills 변경
+
+이번 변경에서는 Cocrates를 Theia Chat의 Default Chat Agent로 제공하고, `docs/cocrates/agent1.md`의 시스템 프롬프트를 제품 Agent에 연결한다. 또한 사용자가 제공할 `adr`, `todo`, `sdd` 스킬을 제품 패키지에서 발견·사용할 수 있는 배포 계약과 스킬 보조 파일을 읽는 `getSkillFileContent` 확장 요구사항을 확정한다.
+
+### AI Agent·Skills 범위
+
+- Cocrates ChatAgent를 Browser, Stable Electron, Electron Next 애플리케이션에 등록하고 기본 Chat Agent로 선택되게 한다.
+- Cocrates Agent의 시스템 프롬프트는 `docs/cocrates/agent1.md`의 내용을 기준으로 유지한다.
+- `adr`, `todo`, `sdd` 스킬은 사용자가 나중에 제공하는 명세를 지정된 스킬 루트에 복사할 수 있도록 패키징·발견 계약을 제공한다.
+- 제품 확장에서 upstream `getSkillFileContent`를 rebind하여 `SKILL.md`와 skill-root 상대 보조 파일을 읽게 한다. tool id `getSkillFileContent`와 기존 `SKILL.md` 본문 동작은 유지한다.
+- Browser·Stable Electron·Electron Next 개발 실행 및 Electron 배포 패키지에서 Agent 등록, 기본 Agent 선택, 스킬 발견, 보조 파일 접근을 검증한다.
+
+### AI Agent·Skills 성공 기준
+
+- 사용자 메시지에 Agent mention이 없을 때 Cocrates가 기본 Chat Agent로 선택된다.
+- Agent 시스템 프롬프트가 `agent1.md`의 사용자 소유 운영 원칙과 도구 사용 규칙을 보존한다.
+- 세 스킬의 명세 본문이 제공되면 frontmatter와 폴더 구조를 만족하는 위치에 복사할 수 있고, 세 타깃의 런타임에서 목록에 나타난다.
+- `getSkillFileContent`가 기본적으로 기존처럼 `SKILL.md` 본문을 반환하고, skill root 밖 경로를 거부하면서 보조 파일을 반환한다.
+- 승인된 Spec과 검증 기록이 구현·패키징 결과를 재현할 수 있는 기준을 제공한다.
+
 ## Goals
 
 - Electron과 브라우저 실행 대상에 Theia IDE 기능과 제품 브랜딩을 조합한다.
