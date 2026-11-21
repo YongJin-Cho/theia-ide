@@ -9,11 +9,11 @@
 
 | Done | Open | Blocked | Skipped |
 |------|------|---------|---------|
-| 1    | 9    | 0       | 0       |
+| 3    | 7    | 0       | 0       |
 
 **Sprint goal:** Cocrates Agent의 구조화 JSON 최종 응답과 `answer` 표시, `session`·`commit`·`compaction` side effect를 구현·검증한다.
-**Current focus:** T-002
-**Recommended next:** T-002 — PRD 승인 게이트
+**Current focus:** T-004
+**Recommended next:** T-004 — AC 목록 승인 게이트
 
 ## Tasks
 
@@ -22,15 +22,16 @@
   - Artifact: `spec/PRD.md`
   - Depends: —
   - Notes: `agent2.md` 기반 구조화 최종 응답, side effect, compaction 이력 요구사항을 기존 PRD에 추가했다.
-- [ ] **T-002** — PRD 승인 게이트
+- [x] **T-002** — PRD 승인 게이트
   - Phase: PRD gate
   - Artifact: `spec/PRD.md`
   - Depends: T-001
-  - Notes: 사용자 go-ahead 후 AC 식별을 같은 턴에 시작한다.
-- [ ] **T-003** — PB-008 blocking AC 식별
+  - Notes: 사용자가 PB-008 delta PRD를 승인했다.
+- [x] **T-003** — PB-008 blocking AC 식별
   - Phase: AC identification
   - Artifact: `spec/AC.md`
   - Depends: T-002
+  - Notes: AC-012~AC-014를 identified로 등록하고 dependency order를 확장했다.
 - [ ] **T-004** — AC 목록 승인 게이트
   - Phase: AC gate
   - Artifact: `spec/AC.md`

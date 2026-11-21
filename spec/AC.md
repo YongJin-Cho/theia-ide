@@ -17,12 +17,16 @@ Theia IDE Product Template의 제품 Spec 작성을 위해 설계가 필요한 �
 | AC-009 | 내장 Skills의 배치·발견·패키징 전략 | Structure & organization | designed | `adr/cocrates-skills-packaging.md` | ASR-014 |
 | AC-010 | Cocrates 시스템 프롬프트의 소스 연결 방식 | Integration & dependencies | designed | — | ASR-015 |
 | AC-011 | `getSkillFileContent` 보조 파일 API 및 경로 안전성 | Quality bar (architectural) | designed | — | ASR-016 |
+| AC-012 | 구조화 최종 응답 파싱 및 UI 경계 | Integration & dependencies | identified | — | — |
+| AC-013 | JSON side effect 실행 및 안전성 경계 | Quality bar (architectural) | identified | — | — |
+| AC-014 | Compaction 이력의 저장·재구성 경계 | Structure & organization | identified | — | — |
 
 ## Dependency Order (recommended review path)
 
 1. AC-001 → AC-005 → AC-006 → AC-007
 2. 기존 결정: AC-001 → AC-002 → AC-003 → AC-004
 3. 신규 결정: AC-008 → AC-009 → AC-010 → AC-011
+4. PB-008 delta: AC-012 → AC-013 → AC-014
 
 ## AC Detail
 
@@ -172,3 +176,42 @@ Theia IDE Product Template의 제품 Spec 작성을 위해 설계가 필요한 �
 - **Resolution:** 기존 tool ID `getSkillFileContent`를 유지하고 제품 확장에서 `GetSkillFileContent`를 rebind한다. 필수 `skillName`과 선택 `path`를 받으며 `path`는 skill root 상대 경로로 제한한다. `path` 생략·`SKILL.md`·`./SKILL.md`는 기존처럼 frontmatter를 제거한 `SKILL.md` 본문을 반환하고, 그 외 파일은 원문을 반환한다. 절대 경로·드라이브 문자·정규화 후 skill root 밖 경로·심볼릭 링크를 통한 탈출과 디렉터리 읽기는 거부한다. 오류는 JSON 문자열로 반환하며 `Skill not found`, `File not found`, `Path escapes skill directory` 오류를 포함한다.
 - **ASR:** ASR-016
 - **Notes:** `extending-get-skill-file-content.md`의 `path` 규칙, `SKILL.md` 본문 호환, skill root 탈출 차단, 오류 JSON 계약을 구현 Spec에 반영한다. 사용자가 제시된 Direct Input 계약을 승인해 설계 완료했다.
+
+### AC-012 — 구조화 최종 응답 파싱 및 UI 경계
+
+- **Category:** Integration & dependencies
+- **Status:** identified
+- **Statement:** Cocrates Agent가 일반 Markdown과 JSON object 최종 응답을 구분하고 JSON의 `answer`만 Chat UI에 표시하도록 어떤 응답 파싱 경계와 Theia Chat response hook을 사용할 것인가? JSON schema 강제·텍스트 JSON 폴백·스트리밍 종료 처리의 조합도 정해야 한다.
+- **Why it matters:** Theia 1.77 기본 Chat 파이프라인은 `response_format`을 자동 전달하지 않고 parsed JSON 전체가 UI에 노출될 수 있다. 파싱 경계를 잘못 선택하면 일반 Markdown 호환성, 스트리밍 UX 또는 모델 제공자 호환성이 깨진다.
+- **Depends on:** AC-010
+- **Related ADRs:**
+  - —
+- **Resolution path:** adr | mixed
+- **Resolution:**
+- **Notes:** `docs/theia/structured-output-side-effects.md`의 옵션 1~4를 검토 대상으로 등록한다.
+
+### AC-013 — JSON side effect 실행 및 안전성 경계
+
+- **Category:** Quality bar (architectural)
+- **Status:** identified
+- **Statement:** JSON의 `session`과 `commit` 필드를 어떤 제품 서비스·권한·실패 처리 경계에서 실행할 것인가? 모델이 반환한 commit 요청을 자동 실행할지, 사용자 확인·workspace 상태·staged 변경·메시지 검증을 요구할지 정해야 한다.
+- **Why it matters:** 세션 제목 변경은 사용자 상태를 변경하고 git commit은 저장소 이력과 원격 협업에 영향을 주는 되돌리기 어려운 side effect다. UI 본문 파싱과 부작용 실행을 한 경계에 묶으면 부분 성공·재시도·감사 가능성을 잃을 수 있다.
+- **Depends on:** AC-012
+- **Related ADRs:**
+  - —
+- **Resolution path:** adr
+- **Resolution:**
+- **Notes:** `session`의 기존 ChatService API와 `commit`의 Theia SCM·shell·git 연동 후보를 비교해야 한다.
+
+### AC-014 — Compaction 이력의 저장·재구성 경계
+
+- **Category:** Structure & organization
+- **Status:** identified
+- **Statement:** JSON의 `compaction`과 이전 최종 `answer`를 어디에 저장하고 다음 요청에서 `user: <compaction>`, `assistant: <last answer>`, `user: <input>` 순서를 어떻게 보장할 것인가? Theia chat model 영속화, Agent-local request shaping, 별도 세션 메타데이터 중 어느 경계를 사용할지 정해야 한다.
+- **Why it matters:** UI에 보이는 transcript와 모델에 전송되는 이력이 달라질 수 있으며, 재로드·branch·다음 agent 전환 시 순서가 깨지면 모델이 작업 맥락을 잘못 이해한다. 기존 server-side compaction marker와 충돌하지 않는 저장·재생 전략도 필요하다.
+- **Depends on:** AC-012
+- **Related ADRs:**
+  - —
+- **Resolution path:** adr | mixed
+- **Resolution:**
+- **Notes:** `docs/theia/message-compaction.md`와 `docs/theia/local-message-compaction.md`의 server-side/local 차이를 기준으로 검토한다.

@@ -30,3 +30,15 @@
 - PB-008 delta PRD를 `spec/PRD.md`에 추가했다.
 - 현재 PRD 승인 게이트(T-002)에서 대기한다.
 - **Asked user:** `spec/PRD.md`의 PB-008 delta 범위를 승인하고 blocking AC 식별을 시작할까요?
+
+## TURN-003
+
+### User Request
+> PB-008 delta PRD를 승인하고 blocking AC 식별을 시작해줘.
+
+### Cocrates Response
+- PRD 승인 게이트를 통과 처리했다.
+- `spec/AC.md`에 PB-008의 blocking AC 후보를 등록했다: AC-012 구조화 응답 파싱·UI 경계, AC-013 JSON side effect 실행·안전성, AC-014 compaction 이력 저장·재구성 경계.
+- dependency order를 AC-012 → AC-013/AC-014로 확장했다.
+- 현재 AC 목록 승인 게이트(T-004)에서 대기한다.
+- **Asked user:** 위 AC-012~AC-014 목록과 dependency order를 승인하고 다음 AC 검토 단계로 진행할까요?
