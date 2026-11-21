@@ -9,11 +9,11 @@
 
 | Done | Open | Blocked | Skipped |
 |------|------|---------|---------|
-| 8    | 2    | 0       | 0       |
+| 10   | 0    | 0       | 0       |
 
 **Sprint goal:** Eclipse Theia IDE Product Template의 구현을 조사해 제품 Spec과 제품 백로그를 정립하고 구현 일치 여부를 검증한다.
-**Current focus:** T-009
-**Recommended next:** T-009 — 데모 체크리스트 및 스프린트 결과 정리
+**Current focus:** —
+**Recommended next:** —
 
 ## Tasks
 
@@ -57,12 +57,12 @@
   - Artifact: `verification/boilerplate-context.md`
   - Depends: T-007
   - Notes: 문서/구조 대조와 가능한 lint/build/test 명령으로 검증하고 증거를 남긴다.
-- [ ] **T-009** — 데모 체크리스트 및 스프린트 결과 정리
+- [x] **T-009** — 데모 체크리스트 및 스프린트 결과 정리
   - Phase: demo
   - Artifact: `TODO.md`, `PROMPTS.md`
   - Depends: T-008
   - Notes: 완료 정의와 데모 증거를 최신화한다.
-- [ ] **T-010** — Sprint Boundary → sprint-01
+- [x] **T-010** — Sprint Boundary → complete
   - Phase: cross-cutting
   - Artifact: `scrum/TODO-00.md`, `scrum/PROMPTS-00.md`
   - Depends: T-001, T-002, T-003, T-004, T-005, T-006, T-007, T-008, T-009
@@ -72,8 +72,10 @@
 
 | Sprint | Goal | Closed | Archive |
 |--------|------|--------|---------|
+| 00 | Eclipse Theia IDE Product Template Spec 정립 | 현재 세션 | [`TODO-00.md`](./scrum/TODO-00.md), [`PROMPTS-00.md`](./scrum/PROMPTS-00.md) |
 
 ## Notes
 
 - 현재 스프린트는 Spec→backlog 종류이며, Spec 확정 전까지 제품 기능을 변경하지 않는다.
 - `AGENTS.md`는 구현 context의 orientation 문서이고, 최종 요구사항의 SSOT는 승인된 Spec이다.
+- sprint-00의 제품 백로그와 검증이 모두 완료되어 다음 제품 스프린트는 필요하지 않다.

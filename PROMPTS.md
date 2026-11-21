@@ -255,24 +255,21 @@
 > 검증 문제가 반복되지 않도록 AGENTS.md 파일에 보완하는 것이 어떨까?
 
 ### Cocrates 응답
-- 현재 `AGENTS.md`에도 Electron preview 후 E2E를 실행하는 안내는 있지만, Electron Next에 대한 명시적 lifecycle과 fresh `dist` 전제는 부족하다고 확인했다.
-- 다음 내용을 Verification guide에 추가하는 방안을 제안했다.
-  - Electron과 Electron Next는 각각 `package:preview`를 먼저 실행
-  - Preview가 생성한 fresh `dist`를 대상으로 해당 앱의 test 실행
-  - 개발 build만 수행한 뒤 Electron E2E를 실행하지 않음
-  - Browser는 `browser start`를 별도 프로세스로 유지하고 `localhost:3000`을 수동 확인
-  - 검증 후 장기 실행 서버 종료 및 산출물 상태 확인
-- **Asked user:** 이 보완안을 `AGENTS.md`에 반영할지 결정해 달라.
-
-## TURN-022
-
-### 사용자 요청
-> ok
-
-### Cocrates 응답
 - `AGENTS.md`의 Verification guide를 보완했다.
 - 일반 Electron과 Electron Next의 Preview-first E2E 명령을 각각 명시했다.
 - 개발 빌드만 실행한 뒤 E2E를 실행하지 않도록 stale `dist` 방지 규칙을 추가했다.
 - Browser를 Electron과 별도 lifecycle로 분리하고 `yarn browser start` 및 `localhost:3000` 확인 절차를 명시했다.
 - Preview/E2E 후 다음 테스트에서 대상 Preview를 다시 생성하도록 기록했다.
+- **Asked user:** —
+
+## TURN-022
+
+### 사용자 요청
+> sprint 종료/경계처리해줘.
+
+### Cocrates 응답
+- sprint-00 완료 검토를 승인된 것으로 기록했다.
+- 목표, Spec/Spec review, 제품 백로그, lint/build/test 및 Browser 검증 결과를 모두 완료 상태로 확인했다.
+- `T-009` 데모·결과 정리와 `T-010` Sprint Boundary를 닫고 sprint-00 보드와 대화 로그를 보관했다.
+- 제품 백로그의 모든 PB 스토리가 완료되어 후속 제품 스프린트 없이 deliverable을 종료했다.
 - **Asked user:** —
