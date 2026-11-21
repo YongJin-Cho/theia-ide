@@ -9,11 +9,11 @@
 
 | Done | Open | Blocked | Skipped |
 |------|------|---------|---------|
-| 6    | 1    | 0       | 0       |
+| 7    | 0    | 0       | 0       |
 
 **Sprint goal:** 승인된 PB-007 Spec을 구현하고 Browser·Stable Electron·Electron Next에서 Cocrates Agent·Skills·도구 계약을 검증한다.
-**Current focus:** T-007
-**Recommended next:** T-007 — Sprint Boundary → sprint-05
+**Current focus:** —
+**Recommended next:** —
 
 ## Tasks
 
@@ -47,7 +47,7 @@
   - Artifact: `verification/cocrates-ai-agent-skills.md`
   - Depends: T-003, T-004, T-005
   - Notes: 제품 확장 build/lint와 저장소 lint, Browser production build, Stable/Next Electron 공식 build/package, 양 Electron E2E를 검증 기록에 반영했다. 초기 개별 `tsc -b` 작업의 TS5101 결과와 package 전 9 passing/1 failing 결과는 공식 파이프라인 결과가 아니므로 정정했으며, 최종 공식 E2E는 양 타깃 모두 10 passing이다. 사용자 제공 `adr`·`todo`·`sdd` Skills와 Electron 패키지의 `resources/app/skills` 포함도 확인했다. Browser UI smoke는 launch configuration의 debug adapter 제약으로 보류했다.
-- [ ] **T-007** — Sprint Boundary → sprint-05
+- [x] **T-007** — Sprint Boundary → sprint-05
   - Phase: cross-cutting
   - Artifact: `scrum/TODO-04.md`, `scrum/PROMPTS-04.md`
   - Depends: T-001, T-002, T-003, T-004, T-005, T-006
@@ -61,6 +61,7 @@
 | 01 | Cocrates 전체 타깃 리브랜딩 요구사항 확정 | 현재 세션 | [`TODO-01.md`](./scrum/TODO-01.md), [`PROMPTS-01.md`](./scrum/PROMPTS-01.md) |
 | 02 | Cocrates 브랜딩 구현·검증 | 2026-11-21 | [`TODO-02.md`](./scrum/TODO-02.md), [`PROMPTS-02.md`](./scrum/PROMPTS-02.md) |
 | 03 | Cocrates AI Agent·Skills 패키징 요구사항 확정 | 2026-11-21 | [`TODO-03.md`](./scrum/TODO-03.md), [`PROMPTS-03.md`](./scrum/PROMPTS-03.md) |
+| 04 | Cocrates AI Agent·Skills 구현 및 검증 | 2026-11-21 | [`TODO-04.md`](./scrum/TODO-04.md), [`PROMPTS-04.md`](./scrum/PROMPTS-04.md) |
 
 ## Notes
 
