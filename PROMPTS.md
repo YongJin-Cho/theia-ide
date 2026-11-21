@@ -54,3 +54,28 @@
 - `adr/cocrates-structured-response-parsing.md`를 `proposed` 상태로 작성했다.
 - Option A(structured response hook + JSON fallback)를 권장하며, Option B(prompt-only parsing)와 Option C(tool-based side effects)를 비교했다.
 - **Asked user:** AC-012에 대해 Option A를 승인하고 구조화 응답 파싱 결정을 기록한 뒤 다음 AC로 진행할까요?
+
+## TURN-005
+
+### User Request
+> response_format과 tool call 문제가 있으므로 Option B를 선택한다.
+
+### Cocrates Response
+- `adr/cocrates-structured-response-parsing.md`를 `approved`로 기록하고 AC-012를 `designed`로 확정했다.
+- `response_format`과 structured tool call을 사용하지 않고 prompt-only JSON + 완료 후 파싱·일반 Markdown 폴백을 사용하기로 결정했다.
+- 다음 blocking concern인 AC-013을 `reviewing`으로 전환하고 `adr/cocrates-json-side-effect-safety.md`를 `proposed`로 작성했다.
+- AC-013에는 Option A(즉시 자동 실행), Option B(안전 검증 후 확인), Option C(전용 도구·명령 분리)를 제시했으며 Option C를 권장한다.
+- **Asked user:** AC-013의 side effect 실행 안전성에 대한 옵션을 검토하고 선택해줄까요?
+
+## TURN-006
+
+### User Request
+> 사용자 대상 전용 도구/명령을 추가하는 것이 아니라면 Option A 자동 실행으로 처리하고, 문제되는 commit은 undo로 처리해줘.
+
+### Cocrates Response
+- `adr/cocrates-json-side-effect-safety.md`를 `approved`로 기록하고 AC-013을 `designed`로 확정했다.
+- 유효한 JSON의 `session`과 `commit`을 자동 실행하되, 기본 입력·저장소 검증과 실행 결과 기록을 유지하기로 결정했다.
+- commit undo는 원래 commit 삭제가 아닌 별도 undo/revert 흐름으로 처리하는 deferred assumption으로 기록했다.
+- 다음 blocking concern인 AC-014를 `reviewing`으로 전환하고 `adr/cocrates-compaction-history-boundary.md`를 `proposed`로 작성했다.
+- AC-014에는 Option A(chat model 저장), Option B(Agent-local request shaping), Option C(세션 메타데이터/외부 저장소)를 제시했으며 Option A를 권장한다.
+- **Asked user:** AC-014의 compaction 이력 저장·재구성 방식에 대한 옵션을 검토하고 선택해줄까요?

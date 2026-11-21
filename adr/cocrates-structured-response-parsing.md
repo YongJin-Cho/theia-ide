@@ -4,7 +4,7 @@
 Cocrates Agent가 일반 Markdown과 JSON object 최종 응답을 구분하고, JSON에서는 `answer`만 Chat UI에 표시하도록 어떤 파싱·렌더링 경계를 사용할 것인가?
 
 ## Status
-proposed
+approved
 
 ## Context
 - PB-008은 JSON 최종 응답의 `answer`만 사용자에게 보이고 `session`, `commit`, `compaction`은 제품 코드가 처리하도록 요구한다.
@@ -13,6 +13,7 @@ proposed
 - 기존 일반 Markdown 응답과 현재 Cocrates Agent의 스트리밍 동작은 유지해야 한다.
 
 ## Decision
+**Option B — Prompt-only JSON parsing**. Cocrates는 `response_format`과 structured tool call에 의존하지 않고 `agent2.md` 지시로 JSON object를 요청한다. 응답 완료 후 제품 파서가 JSON을 추출해 `answer`만 Chat UI에 추가하고, JSON이 아니면 기존 일반 Markdown 경로를 사용한다. 이는 현재 response_format과 tool call의 불안정성을 피하고 기존 스트리밍·provider 호환성을 우선하기 위한 결정이다.
 
 ## Options
 ### Option A — Structured response hook + JSON fallback
@@ -42,8 +43,8 @@ proposed
 | 사용자 요구와의 직접성 | 높음 | 중간 | 낮음 |
 
 ## Recommendation
-- Option A를 권장한다. 사용자가 요구한 JSON object 계약과 `answer` 전용 UI를 직접 만족시키면서, 지원되지 않는 structured output 경로에는 텍스트 JSON 폴백을 둔다.
-- Option A를 채택하더라도 `session`·`commit` side effect 실행 정책은 AC-013에서 별도로 결정한다.
+- 초기 권고는 Option A였으나, 사용자가 response_format과 tool call의 처리 불안정성을 이유로 Option B를 선택했다.
+- Option B에서도 `session`·`commit` side effect 실행 정책은 AC-013에서 별도로 결정한다.
 
 ## Consequences
 - Cocrates 전용 ChatAgent에 최종 응답 파싱 및 `answer` 렌더링 경계를 둔다.
@@ -55,6 +56,7 @@ proposed
 - [ ] **ADR candidate — JSON side effect safety:** `session`과 `commit`의 권한·확인·실패 처리를 결정한다(AC-013).
 - [ ] **ADR candidate — Compaction history boundary:** compaction 이력의 저장·재구성 방식을 결정한다(AC-014).
 - [x] **covered — General Markdown compatibility:** 기존 Cocrates Agent의 비JSON 응답 경로를 보존한다.
+- [x] **directly resolved — Structured API dependency:** `response_format`과 structured tool call은 사용하지 않고 prompt-only JSON과 완료 후 폴백 파싱을 사용한다.
 
 ## Related
 - `theia-ide/spec/AC.md` — AC-012
@@ -63,3 +65,4 @@ proposed
 
 ## Notes
 - 2026-11-21: AC-012 검토를 위해 제안 상태로 생성했다. 사용자 요구의 단일 JSON 계약을 기준으로 Option A를 권장한다.
+- 2026-11-21: Status → approved; 사용자가 Option B(prompt-only JSON parsing)를 선택했다. response_format과 structured tool call은 사용하지 않는다.
