@@ -52,3 +52,27 @@
 - `AGENTS.md`는 현재 Cocrates Lerna scope·식별자와 검증 방법을 반영한 상태다.
 - 현재 T-006 스프린트 완료 검토로 이동했다.
 - **Asked user:** sprint-02 완료 검토를 승인하고 Sprint Boundary를 진행할지 결정해 달라.
+
+## TURN-005
+
+### 사용자 요청
+> Cocrates branding을 검증하는 E2E test를 추가해줘.
+
+### Cocrates 응답
+- 기존 Mocha/WebdriverIO Electron E2E harness를 재사용해 Stable과 Electron Next에 공통 적용되는 Cocrates 브랜딩 테스트를 추가했다.
+- 테스트는 실행 중인 패키지의 제품명으로 창 제목을 검증하고, 사용자 표면에 `Theia IDE`가 노출되지 않는지 확인한다.
+- `TODO.md`에 E2E 검증 작업을 추가하고 현재 초점을 해당 작업으로 이동했다.
+- Preview 패키징 후 Stable 및 Electron Next E2E를 실행해 결과를 검증 기록에 반영할 예정이다.
+- **Asked user:** —
+
+## TURN-006
+
+### 사용자 요청
+> Cocrates branding을 검증하는 E2E test를 추가해줘.
+
+### Cocrates 응답
+- Stable과 Electron Next가 공유하는 `applications/electron/test/app.spec.js`에 창 제목의 타깃별 Cocrates 제품명과 금지된 `Theia IDE` 문자열을 검증하는 E2E 테스트를 추가했다.
+- Electron Next electron-builder의 표시명이 `CocratesNext`로 붙어 있던 Spec 불일치를 `Cocrates Next`로 수정했다.
+- 애플리케이션 lint는 통과했다. Stable E2E의 브랜딩 assertion은 통과했고 전체 결과는 9 passing 및 기존 Search in workspace 실패 1건이었다. Electron Next E2E는 10 passing으로 완료됐다.
+- 검증 기록과 TODO를 E2E 증거 및 현재 완료 검토 초점에 맞게 갱신했다.
+- **Asked user:** sprint-02 완료 검토를 승인하고 Sprint Boundary를 진행할지 결정해 달라.

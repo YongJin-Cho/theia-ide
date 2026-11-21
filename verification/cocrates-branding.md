@@ -3,7 +3,7 @@
 **Spec:** `spec/cocrates-branding.md` (PRD.md와 정합)
 **Artifact(s):** `applications/browser`, `applications/electron`, `applications/electron-next`, `theia-extensions/product`, `theia-extensions/updater`, `theia-extensions/launcher`, `package.json`, `.github`, `README.md`, 관련 스크립트
 **Verified:** 현재 세션
-**Summary:** 17 pass, 0 fail, 0 partial, 0 not-verifiable
+**Summary:** 17 pass, 0 fail, 0 partial, 0 not-verifiable (Spec inventory); 브랜딩 E2E assertion은 Stable/Next에서 pass
 
 ## 인벤토리 및 결과
 
@@ -19,7 +19,7 @@
 | 8 | R-008 | pass | Updater 진행 UI가 applicationName 기반 Cocrates 명칭을 사용하고 Electron Next feed URL이 `https://github.com/cocrates/theia-ide/releases/download/next`다. |
 | 9 | R-009 | pass | GitHub repository/homepage와 Docker workflow tag `cocrates-ide`, Next CI artifact 이름을 갱신했다. 별도 CDN/registry 호스트는 추가하지 않았다. |
 | 10 | R-010 | pass | 사용자 제품 표면의 Theia 제품명은 제거했으며 `@theia/*`, Theia API, 업스트림 도구명과 내부 모듈 식별자는 유지했다. |
-| 11 | R-011 | pass | 관련 소스·설정 정적 대조, TypeScript build, 애플리케이션 build, lint, Stable/Next Electron Preview 패키징을 완료했다. |
+| 11 | R-011 | pass | 관련 소스·설정 정적 대조, TypeScript build, 애플리케이션 build, lint, Stable/Next Electron Preview 패키징 및 타깃별 Electron 브랜딩 E2E assertion을 완료했다. |
 | 12 | C-001 | pass | 브랜딩 변경만 수행했으며 Theia API·패키지 계약을 변경하지 않았다. |
 | 13 | C-002 | pass | 기존 애플리케이션·Product/Updater/Launcher 확장 경계를 유지했다. |
 | 14 | C-003 | pass | `.theia-ide` 데이터 자동 마이그레이션 코드를 구현하지 않았다. |
@@ -32,6 +32,7 @@
 - Lerna 애플리케이션 scope는 새 package name에 맞춰 `cocrates*app`으로 변경했고, 확장 package name은 Theia 호환 내부 식별자로 유지했다.
 - 아이콘·splash 파일의 저장소 내부 파일명은 기존 리소스 경로와 electron-builder wiring을 보존했다. 사용자에게 표시되는 productName과 UI 카피는 Cocrates로 변경했다.
 - Preview 패키징 로그에는 기존 선택적 플랫폼 의존성 경고가 있었지만 Stable/Next 패키징은 성공했다.
+- Electron Next builder의 `productName`이 `CocratesNext`로 붙어 있던 불일치를 `Cocrates Next`로 수정했다. 패키지 runtime E2E는 package.json의 사용자 표시명을 기준으로 검증한다.
 
 ## 편차
 
@@ -52,6 +53,8 @@
 - `lint`: pass
 - `package:preview - applications/electron`: pass
 - `package:preview - applications/electron-next`: pass
+- `test - applications/electron`: 브랜딩 assertion pass; 전체 9 passing, 기존 Search in workspace 1 failing
+- `test - applications/electron-next`: 브랜딩 assertion pass; 전체 10 passing
 - 정적 대조: 승인된 Stable/Next 식별자와 금지된 사용자 표면 문자열을 대상 소스에서 확인
 
 ## 권장 다음 단계

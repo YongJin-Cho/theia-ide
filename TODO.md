@@ -9,7 +9,7 @@
 
 | Done | Open | Blocked | Skipped |
 |------|------|---------|---------|
-| 5    | 2    | 0       | 0       |
+| 6    | 2    | 0       | 0       |
 
 **Sprint goal:** 승인된 Cocrates 브랜딩 Spec을 Browser, Stable Electron, Electron Next에 구현하고 정적·실행 검증한다.
 **Current focus:** T-006
@@ -47,10 +47,15 @@
   - Artifact: `PROMPTS.md`, `TODO.md`
   - Depends: T-005
   - Notes: 목표·DoD·데모 증거와 미해결 항목을 사용자에게 검토받는다.
+- [x] **T-008** — Cocrates 브랜딩 Electron E2E 검증
+  - Phase: verification
+  - Artifact: `applications/electron/test/app.spec.js`, `verification/cocrates-branding.md`
+  - Depends: T-005
+  - Notes: Stable과 Electron Next Preview 패키지에서 공통 E2E 테스트로 창 제목에 타깃별 Cocrates 제품명이 표시되고 Theia 제품명이 노출되지 않는지 검증했다. Stable 브랜딩 assertion pass(전체 9 passing/기존 Search 실패 1건), Next 전체 10 passing.
 - [ ] **T-007** — Sprint Boundary → sprint-03
   - Phase: cross-cutting
   - Artifact: `scrum/TODO-02.md`, `scrum/PROMPTS-02.md`
-  - Depends: T-001, T-002, T-003, T-004, T-005, T-006
+  - Depends: T-001, T-002, T-003, T-004, T-005, T-006, T-008
   - Notes: 완료 승인 후 보드와 대화 로그를 보관하고 다음 계획을 처리한다.
 
 ## Completed sprints

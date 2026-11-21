@@ -1,5 +1,5 @@
 appId: com.cocrates.ide.next
-productName: CocratesNext
+productName: Cocrates Next
 copyright: Copyright © 2020-2026 Eclipse Foundation, Inc
 electronDist: ../../node_modules/electron/dist
 electronVersion: 44.9.1

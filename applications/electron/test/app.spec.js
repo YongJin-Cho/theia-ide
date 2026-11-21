@@ -30,7 +30,9 @@ async function saveScreenshot(browser, name) {
 }
 const builderConfig = fs.readFileSync(path.join(appDir, 'electron-builder.yml'), 'utf8');
 const productName = builderConfig.match(/^productName:\s*(.+)$/m)[1].trim();
-const packageName = require(path.join(appDir, 'package.json')).name;
+const packageConfig = require(path.join(appDir, 'package.json'));
+const packageName = packageConfig.name;
+const applicationName = packageConfig.productName;
 
 function isMacArm() {
   if (os.platform() !== 'darwin') {
@@ -149,6 +151,14 @@ describe('Theia App', function () {
       // Rethrow for unexpected errors to fail test.
       throw err;
     }
+  });
+
+  it('Cocrates branding in window title', async function () {
+    // Wait a bit to make sure workspace is set and title got updated
+    await new Promise(r => setTimeout(r, 2000));
+    const windowTitle = await this.browser.getTitle();
+    expect(windowTitle).to.include(applicationName);
+    expect(windowTitle).to.not.include('Theia IDE');
   });
 
   it('Correct window title', async function () {
