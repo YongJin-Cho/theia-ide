@@ -9,7 +9,8 @@
 
 import { injectable } from '@theia/core/shared/inversify';
 import { CocratesSkillsPathService } from '../common/cocrates-skills-path-service.js';
-import { dirname, resolve } from 'node:path';
+import { dirname, isAbsolute, relative, resolve } from 'node:path';
+import { realpath } from 'node:fs/promises';
 
 @injectable()
 export class CocratesSkillsPathServiceImpl implements CocratesSkillsPathService {
@@ -25,5 +26,20 @@ export class CocratesSkillsPathServiceImpl implements CocratesSkillsPathService 
         }
 
         return resolve(dirname(import.meta.dirname), '..', 'skills');
+    }
+
+    async isPathWithinRealPath(rootPath: string, targetPath: string): Promise<boolean> {
+        try {
+            const [realRootPath, realTargetPath] = await Promise.all([
+                realpath(rootPath),
+                realpath(targetPath),
+            ]);
+            const relativeTargetPath = relative(realRootPath, realTargetPath);
+            return relativeTargetPath === ''
+                || (!relativeTargetPath.startsWith('..')
+                    && !isAbsolute(relativeTargetPath));
+        } catch {
+            return false;
+        }
     }
 }

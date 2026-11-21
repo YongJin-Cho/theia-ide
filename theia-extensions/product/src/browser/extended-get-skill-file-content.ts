@@ -17,6 +17,7 @@ import {
     GET_SKILL_FILE_CONTENT_FUNCTION_ID,
     LIST_SKILLS_FUNCTION_ID,
 } from '@theia/ai-ide/lib/common/workspace-functions.js';
+import { CocratesSkillsPathService } from '../common/cocrates-skills-path-service.js';
 
 @injectable()
 export class ExtendedGetSkillFileContent implements ToolProvider {
@@ -27,6 +28,9 @@ export class ExtendedGetSkillFileContent implements ToolProvider {
 
     @inject(FileService)
     protected readonly fileService: FileService;
+
+    @inject(CocratesSkillsPathService)
+    protected readonly skillsPathService: CocratesSkillsPathService;
 
     getTool(): ToolRequest {
         return {
@@ -90,6 +94,13 @@ export class ExtendedGetSkillFileContent implements ToolProvider {
         try {
             if (!await this.fileService.exists(targetUri)) {
                 return JSON.stringify({ error: `File not found: ${requestedPath ?? SKILL_FILE_NAME}` });
+            }
+            if (skillRoot.scheme === 'file' && targetUri.scheme === 'file'
+                && !await this.skillsPathService.isPathWithinRealPath(
+                    skillRoot.path.fsPath(),
+                    targetUri.path.fsPath(),
+                )) {
+                return JSON.stringify({ error: `Path escapes skill directory: ${requestedPath}` });
             }
             const stat = await this.fileService.resolve(targetUri);
             if (stat.isDirectory) {

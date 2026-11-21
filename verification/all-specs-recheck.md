@@ -3,20 +3,20 @@
 **기준:** `spec/PRD.md` 및 `spec/` 아래 승인된 모든 요구사항 Spec
 **대상:** `applications/browser`, `applications/electron`, `applications/electron-next`, `theia-extensions/product`, `theia-extensions/updater`, `theia-extensions/launcher`, 루트 빌드·패키징·CI·문서
 **검증일:** 2026-11-21
-**검증 방식:** Spec 항목별 정적 코드·설정 대조 + 가능한 공식 build/lint/test 실행
+**검증 방식:** Spec 항목별 정적 코드·설정 대조 + 결함 수정 후 scoped build/lint/realpath 회귀 실행
 **범위:** `AC.md`, `ASR.md`, ADR, TODO 및 scrum은 판정 기준이 아니며, 구현 결과와 승인된 Spec만 판정 기준으로 사용
 
 ## 결과 요약
 
 | 상태 | 수량 |
 |---|---:|
-| pass | 95 |
-| fail | 1 |
+| pass | 96 |
+| fail | 0 |
 | partial | 0 |
 | not-verifiable | 0 |
 | **합계** | **96** |
 
-핵심 판정은 **전체 Spec 완전 일치가 아니다**. `cocrates-ai-agent-skills.md`의 `R-019`가 실패한다. 경로 문자열 정규화와 URI 부모 검사는 있지만, 심볼릭 링크를 통한 skill root 탈출을 real-path로 확인하지 않는다.
+핵심 판정은 **전체 Spec 항목이 구현 기준으로 일치한다**. `R-019`의 심볼릭 링크 root 탈출 검사를 백엔드 `realpath` 확인으로 보완했고, scoped 회귀 검증에서 외부 파일을 가리키는 링크가 거부됨을 확인했다.
 
 ## 실행 검증 결과
 
@@ -33,6 +33,8 @@
 | Launcher lint | pass | 오류 0건 |
 | Product lint | fail | `cocrates-chat-agent-prompt.ts:1` file header, `:33` max-len, `cocrates-chat-agent.ts:236` no-shadow 오류; frontend/backend deprecation warning 2건 |
 | Browser UI smoke | not separately run | 현재 턴에서는 build와 정적 대조를 수행했으며 Browser 실행 진입점/DOM smoke는 실행하지 않음. 따라서 UI 동작 자체를 별도 성공으로 주장하지 않음 |
+
+| R-019 realpath regression | pass | 컴파일된 `CocratesSkillsPathServiceImpl`에 임시 skill root와 외부 파일을 가리키는 symbolic link를 제공해, 일반 경로는 `true`, 외부 링크는 `false`를 반환함을 확인. |
 
 ## 항목별 인벤토리
 
@@ -134,7 +136,7 @@
 | R-016 | pass | 기존 `getSkillFileContent` ID를 유지하고 Product DI rebind를 사용하며 두 번째 provider를 추가하지 않음 |
 | R-017 | pass | 필수 `skillName`, 선택 `path`, 기본/`SKILL.md`/`./SKILL.md` 처리 및 qualified/plain skill 검색 경로 |
 | R-018 | pass | `workflow/`, `references/`, `scripts/`, `assets/` 등 skill-root 상대 파일을 raw content로 반환하고 directory는 성공 본문으로 반환하지 않음 |
-| R-019 | fail | 문자열 path separator/`.`/`..`/absolute path와 URI root 검사는 있으나 **심볼릭 링크를 통한 root 탈출의 real-path 검증이 없음** (`extended-get-skill-file-content.ts`) |
+| R-019 | pass | `extended-get-skill-file-content.ts`가 기존 URI 부모 검사 뒤 `CocratesSkillsPathService.isPathWithinRealPath`를 호출하고, Node 구현이 root·target 모두 `realpath`로 해석한 뒤 `relative` 경계로 비교한다. 외부 파일을 가리키는 symbolic link 회귀 검증도 통과했다. |
 | R-020 | pass | skill/file/path escape 오류를 JSON 문자열로 반환하고 directory·절대 경로·누락 파일을 성공 본문으로 반환하지 않음 |
 | C-001 | pass | Theia upstream 수정 없이 Product extension rebind와 application integration으로 구현 |
 | C-002 | pass | Theia/Yarn/Lerna/Node 제약과 `theia-patch` 흐름 유지 |
@@ -171,21 +173,19 @@
 
 ## 설계 검토 및 미문서화 ASR
 
-### 확인된 Spec 불일치
+### 확인된 검증 품질 이슈
 
-1. **`R-019` / Critical:** `theia-extensions/product/src/browser/extended-get-skill-file-content.ts`는 `Path.normalize`와 `skillRoot.isEqualOrParent(targetUri)`만 사용한다. skill root 내부에 root 밖을 가리키는 symbolic link를 두면 URI 경로만으로는 탈출을 탐지할 수 있다. Spec이 요구한 가능한 real-path 확인이 없으므로 파일 읽기 경계가 완전히 충족되지 않는다.
-2. **검증 품질:** Product lint는 기존 prompt 파일 오류와 함께 `cocrates-chat-agent.ts:236`의 `no-shadow` 오류를 보고했다. build와 E2E는 통과했지만 lint 성공으로 기록할 수 없다.
+- Product lint는 기존 `cocrates-chat-agent-prompt.ts:1`, `:33` 오류와 `cocrates-chat-agent.ts:236`의 `no-shadow` 오류로 계속 실패한다. 이번 수정 파일에서 새 lint 오류는 확인되지 않았다. build와 realpath 회귀 검증은 통과했지만 전체 Product lint 성공으로 기록하지 않는다.
 
 ### 미문서화 ASR
 
-- 새로 발견한 독립적인 사용자 소유 설계 결정은 없다. symbolic-link real-path 검증 누락은 새로운 결정이 아니라 `R-019` 구현 결함이다.
+- 새로 발견한 독립적인 사용자 소유 설계 결정은 없다. symbolic-link real-path 검증은 기존 `R-019` 요구를 구현한 것이며 별도 설계 범위를 추가하지 않는다.
 - commit 응답에 repository 경로가 없는 현재 계약의 한계는 기존 Spec/검증 기록에 이미 적혀 있다.
 
 ## 편차 및 권장 조치
 
-- **Critical — `cocrates-ai-agent-skills.md:R-019`:** skill root 내부 파일의 real path를 확인하고, 정규화 후 및 real-path 확인 후에도 root 밖이면 `{ "error": "Path escapes skill directory: …" }`를 반환하도록 수정해야 한다. 수정 후 R-019 및 관련 C-004/C-007을 재검증해야 한다.
-- **Major 후보 — Product lint:** `cocrates-chat-agent.ts:236`의 shadowing과 prompt generated source의 lint 오류를 수정할지 결정해야 한다. 이는 현재 Spec의 기능 요구를 직접 위반한다고 단정하지 않지만, Spec이 요구하는 가능한 lint 검증은 실패 상태다.
+- **Product lint 잔여 오류:** generated prompt 파일의 header/max-len 오류와 `cocrates-chat-agent.ts:236`의 shadowing은 이번 `R-019` 수정과 무관한 기존 오류다. 별도 lint 정리 작업으로 분리한다.
 
 ## 결론
 
-현재 시점에서 **모든 항목이 pass는 아니다.** 기능·설정 대조와 가능한 build/E2E는 대부분 통과했지만, `R-019`는 보안 경계 요구를 충족하지 못한다. 이 기록은 결함 수정 없이 재검증 결과만 남긴 것이며, 다음 단계는 Spec feedback loop에서 `R-019`를 먼저 수정한 뒤 해당 항목과 관련 회귀를 재검증하는 것이다.
+`R-019`를 포함한 전체 Spec 96개 항목은 현재 구현 및 검증 기준으로 pass다. Product lint는 기존 오류 때문에 여전히 실패하지만, 이번 결함 수정의 build 및 symbolic-link realpath 회귀 검증은 통과했다. Browser UI smoke는 이번 수정 범위에서 실행하지 않았으므로 별도 성공으로 주장하지 않는다.

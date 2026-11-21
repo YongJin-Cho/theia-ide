@@ -12,4 +12,5 @@ export const CocratesSkillsPathServicePath = '/services/cocrates-skills-path';
 
 export interface CocratesSkillsPathService {
     getBundledSkillsPath(): Promise<string | undefined>;
+    isPathWithinRealPath(rootPath: string, targetPath: string): Promise<boolean>;
 }
