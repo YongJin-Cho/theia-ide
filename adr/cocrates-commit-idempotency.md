@@ -4,7 +4,7 @@
 동일한 구조화 응답의 자동 commit 재처리를 어느 범위까지 차단하고, 실패한 commit을 어떻게 재시도할 것인가?
 
 ## Status
-proposed
+approved
 
 ## Context
 - R-008은 동일 JSON 응답의 재처리로 commit이 중복 실행되지 않도록 보호할 것을 요구한다.
@@ -13,6 +13,7 @@ proposed
 - Theia 1.77의 공통 SCM 경계에는 자동 side effect 처리 이력을 보존하는 전용 저장소가 없다.
 
 ## Decision
+**Option B — 제품 로컬 영속 저장소**를 선택한다. 성공한 commit의 처리 식별자를 제품 로컬 저장소에 영속화해 애플리케이션 재시작 후에도 동일 응답의 중복 commit을 차단하고, 실패한 commit은 재시도 가능한 상태로 남긴다.
 
 ## Options
 ### Option A — 애플리케이션 수명 멱등성
@@ -45,13 +46,15 @@ proposed
 - 다만 Theia 1.77 제품 확장에 이미 사용할 수 있는 로컬 저장 경계가 확인되지 않으면, 이번 sprint에서는 Option C를 안전한 임시 정책으로 사용하고 영속 저장소를 별도 범위로 기록해야 한다.
 
 ## Consequences
-- Option B를 선택하면 commit 실행 전후 상태를 영속화하고, 성공 상태는 동일 응답의 재처리를 차단해야 한다.
+- commit 실행 전 `in-flight`, 성공 후 `succeeded`, 실패 후 `failed` 상태를 제품 로컬 저장소에 영속화한다.
+- `succeeded` 상태는 동일 응답의 재처리를 차단하고, `failed` 상태는 오류를 기록한 뒤 명시적으로 재시도할 수 있게 한다.
+- 동시 실행은 저장소의 원자적 상태 전환 또는 동등한 잠금 경계로 중복 실행을 막는다.
 - 실패 상태는 command가 실패한 뒤 재시도할 수 있도록 하되, 동시 실행 중복을 막는 잠금 또는 `in-flight` 상태가 필요하다.
 - Option A를 선택하면 R-008의 durable 해석을 충족하지 못하는 deviation을 사용자가 수용해야 한다.
 - Option C를 선택하면 재시작 후 자동 commit을 안전하게 거부하는 오류 상태를 사용자에게 제공해야 한다.
 
 ## Downstream Concerns
-- [ ] **ADR candidate — SCM staged capability:** Theia SCM provider별 staged 상태 표현을 공통 adapter가 어떻게 판정할지 결정한다.
+- [x] **directly resolved — SCM change scope:** 사용자의 직접 입력에 따라 staged 여부를 commit 거부 조건으로 사용하지 않고, 선택된 repository provider가 commit 대상으로 노출하는 변경을 모두 처리한다.
 - [x] **deferred assumption — Repository identity:** 제품 로컬 저장소를 선택하는 경우 repository root·workspace 식별자 형식은 구현 단계에서 현재 Theia API에 맞춰 정한다.
 
 ## Related
@@ -62,3 +65,4 @@ proposed
 
 ## Notes
 - 2026-11-21: 검증에서 확인된 메모리 전용 멱등성 및 실패 상태 lifecycle 공백에 대한 후속 ADR로 생성했다.
+- 2026-11-21: Status → approved; 사용자가 R-008 충족을 위해 Option B — 제품 로컬 영속 저장소를 선택했다. 성공 상태는 재시작 후에도 재처리를 차단하고 실패 상태는 재시도 가능하게 한다.

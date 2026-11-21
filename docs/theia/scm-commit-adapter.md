@@ -15,15 +15,15 @@ Theia 1.77의 공통 SCM 계층에는 제품이 직접 호출할 `commit(message
 1. `ScmService.selectedRepository`가 있는지 확인한다.
 2. provider의 `acceptInputCommand`와 command id가 있는지 확인한다.
 3. commit message를 길이·공백·허용 문자 정책으로 검증한다.
-4. provider groups/resources를 확인해 staged 변경이 없는 상태를 거부한다. provider별 resource 상태 의미가 다르면 검증 결과를 보수적으로 실패 처리한다.
+4. provider groups/resources를 확인해 commit 대상 변경이 하나라도 있는지 확인한다. staged 여부는 거부 조건으로 사용하지 않으며, provider가 commit 대상으로 노출하는 변경을 모두 처리한다.
 5. `repository.input.value = commitMessage`로 commit 입력을 설정한다.
 6. `CommandService.executeCommand(command.command, ...(command.arguments ?? []))`를 호출한다.
-7. command 실패·provider capability 없음·repository 없음·staged 변경 없음·중복 처리 상태를 `answer`와 분리된 side effect 결과로 기록한다.
+7. command 실패·provider capability 없음·repository 없음·commit 대상 변경 없음·중복 처리 상태를 `answer`와 분리된 side effect 결과로 기록한다.
 
 ## 한계와 확인 항목
 
 - `acceptInputCommand`는 provider별 command id와 동작에 의존하므로 모든 SCM provider의 commit semantics를 공통 API가 보장하지 않는다.
-- 공통 SCM 모델에는 staged/unstaged를 제품이 동일하게 판정할 수 있는 명시적인 commit API가 없으므로 resource 상태 매핑을 구현 중 확인해야 한다.
+- 공통 SCM 모델에는 staged/unstaged를 제품이 동일하게 판정할 수 있는 명시적인 commit API가 없으므로 staged 구분은 수행하지 않고 provider command semantics에 맡긴다.
 - 현재 선택 repository 기준 동작은 Theia SCM UI의 기본 경계와 일치하지만, JSON 응답이 의도한 workspace와 선택 repository가 다를 때의 정책은 구현 검증에서 명시해야 한다.
 - 이 한계가 R-007~R-008을 충족하지 못하게 하면 shell/git으로 자동 전환하지 않고 실패 상태 또는 후속 ADR로 올린다.
 

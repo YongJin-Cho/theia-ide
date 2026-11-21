@@ -9,11 +9,11 @@
 
 | Done | Open | Blocked | Skipped |
 |------|------|---------|---------|
-| 2    | 5    | 0       | 0       |
+| 3    | 4    | 0       | 0       |
 
 **Sprint goal:** 승인된 구조화 최종 응답 Spec을 구현하고 제품 확장 경계에서 검증한다.
-**Current focus:** T-003
-**Recommended next:** T-003 — Theia SCM 기반 session·commit side effect adapter 구현
+**Current focus:** T-004
+**Recommended next:** T-004 — compaction 저장·복원 및 메시지 순서 구현
 
 ## Tasks
 
@@ -29,11 +29,11 @@
   - Depends: T-001
   - Notes: PB-008; R-001~R-005, C-001~C-002. fenced/object JSON 추출, answer-only 표시, malformed fallback, 완료 전 side effect 금지를 구현했다. answer와 선택 필드의 문자열 타입을 검증하며 제품 확장 build를 통과했다. 제품 lint는 기존 prompt 파일의 header/max-len 오류로 실패했다.
 
-- [ ] **T-003** — session·commit side effect adapter 구현
+- [x] **T-003** — session·commit side effect adapter 구현
   - Phase: implementation
   - Artifact: `theia-extensions/product/src/`
   - Depends: T-002
-  - Notes: PB-008; R-006~R-009, C-003. Theia SCM API 직접 사용 Option B가 승인되었다. 공통 `commit(message)` API 대신 `selectedRepository.input.value`와 provider의 `acceptInputCommand`를 통해 실행하는 경계를 확인했다. 구현은 되었으나 `provider.groups`의 pending resource를 staged로 오인하고, workspace/repository 경로 검증과 durable idempotency가 없어 검증에서 partial 판정되었다. 상세: `verification/cocrates-structured-final-response.md`.
+  - Notes: PB-008; R-006~R-009, C-003. Theia SCM API 직접 사용 Option B를 유지했다. repository root의 workspace 포함 여부, commit message, provider commit capability, staged 여부와 무관한 commit 대상 resource, 제품 로컬 `StorageService` 기반 `in-flight`/`succeeded`/`failed` 상태와 동시 실행 lock을 구현했다. scoped build는 통과했고, lint는 기존 prompt 파일 오류로 실패했다. provider가 예외 없이 보고하는 내부 실패는 공통 API 한계로 기록했다. 상세: `verification/cocrates-structured-final-response.md`.
 
 - [ ] **T-004** — compaction 저장·복원 및 메시지 순서 구현
   - Phase: implementation

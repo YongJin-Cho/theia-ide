@@ -16,8 +16,8 @@ Cocrates Agent가 일반 Markdown과 prompt-only JSON object 최종 응답을 �
 - **R-004:** 구조화 응답에서 사용자에게 표시되는 Chat UI 본문은 `answer` 문자열만 Markdown content로 추가해야 한다. `session`, `commit`, `compaction` 및 기타 JSON 필드는 일반 Chat UI 본문에 노출하지 않아야 한다. ← ASR-017; `adr/cocrates-structured-response-parsing.md`
 - **R-005:** JSON이 아니거나 malformed JSON인 최종 응답은 전체 응답을 일반 Markdown으로 표시하는 호환 폴백을 사용해야 하며, JSON 파싱 실패를 구조화 응답 성공으로 기록하지 않아야 한다. ← ASR-017
 - **R-006:** 유효한 구조화 응답에 문자열 `session`이 있으면 현재 Chat 세션의 제목을 자동 변경해야 한다. 제목 변경은 기존 ChatService 세션 메타데이터 경계를 사용하고, 빈 값·과도한 길이·허용되지 않는 입력은 거부하거나 안전하게 정규화해야 한다. ← ASR-018; AC-013
-- **R-007:** 유효한 구조화 응답에 `commit`이 있으면 사용자 대상 전용 도구·명령의 추가 없이 제품 런타임이 commit side effect를 자동 실행해야 한다. 실행 전 workspace/repository 경로, 입력 형식, commit message, staged 변경 상태를 검증하고, 성공·실패·거부 상태를 별도로 기록해야 한다. ← ASR-018; `adr/cocrates-json-side-effect-safety.md`
-- **R-008:** commit 실행 실패는 성공으로 표시하거나 조용히 무시하지 않아야 한다. `answer` 표시와 side effect 결과는 독립적으로 기록하고, 사용자가 결과를 이해할 수 있는 오류 상태를 제공해야 한다. 동일 JSON 응답의 재처리로 commit이 중복 실행되지 않도록 처리 표시 또는 idempotency 보호를 제공해야 한다. ← ASR-018
+- **R-007:** 유효한 구조화 응답에 `commit`이 있으면 사용자 대상 전용 도구·명령의 추가 없이 제품 런타임이 commit side effect를 자동 실행해야 한다. 실행 전 workspace/repository 경로, 입력 형식, commit message, commit 대상 변경 존재 여부를 검증하고, staged 여부와 무관하게 선택된 repository의 commit 대상 변경을 모두 provider 명령으로 처리해야 한다. 성공·실패·거부 상태는 별도로 기록해야 한다. ← ASR-018; `adr/cocrates-json-side-effect-safety.md`
+- **R-008:** commit 실행 실패는 성공으로 표시하거나 조용히 무시하지 않아야 한다. `answer` 표시와 side effect 결과는 독립적으로 기록하고, 사용자가 결과를 이해할 수 있는 오류 상태를 제공해야 한다. commit 처리 상태는 제품 로컬 저장소에 영속화해야 하며, 실행 중에는 `in-flight`, 성공 후에는 `succeeded`, 실패 후에는 `failed`로 기록해야 한다. `succeeded`인 동일 JSON 응답은 애플리케이션 재시작 후에도 다시 실행하지 않아야 하며, `failed`인 응답은 오류를 기록하고 명시적인 재시도를 허용해야 한다. 동시 재처리는 원자적 상태 전환 또는 동등한 잠금으로 차단해야 한다. ← ASR-018; `adr/cocrates-commit-idempotency.md`
 - **R-009:** 자동 commit을 되돌리는 기능은 원래 commit을 조용히 삭제하는 방식이 아니라 별도의 undo/revert 복구 흐름으로 처리해야 한다. 이 Spec은 자동 rollback을 요구하지 않으며, 구현에서 원 commit과 복구 commit의 관계를 잃지 않아야 한다. ← ASR-018; `adr/cocrates-json-side-effect-safety.md`
 - **R-010:** 유효한 구조화 응답에 `compaction` 문자열이 있으면 해당 값과 직전 구조화 `answer`를 세션 대화 모델의 영속화 가능한 content 또는 메타데이터로 기록해야 한다. 이 제품 상태는 provider server-side compaction marker와 구분되어야 한다. ← ASR-019; AC-014; `adr/cocrates-compaction-history-boundary.md`
 - **R-011:** `compaction`이 기록된 다음 LLM 요청은 다음 순서의 메시지를 가져야 한다: `user: <compaction message>`, `assistant: <last answer>`, `user: <input>`. `<input>`은 새 사용자 입력이며, 이전 answer는 assistant 메시지로 유지해야 한다. ← ASR-019
@@ -29,7 +29,7 @@ Cocrates Agent가 일반 Markdown과 prompt-only JSON object 최종 응답을 �
 
 - **C-001:** `response_format`과 structured tool call을 구조화 응답의 필수 경로로 사용하지 않아야 한다. prompt-only JSON 요청과 완료 후 텍스트 파싱이 기준이며, 파싱 실패 시 일반 Markdown 폴백을 사용한다. ← ASR-017; `adr/cocrates-structured-response-parsing.md`
 - **C-002:** Theia upstream 전체 ChatAgent 또는 기존 provider의 기본 동작을 직접 수정하지 않고, 가능한 제품 확장 경계에서 구현해야 한다. ← ASR-017; ASR-019
-- **C-003:** `session`과 `commit` side effect는 JSON 파싱 성공과 분리된 실행 상태를 가져야 한다. commit은 자동 실행이지만 저장소·staged 변경·입력 검증을 생략할 수 없다. ← ASR-018
+- **C-003:** `session`과 `commit` side effect는 JSON 파싱 성공과 분리된 실행 상태를 가져야 한다. commit은 자동 실행이지만 저장소·commit 대상 변경·입력 검증을 생략할 수 없다. staged 여부는 거부 조건이 아니며, 선택된 repository의 provider가 commit 대상으로 노출하는 변경을 모두 처리한다. commit 상태 저장은 제품 로컬 영속 경계에서 수행하며, 성공 상태를 재시작 후에도 보존해야 한다. ← ASR-018; `adr/cocrates-commit-idempotency.md`
 - **C-004:** 제품 JSON compaction state와 OpenAI/ChatGPT/Anthropic 등 provider의 server-side compaction marker를 동일한 타입이나 replay 규칙으로 취급하지 않아야 한다. ← ASR-019
 - **C-005:** branch·agent 전환별 compaction 무효화 정책은 이번 Spec의 기본 범위가 아니다. 구현 중 안전한 fallback이 필요할 때만 별도 요구사항으로 재개한다. ← AC-014; `adr/cocrates-compaction-history-boundary.md`
 - **C-006:** 검증은 정적 코드 대조와 가능한 제품 확장 build/lint/test를 포함해야 하며, 실행할 수 없는 Browser/Electron 검증은 성공으로 간주하지 않고 사유를 기록해야 한다. ← ASR-009

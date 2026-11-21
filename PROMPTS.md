@@ -83,3 +83,49 @@
 - ⑨ 피드백 루프를 시작하고, 먼저 Spec에 명시되지 않은 commit 멱등성 상태 수명과 실패 후 재시도 정책을 별도 ADR로 등록했다.
 - `adr/cocrates-commit-idempotency.md`에 애플리케이션 수명 상태, 제품 로컬 영속 저장소, 재시작 후 보수적 거부의 선택지와 trade-off를 기록했다.
 - **Asked user:** R-008을 충족하기 위한 멱등성 정책으로 Option A, Option B, Option C 중 어느 방향을 선택할까요?
+
+### TURN-008
+
+### User Request
+> 멱등성 정책으로 Option B를 승인하고 다음 단계로 진행해줘.
+
+### Cocrates Response
+- `adr/cocrates-commit-idempotency.md`를 `approved`로 갱신하고, 제품 로컬 영속 저장소를 선택했다.
+- 성공 상태는 애플리케이션 재시작 후에도 동일 응답의 재처리를 차단하고, 실패 상태는 명시적 재시도가 가능하도록 하는 lifecycle을 결정했다.
+- 이 결정에 맞춰 Spec의 R-008과 C-003에 영속 상태(`in-flight`, `succeeded`, `failed`), 동시 실행 차단, 실패 재시도 조건을 반영했다.
+- **Asked user:** 수정된 Spec의 R-008/C-003 delta를 확인하고 재확인해줄까요?
+
+### TURN-009
+
+### User Request
+> 수정된 Spec을 확인하고 계속 진행해줘.
+
+### Cocrates Response
+- ⑨ 피드백 루프의 Spec 재확인 게이트를 통과한 것으로 기록했다.
+- 이제 T-003 구현은 승인된 Spec의 durable idempotency 요구사항과 Theia SCM API 경계를 기준으로 진행한다.
+- staged 판정은 provider별 capability 차이가 있어 별도 정책 결정이 필요하다.
+- **Asked user:** staged 상태를 판정할 수 없는 SCM provider를 보수적으로 거부할지, provider별 adapter를 추가해 지원 범위를 넓힐지 ADR로 비교·결정할까요?
+
+### TURN-010
+
+### User Request
+> staged가 아닌 변경도 모두 포함해서 commit 처리하면 될 것 같은데.
+
+### Cocrates Response
+- staged-only 검증을 제거하고, 선택된 repository provider가 commit 대상으로 노출하는 변경을 staged 여부와 무관하게 모두 처리하는 방향을 직접 입력으로 결정했다.
+- Spec의 R-007/C-003과 `docs/theia/scm-commit-adapter.md`의 실행 경계를 이 결정에 맞춰 수정했다.
+- `adr/cocrates-commit-idempotency.md`의 staged capability concern을 `directly resolved`로 정리했다.
+- **Asked user:** 수정된 Spec의 R-007/C-003 delta를 재확인하고 T-003 구현으로 진행할까요?
+
+### TURN-011
+
+### User Request
+> 수정된 Spec의 R-007/C-003 delta를 승인하고 T-003 구현으로 진행해줘.
+
+### Cocrates Response
+- Spec 재확인 게이트를 통과한 것으로 기록했다.
+- T-003 구현을 완료하고 repository root의 workspace 포함 여부, staged 여부와 무관한 commit 대상 변경 확인, Theia SCM provider command 실행을 반영했다.
+- 제품 로컬 `StorageService`에 `in-flight`/`succeeded`/`failed` 상태를 저장하고 정적 promise lock으로 동시 commit을 직렬화했다.
+- 제품 확장 build는 통과했다. lint는 기존 `cocrates-chat-agent-prompt.ts` 오류로 실패했으며 T-003 파일 오류는 없었다.
+- 검증 기록을 갱신하고 T-003을 완료 처리했으며, Current focus를 T-004로 이동했다.
+- **Asked user:** —

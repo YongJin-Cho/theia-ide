@@ -15,6 +15,8 @@ import { MarkdownChatResponseContentImpl, MutableChatRequestModel } from '@theia
 import { LanguageModelRequirement } from '@theia/ai-core/lib/common';
 import { CommandService } from '@theia/core/lib/common/command';
 import { ILogger } from '@theia/core';
+import { StorageService } from '@theia/core/lib/browser';
+import { WorkspaceService } from '@theia/workspace/lib/browser/workspace-service.js';
 import { ScmService } from '@theia/scm/lib/browser/scm-service.js';
 import { inject, injectable, named } from '@theia/core/shared/inversify';
 import { COCRATES_SYSTEM_PROMPT_ID, cocratesSystemPrompt } from './cocrates-chat-agent-prompt.js';
@@ -57,6 +59,12 @@ export class CocratesChatAgent extends AbstractStreamParsingChatAgent {
     @inject(CommandService)
     protected readonly commandService: CommandService;
 
+    @inject(StorageService)
+    protected readonly storageService: StorageService;
+
+    @inject(WorkspaceService)
+    protected readonly workspaceService: WorkspaceService;
+
     protected override async addContentsToResponse(response: LanguageModelResponse, request: MutableChatRequestModel): Promise<void> {
         const text = await getTextOfResponse(response);
         const structured = parseCocratesStructuredResponse(text);
@@ -65,8 +73,10 @@ export class CocratesChatAgent extends AbstractStreamParsingChatAgent {
                 this.chatService,
                 this.scmService,
                 this.commandService,
+                this.storageService,
+                this.workspaceService,
                 this.logger,
-            );
+                );
             const result = await sideEffects.apply(structured, request);
             const answer = result.errors.length > 0
                 ? `${structured.answer}\n\n${result.errors.map(error => `> ${error}`).join('\n')}`
