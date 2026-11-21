@@ -73,3 +73,13 @@
 - 제품 확장 build는 통과했지만, `provider.groups`의 pending resource를 staged 변경으로 간주하는 결함과 workspace/repository 경로 검증·durable idempotency 부재를 확인해 T-003을 완료 처리하지 않았다.
 - 제품 lint 실패는 T-003 파일이 아닌 기존 `cocrates-chat-agent-prompt.ts`의 file header/max-len 오류로 분리 기록했다.
 - **Asked user:** —
+
+### TURN-007
+
+### User Request
+> 검증에서 확인된 staged 판정, repository 검증, idempotency 정책 결함을 보완하는 피드백 루프 수정을 시작해줘.
+
+### Cocrates Response
+- ⑨ 피드백 루프를 시작하고, 먼저 Spec에 명시되지 않은 commit 멱등성 상태 수명과 실패 후 재시도 정책을 별도 ADR로 등록했다.
+- `adr/cocrates-commit-idempotency.md`에 애플리케이션 수명 상태, 제품 로컬 영속 저장소, 재시작 후 보수적 거부의 선택지와 trade-off를 기록했다.
+- **Asked user:** R-008을 충족하기 위한 멱등성 정책으로 Option A, Option B, Option C 중 어느 방향을 선택할까요?
