@@ -164,3 +164,13 @@
 - Browser UI smoke는 launch configuration의 debug adapter 실행 불가로 not-verifiable로 기록했다.
 - `verification/cocrates-structured-final-response.md`에 C-006 결과를 기록하고 T-006을 완료 처리했다.
 - **Asked user:** Sprint Boundary 검토를 승인하고 sprint-06 아카이브 및 다음 sprint 계획 단계로 진행할까요?
+
+## TURN-015
+
+### User Request
+> completion 이벤트를 수신하도록 수정해줘.
+
+### Cocrates Response
+- 현재 sprint-06의 유일한 열린 작업이 `T-007 Sprint Boundary`이므로 새 구현을 시작하기 전에 sprint 경계를 처리해야 함을 확인했다.
+- completion 이벤트 수신 구현은 provider 어댑터 검증, Theia 공통 stream 계약 확장, 제품 확장 provider별 래퍼라는 세 가지 경계로 나뉘며, provider 어댑터 검증을 권장했다.
+- **Asked user:** Sprint Boundary를 승인하고 sprint-06 아카이브 및 completion 이벤트 수신 변경을 위한 다음 sprint 계획으로 진행할까요?
