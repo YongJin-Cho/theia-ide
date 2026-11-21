@@ -1,6 +1,6 @@
 # Architecturally Significant Requirements
 
-Eclipse Theia IDE Product Template의 PRD와 승인된 AC 결과를 통합한 설계 기준이다. 최종 Spec은 애플리케이션 통합과 세 개의 Theia 확장을 분리해 작성한다. 아래 리브랜딩 delta는 AC-005~AC-007의 승인 결과를 반영한 초안이며, 사용자 승인을 거쳐 확정한다.
+Eclipse Theia IDE Product Template의 PRD와 승인된 AC 결과를 통합한 설계 기준이다. 최종 Spec은 애플리케이션 통합과 제품 확장, AI Agent·Skills 계약을 분리해 작성한다. 본 문서는 사용자 승인 전 ASR 통합본이다.
 
 ## Summary
 
@@ -18,16 +18,21 @@ Eclipse Theia IDE Product Template의 PRD와 승인된 AC 결과를 통합한 �
 | ASR-010 | Cocrates 타깃 식별자 매핑 | AC-005 | AC-005 | applications-integration, product-extension, updater-extension, launcher-extension |
 | ASR-011 | Cocrates 제품 브랜드 경계 | AC-006 | AC-006 | applications-integration, product-extension, updater-extension, launcher-extension |
 | ASR-012 | Cocrates 업데이트·배포 메타데이터 | AC-007 | AC-007 | applications-integration, updater-extension, launcher-extension |
+| ASR-013 | Cocrates Default ChatAgent 등록 | AC-008 | AC-008 | product-extension, applications-integration |
+| ASR-014 | 내장 Skills 배치·발견·패키징 | AC-009 | AC-009 | product-extension, applications-integration |
+| ASR-015 | 시스템 프롬프트 번들 소스 | AC-010 | AC-010 | product-extension, applications-integration |
+| ASR-016 | Skills 보조 파일 읽기와 경로 안전성 | AC-011 | AC-011 | product-extension, all |
 
 ## Dependency Order (recommended Spec encoding path)
 
 1. ASR-001 → ASR-002 → ASR-003 → ASR-004 → ASR-005 → ASR-006 → ASR-007 → ASR-008 → ASR-009
-2. 리브랜딩 delta는 ASR-002 이후 타깃 식별자(ASR-010), 제품 브랜드 경계(ASR-011), 업데이트·배포 메타데이터(ASR-012) 순으로 각 Spec에 인코딩한다. ASR-010은 ASR-002에 의존하고, ASR-011은 ASR-010을 제품 표면에 적용하며, ASR-012는 ASR-010 및 ASR-011을 배포 설정에 적용한다.
+2. 리브랜딩 delta는 ASR-002 이후 ASR-010 → ASR-011 → ASR-012 순으로 인코딩한다.
+3. AI Agent·Skills delta는 ASR-013 → ASR-014 → ASR-015 → ASR-016 순으로 인코딩한다. ASR-013은 ASR-003과 ASR-002에 의존하고, ASR-014는 ASR-013의 제품 확장·패키징 경계에 의존하며, ASR-015는 ASR-013의 Agent 등록에 의존하고, ASR-016은 ASR-014의 Skills 발견 경로에 의존한다.
 
 ## Spec 분할 원칙
 
-- `spec/applications-integration.md`: Browser, Electron, Electron Next의 통합 관계, 타깃별 설정, 의존성 조합, 빌드·패키징·플러그인 흐름, 채택자 설정, 런타임 제약
-- `spec/product-extension.md`: `theia-extensions/product`의 제품 기능과 frontend/Electron main entrypoint
+- `spec/applications-integration.md`: Browser, Electron, Electron Next의 통합 관계, 타깃별 설정, 의존성 조합, 빌드·패키징·플러그인 흐름, 채택자 설정, 런타임 제약, AI Agent/Skills 타깃 검증
+- `spec/product-extension.md`: `theia-extensions/product`의 제품 기능, frontend/Electron main entrypoint, Cocrates ChatAgent, 번들 system prompt, `getSkillFileContent` rebind
 - `spec/updater-extension.md`: `theia-extensions/updater`의 업데이트 기능과 Electron 적용 범위
 - `spec/launcher-extension.md`: `theia-extensions/launcher`의 AppImage launcher 기능과 적용 범위
 
@@ -44,7 +49,7 @@ Eclipse Theia IDE Product Template의 PRD와 승인된 AC 결과를 통합한 �
 ### ASR-002 — 애플리케이션 타깃 통합
 
 - **Source:** AC-001 — 애플리케이션 타깃의 역할과 공통 경계
-- **Statement:** `applications/browser`, `applications/electron`, `applications/electron-next`는 하나의 Eclipse Theia IDE Product Template이 제공하는 배포 타깃이어야 한다. `electron-next`는 별도 제품 계약이 아니라 Next 릴리스 채널/제품 변형이어야 하며, 공통 IDE·확장·플러그인 계약을 공유하고 branding variant, 업데이트 채널, URI scheme, configuration folder, 앱 식별자 같은 타깃별 설정을 가질 수 있어야 한다.
+- **Statement:** `applications/browser`, `applications/electron`, `applications/electron-next`는 하나의 Eclipse Theia IDE Product Template이 제공하는 배포 타깃이어야 한다. `electron-next`는 별도 제품 계약이 아니라 Next 릴리스 채널/제품 변형이어야 하며, 공통 IDE·확장·플러그인 계약을 공유하고 타깃별 branding variant, 업데이트 채널, URI scheme, configuration folder, 앱 식별자를 가질 수 있어야 한다.
 - **Decision summary:** 세 애플리케이션은 하나의 제품 템플릿에 속하고 Electron Next는 타깃 변형이다.
 - **Depends on:** ASR-001
 - **Related AC:** AC-001
@@ -52,7 +57,7 @@ Eclipse Theia IDE Product Template의 PRD와 승인된 AC 결과를 통합한 �
 ### ASR-003 — Product 확장
 
 - **Source:** AC-002 — 제품 확장의 구성 및 의존성 경계
-- **Statement:** `theia-extensions/product`는 Eclipse Theia IDE 제품에 필요한 제품 수준 Theia 확장이어야 한다. 이 확장은 제품 branding, Getting Started, About Dialog, Help 메뉴, AI Registry 설정 및 Electron icon contribution을 제공하고, `AboutDialog`와 `AIRegistryConfiguration`을 제품 구현으로 명시적으로 rebind한다. 이 확장은 모든 채택 애플리케이션의 공통 계약이 아니며, 애플리케이션의 일반적인 override 지점을 보장하지 않는다.
+- **Statement:** `theia-extensions/product`는 Eclipse Theia IDE 제품에 필요한 제품 수준 Theia 확장이어야 한다. 이 확장은 제품 branding, Getting Started, About Dialog, Help 메뉴, AI Registry 설정 및 Electron icon contribution을 제공하고, 제품 구현이 필요한 DI 계약을 명시적으로 rebind한다. 이 확장은 모든 채택 애플리케이션의 공통 계약이 아니며, 애플리케이션의 일반적인 override 지점을 보장하지 않는다.
 - **Decision summary:** Product는 이 저장소의 Browser/Electron 제품 타깃들이 공유하는 제품 고유 확장이다.
 - **Depends on:** ASR-002
 - **Related AC:** AC-002
@@ -114,7 +119,6 @@ Eclipse Theia IDE Product Template의 PRD와 승인된 AC 결과를 통합한 �
 - **Related AC:** AC-005
 - **Related ADRs:**
   - `adr/cocrates-target-identifiers.md` — approved
-- **Notes:** 실행 파일·artifact 이름은 타깃별 Cocrates 명칭으로 정렬하되, 구체적인 파일명은 해당 애플리케이션의 기존 패키징 규칙을 따르는 Spec에서 정의한다.
 
 ### ASR-011 — Cocrates 제품 브랜드 경계
 
@@ -132,3 +136,38 @@ Eclipse Theia IDE Product Template의 PRD와 승인된 AC 결과를 통합한 �
 - **Depends on:** ASR-010, ASR-011
 - **Related AC:** AC-007
 
+### ASR-013 — Cocrates Default ChatAgent 등록
+
+- **Source:** AC-008 — Cocrates ChatAgent 등록 및 기본 Agent 선택
+- **Statement:** 제품 확장은 `AbstractStreamParsingChatAgent` 기반 Cocrates ChatAgent를 구현하고 `Agent`와 `ChatAgent`를 모두 등록해야 한다. `ai-features.chat.defaultChatAgent` preference가 Cocrates Agent ID를 가리켜 mention 없는 채팅에서도 Cocrates를 기본 Agent로 선택해야 한다. 별도 Agent mode는 추가하지 않는다.
+- **Decision summary:** Option A인 제품 확장 코드 기반 Agent와 기본 Agent preference를 채택한다.
+- **Depends on:** ASR-003, ASR-002
+- **Related AC:** AC-008
+- **Related ADRs:**
+  - `adr/cocrates-chat-agent-registration.md` — approved
+
+### ASR-014 — 내장 Skills 배치·발견·패키징
+
+- **Source:** AC-009 — 내장 Skills의 배치·발견·패키징 전략
+- **Statement:** 제품 소유 `adr`, `todo`, `sdd` 스킬 트리는 번들 디렉터리에 포함하고, backend/main이 타깃별 런타임 경로를 시드하며, frontend의 `SkillDirectoryContribution`이 해당 경로를 plugin discovery tier에 제공해야 한다. Electron에서는 스킬 트리를 asar 외부의 읽기 가능한 배포 리소스로 제공하고, 제품·사용자·workspace 스킬을 분리해야 한다. 실제 스킬 본문은 사용자 제공 전 생성·복사하지 않는다.
+- **Decision summary:** Option A인 번들 디렉터리, contribution, 런타임 경로 시드 조합을 채택한다. 구체적인 경로 시드 채널은 구현 전 후속 관심사다.
+- **Depends on:** ASR-013
+- **Related AC:** AC-009
+- **Related ADRs:**
+  - `adr/cocrates-skills-packaging.md` — approved
+
+### ASR-015 — 시스템 프롬프트 번들 소스
+
+- **Source:** AC-010 — Cocrates 시스템 프롬프트의 소스 연결 방식
+- **Statement:** 빌드 단계에서 `docs/cocrates/agent1.md`를 생성된 TypeScript 또는 동등한 번들 소스로 변환하고 Markdown 의미를 보존해야 한다. 제품 ChatAgent는 생성 결과만 system prompt로 사용해야 하며, 런타임 원본 파일이나 수동 복사본을 읽지 않아야 한다. 원본 변경은 다음 빌드에서 생성 결과에 반영되어야 한다.
+- **Decision summary:** Option C인 빌드 생성 소스 방식을 채택한다.
+- **Depends on:** ASR-013
+- **Related AC:** AC-010
+
+### ASR-016 — Skills 보조 파일 읽기와 경로 안전성
+
+- **Source:** AC-011 — `getSkillFileContent` 보조 파일 API 및 경로 안전성
+- **Statement:** 제품 확장은 기존 `getSkillFileContent` tool ID를 유지한 채 `GetSkillFileContent`를 rebind해야 한다. 입력은 필수 `skillName`과 선택 `path`이며 `path`는 skill root 상대 경로다. 생략·`SKILL.md`·`./SKILL.md`는 기존처럼 frontmatter를 제거한 `SKILL.md` 본문을 반환하고, 그 외 파일은 원문을 반환해야 한다. 절대 경로·드라이브 문자·정규화 후 skill root 밖 경로·심볼릭 링크를 통한 탈출과 디렉터리 읽기는 거부해야 하며, 오류는 JSON 문자열로 반환해야 한다.
+- **Decision summary:** 새 tool을 만들지 않고 제품 DI rebind로 기존 Agent 프롬프트·Capabilities와 호환한다. 오류 JSON에는 최소 `Skill not found`, `File not found`, `Path escapes skill directory` 의미를 포함한다.
+- **Depends on:** ASR-014
+- **Related AC:** AC-011

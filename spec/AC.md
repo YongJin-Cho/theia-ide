@@ -13,10 +13,10 @@ Theia IDE Product Template의 제품 Spec 작성을 위해 설계가 필요한 �
 | AC-005 | Cocrates 타깃 식별자 체계 | Constraints (structural) | designed | adr/cocrates-target-identifiers.md | ASR-010 |
 | AC-006 | 제품 브랜드와 Theia 업스트림 명칭의 경계 | Structure & organization | designed | — | ASR-011 |
 | AC-007 | 업데이트·배포 메타데이터의 제품 소유 범위 | Integration & dependencies | designed | — | ASR-012 |
-| AC-008 | Cocrates ChatAgent 등록 및 기본 Agent 선택 | Integration & dependencies | designed | adr/cocrates-chat-agent-registration.md |  |
-| AC-009 | 내장 Skills의 배치·발견·패키징 전략 | Structure & organization | designed | `adr/cocrates-skills-packaging.md` |  |
-| AC-010 | Cocrates 시스템 프롬프트의 소스 연결 방식 | Integration & dependencies | designed | — |  |
-| AC-011 | `getSkillFileContent` 보조 파일 API 및 경로 안전성 | Quality bar (architectural) | reviewing | — |  |
+| AC-008 | Cocrates ChatAgent 등록 및 기본 Agent 선택 | Integration & dependencies | designed | adr/cocrates-chat-agent-registration.md | ASR-013 |
+| AC-009 | 내장 Skills의 배치·발견·패키징 전략 | Structure & organization | designed | `adr/cocrates-skills-packaging.md` | ASR-014 |
+| AC-010 | Cocrates 시스템 프롬프트의 소스 연결 방식 | Integration & dependencies | designed | — | ASR-015 |
+| AC-011 | `getSkillFileContent` 보조 파일 API 및 경로 안전성 | Quality bar (architectural) | designed | — | ASR-016 |
 
 ## Dependency Order (recommended review path)
 
@@ -162,12 +162,13 @@ Theia IDE Product Template의 제품 Spec 작성을 위해 설계가 필요한 �
 ### AC-011 — `getSkillFileContent` 보조 파일 API 및 경로 안전성
 
 - **Category:** Quality bar (architectural)
-- **Status:** reviewing
+- **Status:** designed
 - **Statement:** 기존 tool id와 `SKILL.md` 본문 호환성을 유지하면서 skill-root 상대 `path`를 지원하는 rebind 구현의 입력·반환·경로 탈출 방지 계약을 어디까지 보장할 것인가?
 - **Why it matters:** 새 tool id를 만들면 기존 Agent 프롬프트와 연결이 끊기고, 경로 가드가 부족하면 스킬 디렉터리 밖의 파일을 읽는 보안 문제가 생긴다.
 - **Depends on:** AC-009
 - **Related ADRs:**
   - —
 - **Resolution path:** direct-input
-- **Resolution:**
-- **Notes:** `extending-get-skill-file-content.md`의 `path` 규칙, `SKILL.md` 본문 호환, skill root 탈출 차단, 오류 JSON 계약을 구현 Spec에 반영한다.
+- **Resolution:** 기존 tool ID `getSkillFileContent`를 유지하고 제품 확장에서 `GetSkillFileContent`를 rebind한다. 필수 `skillName`과 선택 `path`를 받으며 `path`는 skill root 상대 경로로 제한한다. `path` 생략·`SKILL.md`·`./SKILL.md`는 기존처럼 frontmatter를 제거한 `SKILL.md` 본문을 반환하고, 그 외 파일은 원문을 반환한다. 절대 경로·드라이브 문자·정규화 후 skill root 밖 경로·심볼릭 링크를 통한 탈출과 디렉터리 읽기는 거부한다. 오류는 JSON 문자열로 반환하며 `Skill not found`, `File not found`, `Path escapes skill directory` 오류를 포함한다.
+- **ASR:** ASR-016
+- **Notes:** `extending-get-skill-file-content.md`의 `path` 규칙, `SKILL.md` 본문 호환, skill root 탈출 차단, 오류 JSON 계약을 구현 Spec에 반영한다. 사용자가 제시된 Direct Input 계약을 승인해 설계 완료했다.

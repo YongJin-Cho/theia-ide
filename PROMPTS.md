@@ -86,3 +86,14 @@
 - 런타임 경로의 `agent1.md`나 수동 복사본은 사용하지 않고, 원본 Markdown 내용은 생성 시 의미 변경 없이 보존한다.
 - 다음 의존 항목인 AC-011을 `reviewing`으로 전환했다.
 - **Asked user:** AC-011에서 기존 `getSkillFileContent` 호환성과 skill-root 상대 보조 파일 읽기, 경로 탈출 차단을 어떤 입력·오류 계약으로 확정할지 검토해줘.
+
+## TURN-008
+
+### User Request
+> AC-011 계약을 승인하고 설계 완료 처리한 뒤 ASR 통합 단계로 진행해줘.
+
+### Cocrates Response
+- AC-011을 `designed`로 전환하고 기존 tool ID 유지, 선택 `path`, skill-root 경로 가드, 오류 JSON, 제품 DI rebind 계약을 Resolution에 기록했다.
+- 모든 blocking AC(AC-008~AC-011)가 `designed`이고 연결된 ADR이 `approved`인지 확인해 G3/G4를 통과했다.
+- `spec/ASR.md`에 AI Agent·Skills 관련 ASR-013~ASR-016을 통합하고, T-003을 완료 처리한 뒤 T-004를 현재 focus로 이동했다.
+- **Asked user:** 통합된 `spec/ASR.md`를 검토하고 ASR을 승인해 Spec 작성 단계로 진행할지 결정해줘.
