@@ -36,3 +36,15 @@
 - 제품 확장 build는 통과했다. 제품 lint는 이번 변경과 무관한 기존 `cocrates-chat-agent-prompt.ts`의 file header/max-len 오류 때문에 실패했으며, 새 파서 파일에서는 오류가 발생하지 않았다.
 - 승인된 side effect 안전성 ADR의 후속 미결정 항목인 commit 실행 어댑터를 확인해 T-003을 해당 결정 전까지 blocked 상태로 표시했다.
 - **Asked user:** commit 실행을 기존 shell/git tool, Theia SCM API, 전용 backend service 중 어떤 경계로 구현할지 ADR을 열어 비교·결정할까요?
+
+## TURN-004
+
+### User Request
+> ADR로 비교해줘
+
+### Cocrates Response
+- `adr/cocrates-commit-execution-adapter.md`를 `proposed` 상태로 작성했다.
+- 기존 shell/git 경계, Theia SCM API, 전용 backend service를 Theia 적합성, 안전성, 멱등성, 구현 비용, 확장성 기준으로 비교했다.
+- 현재 sprint-06 범위에는 기존 shell/git 경계를 내부 어댑터로 재사용하는 Option A를 권고했다. 단일 문자열 shell 조합이 아니라 검증된 repository root와 인자 배열 실행을 전제로 한다.
+- 상위 side effect ADR의 Related 링크에 후속 ADR을 연결했다.
+- **Asked user:** 세 옵션 중 선택할 방향을 승인할까요? 추천안인 Option A를 승인하면 ADR을 approved로 기록하고 T-003 구현을 재개하겠습니다.

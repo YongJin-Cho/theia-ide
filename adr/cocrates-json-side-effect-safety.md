@@ -61,6 +61,7 @@ approved
 - `theia-ide/spec/AC.md` — AC-013
 - `theia-ide/adr/cocrates-structured-response-parsing.md`
 - `theia-ide/docs/theia/structured-output-side-effects.md`
+- `theia-ide/adr/cocrates-commit-execution-adapter.md` — proposed follow-up
 
 ## Notes
 - 2026-11-21: AC-013 검토를 위해 제안 상태로 생성했다. Option C를 권장한다.
