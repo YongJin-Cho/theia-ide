@@ -4,6 +4,25 @@
 
 이 저장소는 Eclipse Theia 플랫폼을 조합하여 데스크톱 및 브라우저 기반 IDE 제품을 만들 수 있게 하는 Product Template이다. 표준 Theia 기능, 제품 전용 확장, 플러그인, 빌드·패키징 구성을 함께 제공하여 이 저장소 자체를 Eclipse Theia IDE로 배포하고, 이를 바탕으로 다른 Theia 기반 제품을 구성할 수 있게 한다.
 
+## Sprint-01 리브랜딩 변경
+
+이번 변경에서는 이 Product Template이 제공하는 전체 배포 타깃을 Cocrates 제품군으로 전환한다. Browser와 Stable Electron은 `Cocrates` 제품으로 제공하고, Electron Next는 별도 채널 특성을 유지하는 `Cocrates Next` 변형으로 제공한다.
+
+### 리브랜딩 범위
+
+- Browser, Stable Electron, Electron Next의 사용자에게 보이는 제품명과 애플리케이션 설정을 Cocrates 브랜드에 맞춘다.
+- OS 앱 식별자, 실행 파일·패키지 이름, URI scheme, configuration folder, Electron builder 설정을 새 제품 식별 체계로 정렬한다.
+- Welcome/About/Help, 제품 확장, updater, launcher, AI registry와 제품 리소스의 Theia IDE 하드코딩을 Cocrates 제품 표면으로 갱신한다.
+- CI, Docker/배포 메타데이터, 스크립트, 문서의 제품명·산출물명·이미지 태그를 같은 체계로 정렬한다.
+- Theia 플랫폼·업스트림 빌더 도구를 가리키는 이름과 Cocrates 제품 이름을 구분하고, 제품 배포물에서는 Theia IDE 브랜드가 사용자 표면에 남지 않도록 한다.
+
+### 리브랜딩 성공 기준
+
+- 세 타깃이 각각 `Cocrates` 또는 `Cocrates Next`로 식별되며, 서로 충돌하지 않는 앱 식별자·URI scheme·설정 폴더를 사용한다.
+- 제품 UI와 패키징 설정에서 사용자에게 노출되는 브랜드·아이콘·스플래시·산출물·CLI 이름이 타깃별 정책과 일치한다.
+- launcher, updater, AI registry, CI와 문서가 새 제품 식별자를 사용하고, Theia 업스트림 도구명은 필요한 곳에만 남는다.
+- 승인된 리브랜딩 Spec을 기준으로 소스 변경, 패키징, Browser/Electron 실행 검증을 재현할 수 있다.
+
 ## Goals
 
 - Electron과 브라우저 실행 대상에 Theia IDE 기능과 제품 브랜딩을 조합한다.
