@@ -9,11 +9,11 @@
 
 | Done | Open | Blocked | Skipped |
 |------|------|---------|---------|
-| 6    | 1    | 0       | 0       |
+| 7    | 0    | 0       | 0       |
 
 **Sprint goal:** 승인된 구조화 최종 응답 Spec을 구현하고 제품 확장 경계에서 검증한다.
-**Current focus:** T-007
-**Recommended next:** T-007 — Sprint Boundary → sprint-07
+**Current focus:** —
+**Recommended next:** —
 
 ## Tasks
 
@@ -53,7 +53,7 @@
   - Depends: T-005
   - Notes: PB-008; C-006. 전체 build, Browser·Stable Electron·Electron Next build, Stable/Next E2E를 실행했다. lint는 기존 prompt 파일 오류로 실패했고 Browser UI smoke는 debug adapter 제약으로 not-verifiable이다.
 
-- [ ] **T-007** — Sprint Boundary → sprint-07
+- [x] **T-007** — Sprint Boundary → sprint-07
   - Phase: cross-cutting
   - Artifact: `scrum/TODO-06.md`, `scrum/PROMPTS-06.md`
   - Depends: T-001, T-002, T-003, T-004, T-005, T-006
@@ -69,9 +69,11 @@
 | 03 | Cocrates AI Agent·Skills 패키징 요구사항 확정 | 2026-11-21 | [`TODO-03.md`](./scrum/TODO-03.md), [`PROMPTS-03.md`](./scrum/PROMPTS-03.md) |
 | 04 | Cocrates AI Agent·Skills 구현 및 검증 | 2026-11-21 | [`TODO-04.md`](./scrum/TODO-04.md), [`PROMPTS-04.md`](./scrum/PROMPTS-04.md) |
 | 05 | Cocrates 구조화 최종 응답 및 메시지 압축 Spec→backlog | 2026-11-21 | [`TODO-05.md`](./scrum/TODO-05.md), [`PROMPTS-05.md`](./scrum/PROMPTS-05.md) |
+| 06 | Cocrates 구조화 최종 응답 구현 및 검증 | 2026-11-21 | [`TODO-06.md`](./scrum/TODO-06.md), [`PROMPTS-06.md`](./scrum/PROMPTS-06.md) |
 
 ## Notes
 
 - sprint-05 Boundary를 승인받아 `scrum/TODO-05.md`, `scrum/PROMPTS-05.md`로 아카이브했다.
 - PB-008은 승인된 Spec을 구현하는 sprint-06 범위로 이동했다.
-- `agent2.md`의 원본 경로는 사용자 요청의 `~/docs` 대신 저장소에 보관된 `docs/cocrates/agent2.md`를 기준으로 한다.
+- sprint-06 Boundary를 승인받아 `scrum/TODO-06.md`, `scrum/PROMPTS-06.md`로 아카이브했다.
+- 현재 열린 product backlog story가 없어 sprint-07은 아직 계획·승인되지 않았다.

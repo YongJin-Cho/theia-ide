@@ -35,4 +35,4 @@
 
 ## 계획 상태
 
-Sprint plan approval 대기 중이다. 승인 전에는 sprint-06 실행 보드를 시드하거나 구현을 시작하지 않는다.
+Sprint plan approval을 완료했고 sprint-06 실행·검증 및 Boundary를 종료했다. 구현 결과는 `verification/cocrates-structured-final-response.md`에 기록되어 있으며, 종료 보드는 [`TODO-06.md`](./TODO-06.md), 대화 로그는 [`PROMPTS-06.md`](./PROMPTS-06.md)에 아카이브되어 있다.

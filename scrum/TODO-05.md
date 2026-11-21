@@ -83,4 +83,3 @@
 
 - sprint-05 계획을 사용자가 승인했고, 승인 즉시 Spec→backlog 실행 보드를 시드했다.
 - PB-008은 기존 PB-007 Cocrates Agent 구현을 확장하는 delta 요구사항이다.
-- `agent2.md`의 원본 경로는 사용자 요청의 `~/docs` 대신 저장소에 보관된 `docs/cocrates/agent2.md`를 기준으로 한다.
