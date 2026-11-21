@@ -9,11 +9,11 @@
 
 | Done | Open | Blocked | Skipped |
 |------|------|---------|---------|
-| 7    | 1    | 0       | 0       |
+| 8    | 0    | 0       | 0       |
 
 **Sprint goal:** Cocrates Default Chat Agent와 내장 Skills 배포를 위한 승인된 Spec과 구현 backlog를 확정한다.
-**Current focus:** T-008
-**Recommended next:** T-008 — Sprint Boundary → sprint-04
+**Current focus:** —
+**Recommended next:** —
 
 ## Tasks
 
@@ -52,7 +52,7 @@
   - Artifact: `scrum/product-backlog.md`
   - Depends: T-006
   - Notes: 승인된 Spec 경로와 구현·검증 DoD를 PB-007에 반영했다.
-- [ ] **T-008** — Sprint Boundary → sprint-04
+- [x] **T-008** — Sprint Boundary → sprint-04
   - Phase: cross-cutting
   - Artifact: `scrum/TODO-03.md`, `scrum/PROMPTS-03.md`
   - Depends: T-001, T-002, T-003, T-004, T-005, T-006, T-007
@@ -65,6 +65,7 @@
 | 00 | Eclipse Theia IDE Product Template Spec 정립 | 현재 세션 | [`TODO-00.md`](./scrum/TODO-00.md), [`PROMPTS-00.md`](./scrum/PROMPTS-00.md) |
 | 01 | Cocrates 전체 타깃 리브랜딩 요구사항 확정 | 현재 세션 | [`TODO-01.md`](./scrum/TODO-01.md), [`PROMPTS-01.md`](./scrum/PROMPTS-01.md) |
 | 02 | Cocrates 브랜딩 구현·검증 | 2026-11-21 | [`TODO-02.md`](./scrum/TODO-02.md), [`PROMPTS-02.md`](./scrum/PROMPTS-02.md) |
+| 03 | Cocrates AI Agent·Skills 패키징 요구사항 확정 | 2026-11-21 | [`TODO-03.md`](./scrum/TODO-03.md), [`PROMPTS-03.md`](./scrum/PROMPTS-03.md) |
 
 ## Notes
 

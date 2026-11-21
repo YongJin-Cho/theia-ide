@@ -1,7 +1,7 @@
 # 제품 백로그 — Eclipse Theia IDE Product Template
 
 > **실행 보드:** [`../TODO.md`](../TODO.md)
-> **Updated:** 2026-11-21 — sprint-03 PB-007 Spec review 승인 및 backlog encode
+> **Updated:** 2026-11-21 — sprint-03 Boundary 종료 및 PB-007 sprint-04 이관
 
 ## 스토리
 
@@ -50,6 +50,6 @@
   - [ ] **PB-007** — Cocrates Default Chat Agent 및 내장 Skills 배포
   - Story: 사용자가 `@Cocrates`를 명시하지 않아도 Cocrates가 기본 Chat Agent로 동작하고, `docs/cocrates/agent1.md` 시스템 프롬프트와 `adr`, `todo`, `sdd` 스킬을 Browser·Stable Electron·Electron Next 제품 패키지에서 사용할 수 있다. 스킬 보조 파일은 확장된 `getSkillFileContent`로 안전하게 읽을 수 있다.
   - Spec: `spec/cocrates-ai-agent-skills.md` §Requirements, §Constraints
-  - Sprint: sprint-03
+  - Sprint: sprint-04
   - Depends: PB-002, PB-003
-  - Notes: sprint-03 Spec→backlog 범위로 승인된 Spec과 review 결과(3 pass, 0 fail, 0 needs-clarification)를 반영했다. 구현·검증은 다음 Backlog→Implementation 스프린트에서 수행한다. 실제 세 스킬 명세 본문은 사용자가 제공한 뒤 지정 폴더에 복사하며, 이번 범위는 배치·발견·도구·에이전트 계약과 구현·검증 DoD를 확정한다.
+  - Notes: sprint-03 Spec→backlog 범위와 Boundary를 완료했다. 승인된 Spec과 review 결과(3 pass, 0 fail, 0 needs-clarification)를 유지하며 sprint-04에서 구현·검증한다. 실제 세 스킬 명세 본문은 사용자가 제공한 뒤 지정 폴더에 복사하며, 구현 착수 전 Skills 런타임 경로 시드 채널을 확정한다.
