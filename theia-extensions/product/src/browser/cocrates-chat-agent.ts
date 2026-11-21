@@ -13,10 +13,21 @@ import {
     isLanguageModelStreamResponse,
     isLanguageModelStreamResponsePart,
     isTextResponsePart,
+    isUsageResponsePart,
     LanguageModelMessage,
     LanguageModelResponse,
 } from '@theia/ai-core/lib/common/language-model.js';
-import { ChatModel, MarkdownChatResponseContentImpl, MutableChatRequestModel } from '@theia/ai-chat/lib/common/chat-model.js';
+import {
+    ChatModel,
+    ChatRequestModel,
+    ChatResponseContent,
+    ErrorChatResponseContent,
+    InformationalChatResponseContent,
+    MarkdownChatResponseContentImpl,
+    MutableChatRequestModel,
+    ThinkingChatResponseContent,
+} from '@theia/ai-chat/lib/common/chat-model.js';
+import { ImageContextVariable } from '@theia/ai-chat/lib/common/image-context-variable.js';
 import { LanguageModelRequirement } from '@theia/ai-core/lib/common';
 import { CommandService } from '@theia/core/lib/common/command';
 import { ILogger } from '@theia/core';
@@ -74,21 +85,112 @@ export class CocratesChatAgent extends AbstractStreamParsingChatAgent {
     @inject(WorkspaceService)
     protected readonly workspaceService: WorkspaceService;
 
-    protected override async getMessages(model: ChatModel): Promise<LanguageModelMessage[]> {
-        const compaction = model.getRequests()
-            .flatMap(request => request.response.response.content)
-            .filter(isCocratesCompactionContent)
-            .slice(-1)[0];
+    protected override async getMessages(
+        model: ChatModel,
+        includeResponseInProgress = false,
+    ): Promise<LanguageModelMessage[]> {
+        const requests = model.getRequests();
+        let compactionIndex = -1;
+        let compaction: CocratesCompactionChatResponseContentImpl | undefined;
+        for (let i = 0; i < requests.length; i++) {
+            const found = requests[i].response.response.content.find(isCocratesCompactionContent);
+            if (found) {
+                compactionIndex = i;
+                compaction = found;
+            }
+        }
         if (!compaction) {
-            return super.getMessages(model);
+            // No product compaction yet: keep the full accumulated transcript.
+            return super.getMessages(model, includeResponseInProgress);
         }
 
-        const requests = model.getRequests();
-        const currentRequest = requests[requests.length - 1];
-        const currentInput = currentRequest?.message.parts.map(part => part.promptText).join('') ?? '';
-        const messages: LanguageModelMessage[] = compaction.toLanguageModelMessage();
-        if (currentInput) {
-            messages.push({ actor: 'user', type: 'text', text: currentInput });
+        // Prefix replaces all turns up to and including the compacting turn.
+        // Later turns (without a newer compaction) stay verbatim and keep accumulating.
+        const messages: LanguageModelMessage[] = [...compaction.toLanguageModelMessage()];
+        for (const request of requests.slice(compactionIndex + 1)) {
+            messages.push(...this.serializeRequestMessages(request, includeResponseInProgress));
+        }
+        return messages;
+    }
+
+    /**
+     * Serializes one chat request the same way {@link AbstractChatAgent.getMessages} does,
+     * so post-compaction turns keep tool calls, images, and answers in order.
+     */
+    protected serializeRequestMessages(
+        request: ChatRequestModel,
+        includeResponseInProgress: boolean,
+    ): LanguageModelMessage[] {
+        const messages: LanguageModelMessage[] = [];
+        const text = request.message.parts.map(part => part.promptText).join('');
+        if (text.length > 0) {
+            messages.push({
+                actor: 'user',
+                type: 'text',
+                text,
+            });
+        }
+
+        const imageMessages = request.context.variables
+            .filter(variable => ImageContextVariable.isResolvedImageContext(variable))
+            .map(variable => ImageContextVariable.parseResolved(variable))
+            .filter((content): content is NonNullable<typeof content> => content !== undefined)
+            .map(content => ({
+                actor: 'user' as const,
+                type: 'image' as const,
+                image: {
+                    base64data: content.data,
+                    mimeType: content.mimeType,
+                },
+            }));
+        messages.push(...imageMessages);
+
+        const contextImageData = new Set(imageMessages.map(msg => msg.image.base64data));
+        const inlineImageMessages = ImageContextVariable.extractInlineImages(request.message.parts)
+            .filter(content => !contextImageData.has(content.data))
+            .map(content => ({
+                actor: 'user' as const,
+                type: 'image' as const,
+                image: {
+                    base64data: content.data,
+                    mimeType: content.mimeType,
+                },
+            }));
+        messages.push(...inlineImageMessages);
+
+        if (request.response.isComplete || includeResponseInProgress) {
+            const responseMessages = request.response.response.content
+                .filter(c => {
+                    if (ErrorChatResponseContent.is(c) || InformationalChatResponseContent.is(c)) {
+                        return false;
+                    }
+                    if (ThinkingChatResponseContent.is(c) && !c.signature) {
+                        return false;
+                    }
+                    // Product compaction is only used as the history prefix, never replayed
+                    // from a later turn's content list.
+                    if (isCocratesCompactionContent(c)) {
+                        return false;
+                    }
+                    if (ChatResponseContent.hasToLanguageModelMessage(c)) {
+                        return true;
+                    }
+                    if (ChatResponseContent.hasAsString(c) && c.asString() === undefined) {
+                        return false;
+                    }
+                    return true;
+                })
+                .flatMap(c => {
+                    if (ChatResponseContent.hasToLanguageModelMessage(c)) {
+                        return c.toLanguageModelMessage();
+                    }
+                    return {
+                        actor: 'ai' as const,
+                        type: 'text' as const,
+                        text: c.asString?.() || c.asDisplayString?.() || '',
+                    };
+                });
+            messages.push(...responseMessages);
         }
         return messages;
     }
@@ -115,10 +217,12 @@ export class CocratesChatAgent extends AbstractStreamParsingChatAgent {
         response: Extract<LanguageModelResponse, { stream: AsyncIterable<unknown> }>,
         request: MutableChatRequestModel,
     ): Promise<void> {
-        let text = '';
+        // Only the trailing text segment after the last content-bearing non-text token is a
+        // candidate for structured-response parsing. Intermediate tool-call content is kept
+        // as normal ChatAgent content. Usage tokens must not clear the text buffer — providers
+        // often emit them after the final JSON and would otherwise skip structured handling.
         let completeTextBuffer = '';
         let startIndex = request.response.response.content.length;
-        let hasNonTextContent = false;
 
         for await (const token of response.stream) {
             if (!isLanguageModelStreamResponsePart(token)) {
@@ -127,7 +231,6 @@ export class CocratesChatAgent extends AbstractStreamParsingChatAgent {
             }
 
             if (isTextResponsePart(token)) {
-                text += token.content;
                 completeTextBuffer += token.content;
                 const parsedContents = this.parseContents(completeTextBuffer, request);
                 const contentBeforeMarker = startIndex > 0
@@ -139,9 +242,16 @@ export class CocratesChatAgent extends AbstractStreamParsingChatAgent {
                 continue;
             }
 
-            hasNonTextContent = true;
+            if (isUsageResponsePart(token)) {
+                this.parse(token, request);
+                continue;
+            }
+
             const parsedContent = this.parse(token, request);
             if (Array.isArray(parsedContent)) {
+                if (parsedContent.length === 0) {
+                    continue;
+                }
                 request.response.response.addContents(parsedContent);
             } else {
                 request.response.response.addContent(parsedContent);
@@ -150,19 +260,19 @@ export class CocratesChatAgent extends AbstractStreamParsingChatAgent {
             completeTextBuffer = '';
         }
 
-        // A response containing tool calls must retain the normal ChatAgent content. Only
-        // replace a pure text stream with the product's structured-response presentation.
-        if (!hasNonTextContent) {
-            const contentBeforeMarker = startIndex > 0
-                ? request.response.response.content.slice(0, startIndex)
-                : [];
-            request.response.response.clearContent();
-            request.response.response.addContents(contentBeforeMarker);
-            if (await this.addStructuredResponse(text, request)) {
-                return;
-            }
-            request.response.response.addContents(this.parseContents(text, request));
+        if (!completeTextBuffer) {
+            return;
         }
+
+        const contentBeforeMarker = startIndex > 0
+            ? request.response.response.content.slice(0, startIndex)
+            : [];
+        request.response.response.clearContent();
+        request.response.response.addContents(contentBeforeMarker);
+        if (await this.addStructuredResponse(completeTextBuffer, request)) {
+            return;
+        }
+        request.response.response.addContents(this.parseContents(completeTextBuffer, request));
     }
 
     protected async addStructuredResponse(text: string, request: MutableChatRequestModel): Promise<boolean> {

@@ -37,12 +37,12 @@ export class CocratesCompactionChatResponseContentImpl implements ChatResponseCo
         const compactionMessage: TextMessage = {
             actor: 'user',
             type: 'text',
-            text: this.compaction,
+            text: `<compaction>${this.compaction}</compaction>`,
         };
         const answerMessage: TextMessage = {
             actor: 'ai',
             type: 'text',
-            text: this.answer,
+            text: `<last-response>${this.answer}</last-response>`,
         };
         return [compactionMessage, answerMessage];
     }
