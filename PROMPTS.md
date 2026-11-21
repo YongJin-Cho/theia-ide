@@ -62,3 +62,14 @@
 - 공통 `commit(message)` API는 없고, `selectedRepository.input.value`와 provider의 `acceptInputCommand`를 통해 Theia SCM 명령을 실행하는 경계임을 기록했다.
 - 조사 결과를 `docs/theia/scm-commit-adapter.md`에 저장했으며, provider별 staged resource 판정과 중복 처리 상태를 T-003 구현에서 검증한다.
 - **Asked user:** —
+
+### TURN-006
+
+### User Request
+> T-003 구현을 확인하고 검증해줘.
+
+### Cocrates Response
+- `verification/cocrates-structured-final-response.md`에 T-003 범위(`R-006`~`R-009`, `C-003`)의 항목별 검증 결과를 기록했다.
+- 제품 확장 build는 통과했지만, `provider.groups`의 pending resource를 staged 변경으로 간주하는 결함과 workspace/repository 경로 검증·durable idempotency 부재를 확인해 T-003을 완료 처리하지 않았다.
+- 제품 lint 실패는 T-003 파일이 아닌 기존 `cocrates-chat-agent-prompt.ts`의 file header/max-len 오류로 분리 기록했다.
+- **Asked user:** —

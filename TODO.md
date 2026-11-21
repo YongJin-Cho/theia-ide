@@ -33,7 +33,7 @@
   - Phase: implementation
   - Artifact: `theia-extensions/product/src/`
   - Depends: T-002
-  - Notes: PB-008; R-006~R-009, C-003. Theia SCM API 직접 사용 Option B가 승인되었다. 공통 `commit(message)` API 대신 `selectedRepository.input.value`와 provider의 `acceptInputCommand`를 통해 실행하는 경계를 확인했다. provider별 staged resource 판정과 중복 처리 상태를 구현·검증한다.
+  - Notes: PB-008; R-006~R-009, C-003. Theia SCM API 직접 사용 Option B가 승인되었다. 공통 `commit(message)` API 대신 `selectedRepository.input.value`와 provider의 `acceptInputCommand`를 통해 실행하는 경계를 확인했다. 구현은 되었으나 `provider.groups`의 pending resource를 staged로 오인하고, workspace/repository 경로 검증과 durable idempotency가 없어 검증에서 partial 판정되었다. 상세: `verification/cocrates-structured-final-response.md`.
 
 - [ ] **T-004** — compaction 저장·복원 및 메시지 순서 구현
   - Phase: implementation
