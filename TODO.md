@@ -13,7 +13,7 @@
 
 **Sprint goal:** Browser, Stable Electron, Electron Next를 Cocrates 브랜드로 전환하기 위한 승인된 요구사항과 Spec을 확정한다.
 **Current focus:** T-007
-**Recommended next:** T-007 — 전용 Cocrates 브랜딩 Spec 작성 및 검토
+**Recommended next:** T-007 — 전용 Cocrates 브랜딩 Spec 검토 승인
 
 ## Tasks
 
@@ -47,11 +47,11 @@
   - Artifact: `spec/ASR.md`
   - Depends: T-005
   - Notes: 기존 ASR-001~ASR-009에 승인된 리브랜딩 결정 ASR-010~ASR-012를 통합하고 사용자 승인을 받았다.
-- [ ] **T-007** — 전용 Cocrates 브랜딩 Spec 작성 및 검토 승인
+- [ ] **T-007** — 전용 Cocrates 브랜딩 Spec 검토 승인
   - Phase: SDD ⑤–⑥ Spec
   - Artifact: `spec/cocrates-branding.md`, `spec-review/cocrates-branding.md`
   - Depends: T-006
-  - Notes: 기존 컴포넌트별 Spec은 유지하고, 네 타깃에 걸친 브랜딩 요구사항을 전용 Spec 하나에서 SSOT로 관리한다. 파일 구조 확인 후 초안을 작성한다.
+  - Notes: 횡단 브랜딩 Spec 초안과 review 기록을 작성했다. 사용자 승인 후 T-007을 완료하고 백로그 인코딩으로 진행한다.
 - [ ] **T-008** — `PB-006` 백로그 반영 및 스프린트 결과 정리
   - Phase: backlog encoding
   - Artifact: `scrum/product-backlog.md`, `scrum/sprint-01.md`

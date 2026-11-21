@@ -131,3 +131,15 @@
 - 기존 네 컴포넌트별 Spec은 유지하고, 브랜딩 요구사항을 횡단하는 전용 `spec/cocrates-branding.md`를 새 SSOT로 관리하는 방향으로 T-007을 전환했다.
 - T-007의 검토 산출물을 `spec-review/cocrates-branding.md`로 지정했다.
 - **Asked user:** 전용 브랜딩 Spec 하나(`spec/cocrates-branding.md`)로 관리하는 권장 구조를 확인해 달라. 이 구조를 승인하면 초안 작성과 Spec review를 진행한다.
+
+## TURN-011
+
+### 사용자 요청
+> 전용 `spec/cocrates-branding.md` 하나로 관리하는 구조를 승인하고 초안을 작성·검토해줘.
+
+### Cocrates 응답
+- 승인된 ASR-010~ASR-012를 기반으로 횡단 브랜딩 SSOT `spec/cocrates-branding.md`를 작성했다.
+- Browser, Stable Electron, Electron Next의 표시명과 식별자, 기존 `.theia-ide` 자동 마이그레이션 금지, Theia 호환성 명칭 경계, GitHub release 경로와 Docker tag를 요구사항·제약으로 구체화했다.
+- `spec-review/cocrates-branding.md`에 SSOT 충분성·정합성 검토 결과를 기록했으며 blocking gap은 발견되지 않았다.
+- `TODO.md`의 현재 초점을 전용 브랜딩 Spec 검토 승인으로 갱신했다.
+- **Asked user:** `spec/cocrates-branding.md`를 리브랜딩 구현·검증의 SSOT로 승인하고 다음 백로그 인코딩 단계로 진행할지 결정해 달라.
