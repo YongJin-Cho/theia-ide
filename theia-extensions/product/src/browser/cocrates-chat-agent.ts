@@ -11,7 +11,7 @@ import { AbstractStreamParsingChatAgent, ChatAgentLocation } from '@theia/ai-cha
 import { LanguageModelRequirement } from '@theia/ai-core/lib/common';
 import { ILogger } from '@theia/core';
 import { inject, injectable, named } from '@theia/core/shared/inversify';
-import { COCRATES_SYSTEM_PROMPT_ID, cocratesSystemPrompt } from './generated/cocrates-agent-system-prompt.js';
+import { COCRATES_SYSTEM_PROMPT_ID, cocratesSystemPrompt } from './cocrates-chat-agent-prompt.js';
 
 export const CocratesChatAgentId = 'Cocrates';
 

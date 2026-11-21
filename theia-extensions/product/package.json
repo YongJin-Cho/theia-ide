@@ -46,7 +46,7 @@
   ],
   "scripts": {
     "clean": "rimraf lib *.tsbuildinfo",
-    "build": "node scripts/generate-cocrates-agent-prompt.mjs && tsc -b",
+    "build": "tsc -b",
     "lint": "eslint --ext js,jsx,ts,tsx src",
     "lint:fix": "eslint --ext js,jsx,ts,tsx src --fix",
     "update:theia": "ts-node ../../scripts/update-theia-version.ts",
