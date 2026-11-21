@@ -22,12 +22,16 @@ Eclipse Theia IDE Product Template의 PRD와 승인된 AC 결과를 통합한 �
 | ASR-014 | 내장 Skills 배치·발견·패키징 | AC-009 | AC-009 | product-extension, applications-integration |
 | ASR-015 | 시스템 프롬프트 번들 소스 | AC-010 | AC-010 | product-extension, applications-integration |
 | ASR-016 | Skills 보조 파일 읽기와 경로 안전성 | AC-011 | AC-011 | product-extension, all |
+| ASR-017 | Prompt-only 구조화 최종 응답과 answer 표시 | AC-012 | AC-012 | adr/cocrates-structured-response-parsing.md |
+| ASR-018 | JSON session·commit 자동 side effect | AC-013 | AC-013 | adr/cocrates-json-side-effect-safety.md |
+| ASR-019 | Compaction 이력 영속화와 순서 보장 | AC-014 | AC-014 | adr/cocrates-compaction-history-boundary.md |
 
 ## Dependency Order (recommended Spec encoding path)
 
 1. ASR-001 → ASR-002 → ASR-003 → ASR-004 → ASR-005 → ASR-006 → ASR-007 → ASR-008 → ASR-009
 2. 리브랜딩 delta는 ASR-002 이후 ASR-010 → ASR-011 → ASR-012 순으로 인코딩한다.
 3. AI Agent·Skills delta는 ASR-013 → ASR-014 → ASR-015 → ASR-016 순으로 인코딩한다. ASR-013은 ASR-003과 ASR-002에 의존하고, ASR-014는 ASR-013의 제품 확장·패키징 경계에 의존하며, ASR-015는 ASR-013의 Agent 등록에 의존하고, ASR-016은 ASR-014의 Skills 발견 경로에 의존한다.
+4. PB-008 delta는 ASR-017 → ASR-018 → ASR-019 순으로 인코딩한다. ASR-017은 ASR-015와 ASR-013의 Cocrates Agent prompt/content 경계에 의존하고, ASR-018은 ASR-017의 JSON 파싱 결과에 의존하며, ASR-019는 ASR-017의 최종 `answer`와 Chat session history 조립에 의존한다.
 
 ## Spec 분할 원칙
 
@@ -171,3 +175,33 @@ Eclipse Theia IDE Product Template의 PRD와 승인된 AC 결과를 통합한 �
 - **Decision summary:** 새 tool을 만들지 않고 제품 DI rebind로 기존 Agent 프롬프트·Capabilities와 호환한다. 오류 JSON에는 최소 `Skill not found`, `File not found`, `Path escapes skill directory` 의미를 포함한다.
 - **Depends on:** ASR-014
 - **Related AC:** AC-011
+
+### ASR-017 — Prompt-only 구조화 최종 응답과 answer 표시
+
+- **Source:** AC-012 — 구조화 최종 응답 파싱 및 UI 경계
+- **Statement:** Cocrates Agent는 `response_format`과 structured tool call에 의존하지 않고 시스템 프롬프트 지시로 JSON object 최종 응답을 요청해야 한다. 응답 완료 후 텍스트 JSON을 파싱해 유효한 object의 `answer`만 Chat UI Markdown content로 추가하고, JSON이 아니거나 파싱할 수 없는 응답은 기존 일반 Markdown 경로로 처리해야 한다. JSON의 다른 필드는 UI 본문에 노출하지 않아야 한다.
+- **Decision summary:** Option B(prompt-only JSON parsing)를 선택해 response_format/tool call의 불안정성을 피하고 provider 호환성과 기존 스트리밍 경로를 우선한다.
+- **Depends on:** ASR-015
+- **Related AC:** AC-012
+- **Related ADRs:**
+  - `theia-ide/adr/cocrates-structured-response-parsing.md` — approved
+
+### ASR-018 — JSON session·commit 자동 side effect
+
+- **Source:** AC-013 — JSON side effect 실행 및 안전성 경계
+- **Statement:** 유효한 JSON의 `session`과 `commit` 필드는 사용자 대상 전용 도구·명령 없이 Cocrates 제품 런타임이 자동 처리해야 한다. `session`은 기존 Chat session 제목 변경 경계를 사용하고, `commit`은 기본 입력·workspace/repository 상태·commit message를 검증한 뒤 자동 실행하며 성공·실패를 별도 기록해야 한다. commit undo는 별도 revert/복구 흐름으로 처리한다.
+- **Decision summary:** Option A(파싱 직후 자동 실행)를 선택했다. 자동 side effect를 허용하되 기본 검증과 결과 기록을 유지한다.
+- **Depends on:** ASR-017
+- **Related AC:** AC-013
+- **Related ADRs:**
+  - `theia-ide/adr/cocrates-json-side-effect-safety.md` — approved
+
+### ASR-019 — Compaction 이력 영속화와 순서 보장
+
+- **Source:** AC-014 — Compaction 이력의 저장·재구성 경계
+- **Statement:** Cocrates의 `compaction`과 이전 최종 `answer`는 세션 대화 모델의 영속화 가능한 content/메타데이터로 기록해야 한다. `compaction`이 있는 다음 요청은 `user: <compaction message>`, `assistant: <last answer>`, `user: <input>` 순서로 재구성해야 하며, compaction은 일반 Chat UI 본문에 표시하지 않고 provider server-side compaction marker와 분리해야 한다. compaction이 없으면 기존 history 조립을 보존해야 한다.
+- **Decision summary:** Option A(chat model 저장)를 선택했다. branch·agent 전환별 무효화 정책은 deferred assumption이다.
+- **Depends on:** ASR-017
+- **Related AC:** AC-014
+- **Related ADRs:**
+  - `theia-ide/adr/cocrates-compaction-history-boundary.md` — approved

@@ -17,9 +17,9 @@ Theia IDE Product Template의 제품 Spec 작성을 위해 설계가 필요한 �
 | AC-009 | 내장 Skills의 배치·발견·패키징 전략 | Structure & organization | designed | `adr/cocrates-skills-packaging.md` | ASR-014 |
 | AC-010 | Cocrates 시스템 프롬프트의 소스 연결 방식 | Integration & dependencies | designed | — | ASR-015 |
 | AC-011 | `getSkillFileContent` 보조 파일 API 및 경로 안전성 | Quality bar (architectural) | designed | — | ASR-016 |
-| AC-012 | 구조화 최종 응답 파싱 및 UI 경계 | Integration & dependencies | designed | adr/cocrates-structured-response-parsing.md | — |
-| AC-013 | JSON side effect 실행 및 안전성 경계 | Quality bar (architectural) | designed | adr/cocrates-json-side-effect-safety.md | — |
-| AC-014 | Compaction 이력의 저장·재구성 경계 | Structure & organization | designed | adr/cocrates-compaction-history-boundary.md | — |
+| AC-012 | 구조화 최종 응답 파싱 및 UI 경계 | Integration & dependencies | designed | adr/cocrates-structured-response-parsing.md | ASR-017 |
+| AC-013 | JSON side effect 실행 및 안전성 경계 | Quality bar (architectural) | designed | adr/cocrates-json-side-effect-safety.md | ASR-018 |
+| AC-014 | Compaction 이력의 저장·재구성 경계 | Structure & organization | designed | adr/cocrates-compaction-history-boundary.md | ASR-019 |
 
 ## Dependency Order (recommended review path)
 
@@ -188,6 +188,7 @@ Theia IDE Product Template의 제품 Spec 작성을 위해 설계가 필요한 �
   - `adr/cocrates-structured-response-parsing.md` — approved
 - **Resolution path:** adr
 - **Resolution:** Option B를 채택한다. `response_format`과 structured tool call에 의존하지 않고 `agent2.md` 지시로 JSON object를 요청한다. 응답 완료 후 제품 파서가 JSON을 추출해 `answer`만 Chat UI에 추가하고, JSON이 아니면 기존 일반 Markdown 경로를 사용한다.
+- **ASR:** ASR-017
 - **Notes:** 사용자가 response_format과 tool call의 불안정성을 이유로 Option B를 선택했다. AC-012를 designed로 확정했다.
 
 ### AC-013 — JSON side effect 실행 및 안전성 경계
@@ -201,6 +202,7 @@ Theia IDE Product Template의 제품 Spec 작성을 위해 설계가 필요한 �
   - `adr/cocrates-json-side-effect-safety.md` — approved
 - **Resolution path:** adr
 - **Resolution:** Option A를 선택한다. 유효한 JSON의 `session`과 `commit`을 제품 런타임이 자동 처리한다. commit은 실행 전 기본 입력·저장소 검증을 수행하고 실행 결과를 기록한다. 사용자가 commit을 되돌려야 하는 경우 별도 undo/revert 흐름으로 복구한다.
+- **ASR:** ASR-018
 - **Notes:** 사용자가 사용자 대상 전용 도구·명령을 추가하지 않고 Option A 자동 실행을 선택했다. AC-013을 designed로 확정했다.
 
 ### AC-014 — Compaction 이력의 저장·재구성 경계
@@ -214,4 +216,5 @@ Theia IDE Product Template의 제품 Spec 작성을 위해 설계가 필요한 �
   - `adr/cocrates-compaction-history-boundary.md` — approved
 - **Resolution path:** adr
 - **Resolution:** Option A를 선택한다. Cocrates의 `compaction` 상태와 이전 `answer`를 세션 대화 모델에 영속화 가능한 content/메타데이터로 기록하고, 다음 요청 조립 시 `user: <compaction message>`, `assistant: <last answer>`, `user: <input>` 순서를 보장한다. compaction은 일반 Chat UI 본문에 노출하지 않고 기존 provider compaction marker와 별도 취급한다.
+- **ASR:** ASR-019
 - **Notes:** 사용자가 Option A를 선택해 AC-014를 designed로 확정했다. branch·agent 전환별 무효화는 deferred assumption으로 기록했다.

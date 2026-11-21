@@ -56,7 +56,7 @@
 
   - [ ] **PB-008** — Cocrates 구조화 최종 응답 및 메시지 이력 side effect
   - Story: 사용자가 Cocrates의 일반 Markdown 또는 JSON object 최종 응답을 사용할 때, JSON이면 `answer`만 채팅 UI에 보이고 `session`, `commit`, `compaction` 필드는 정의된 제품 side effect와 다음 대화 이력 계약에 따라 처리된다.
-  - Spec: `spec/cocrates-structured-final-response.md` §Requirements — sprint-05 Spec→backlog에서 확정
-  - Sprint: sprint-05
+  - Spec: `spec/cocrates-structured-final-response.md` §Requirements, §Constraints
+  - Sprint: sprint-06
   - Depends: PB-007
-  - Notes: `docs/cocrates/agent2.md`, `docs/theia/structured-output-side-effects.md`, `docs/theia/message-compaction.md`, `docs/theia/local-message-compaction.md` 기반 변경 범위. 구현 방식과 side effect 안전 경계는 Spec/ADR 승인 후 확정한다.
+  - Notes: 승인된 Spec과 review 결과(8 pass, 0 fail, 1 needs-clarification)를 반영했다. prompt-only JSON parsing, 자동 session/commit side effect, compaction 이력 user→assistant→user 순서를 구현 범위로 확정했다. 구현 adapter의 구체 API 확인은 다음 implementation sprint에서 수행한다.
