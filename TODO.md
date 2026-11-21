@@ -9,11 +9,11 @@
 
 | Done | Open | Blocked | Skipped |
 |------|------|---------|---------|
-| 4    | 6    | 0       | 0       |
+| 5    | 5    | 0       | 0       |
 
 **Sprint goal:** Cocrates Agent의 구조화 JSON 최종 응답과 `answer` 표시, `session`·`commit`·`compaction` side effect를 구현·검증한다.
-**Current focus:** T-005
-**Recommended next:** T-005 — blocking AC 순차 검토 및 ADR/Direct Input 결정
+**Current focus:** T-006
+**Recommended next:** T-006 — ASR 통합 및 stage-exit gate
 
 ## Tasks
 
@@ -37,11 +37,12 @@
   - Artifact: `spec/AC.md`
   - Depends: T-003
   - Notes: 사용자가 AC-012~AC-014 목록과 dependency order를 승인했다.
-- [ ] **T-005** — blocking AC 순차 검토 및 ADR/Direct Input 결정
+- [x] **T-005** — blocking AC 순차 검토 및 ADR/Direct Input 결정
   - Phase: AC review
   - Artifact: `spec/AC.md`, `adr/`
   - Depends: T-004
-- [ ] **T-006** — ASR 통합
+  - Notes: AC-012~AC-014를 모두 designed로 확정했고 연결된 ADR을 approved로 기록했다.
+- [ ] **T-006** — ASR 통합 및 stage-exit gate
   - Phase: ASR consolidation
   - Artifact: `spec/ASR.md`
   - Depends: T-005

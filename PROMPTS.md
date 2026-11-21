@@ -79,3 +79,16 @@
 - 다음 blocking concern인 AC-014를 `reviewing`으로 전환하고 `adr/cocrates-compaction-history-boundary.md`를 `proposed`로 작성했다.
 - AC-014에는 Option A(chat model 저장), Option B(Agent-local request shaping), Option C(세션 메타데이터/외부 저장소)를 제시했으며 Option A를 권장한다.
 - **Asked user:** AC-014의 compaction 이력 저장·재구성 방식에 대한 옵션을 검토하고 선택해줄까요?
+
+## TURN-007
+
+### User Request
+> AC-014는 Option A로 진행해줘.
+
+### Cocrates Response
+- `adr/cocrates-compaction-history-boundary.md`를 `approved`로 기록하고 AC-014를 `designed`로 확정했다.
+- compaction과 이전 answer를 세션 대화 모델의 영속화 가능한 상태로 기록하고, 다음 요청에서 `user → assistant → user` 순서를 보장하기로 결정했다.
+- compaction은 일반 Chat UI 본문에 노출하지 않고 기존 provider compaction marker와 분리한다.
+- AC-012~AC-014가 모두 designed이고 연결 ADR도 모두 approved이므로 AC review를 종료했다.
+- 현재 ASR stage-exit gate(T-006)에서 대기한다.
+- **Asked user:** 모든 blocking AC가 정리되었으므로 ASR 통합 단계로 진행할까요?

@@ -4,7 +4,7 @@
 JSON의 `compaction`과 이전 최종 `answer`를 어디에 저장하고 다음 요청에서 `user: <compaction>`, `assistant: <last answer>`, `user: <input>` 순서를 어떻게 보장할 것인가?
 
 ## Status
-proposed
+approved
 
 ## Context
 - `agent2.md`는 compaction이 있는 다음 대화를 `user: <compaction message>`, `assistant: <last answer>`, `user: <input>` 이력으로 제공하도록 요구한다.
@@ -13,6 +13,7 @@ proposed
 - UI transcript와 실제 다음 LLM request의 history가 달라질 수 있으므로 세션 재로드·branch·다음 턴에서 순서를 일관되게 유지해야 한다.
 
 ## Decision
+**Option A — Chat model에 compaction summary content로 저장**을 선택한다. Cocrates의 `compaction` 상태와 이전 `answer`를 세션 대화 모델에 영속화 가능한 content/메타데이터로 기록하고, 다음 요청 조립 시 `user: <compaction message>`, `assistant: <last answer>`, `user: <input>` 순서를 보장한다. 기존 provider server-side compaction marker와는 별도 제품 상태로 취급한다.
 
 ## Options
 ### Option A — Chat model에 compaction summary content로 저장
@@ -40,8 +41,8 @@ proposed
 | branch/agent 전환 | 기존 모델 활용 | 취약 | 별도 설계 필요 |
 
 ## Recommendation
-- Option A를 권장한다. compaction이 대화 이력의 일부라는 계약을 세션에 영속화하고, 다음 request가 재구성되어도 순서가 유지되게 해야 한다.
-- 단, Theia upstream 직접 수정은 범위 밖이므로 제품 확장에서 가능한 기존 ChatResponse content·세션 메타데이터 확장 지점을 먼저 확인한다. 불가능하면 Option B를 명시적 제한과 함께 채택한다.
+- 사용자가 Option A를 선택했다. compaction이 대화 이력의 일부라는 계약을 세션에 영속화하고, 다음 request가 재구성되어도 순서가 유지되게 한다.
+- Theia upstream 직접 수정은 범위 밖이므로 제품 확장에서 가능한 기존 ChatResponse content·세션 메타데이터 확장 지점을 우선 사용한다. 구현 검토에서 불가능한 경우에만 제한을 명시하고 Agent-local request shaping으로 조정한다.
 
 ## Consequences
 - Cocrates 전용 compaction 상태와 provider server-side compaction marker를 구분해야 한다.
@@ -50,8 +51,8 @@ proposed
 - 저장·복원 실패 시 기존 대화 전체를 조용히 버리지 않고 오류 또는 안전한 fallback을 제공해야 한다.
 
 ## Downstream Concerns
-- [ ] **ADR candidate — Compaction content visibility:** compaction user 메시지를 UI에 표시할지 숨김 content로 기록할지 결정한다.
-- [ ] **ADR candidate — Branch invalidation:** active branch가 바뀌거나 agent를 전환할 때 compact state를 어떻게 무효화할지 결정한다.
+- [x] **directly resolved — Compaction content visibility:** `compaction`은 다음 모델 이력에 필요한 user 메시지로 기록하되 일반 Chat UI 본문에는 노출하지 않는다. 사용자에게 보이는 본문은 `answer`만 유지한다.
+- [x] **deferred assumption — Branch invalidation:** active branch·agent 전환별 무효화 정책은 PB-008의 기본 순서 계약 범위를 넘어가므로 구현 검토에서 안전한 fallback이 필요할 때만 재개한다.
 - [x] **covered — Provider marker separation:** 기존 server-side provider compaction marker는 제품 JSON compaction state와 별도 취급한다.
 
 ## Related
@@ -63,3 +64,4 @@ proposed
 
 ## Notes
 - 2026-11-21: AC-014 검토를 위해 제안 상태로 생성했다. Option A를 권장한다.
+- 2026-11-21: Status → approved; 사용자가 Option A(chat model 저장)를 선택했다. compaction은 UI 본문에 노출하지 않고 다음 모델 이력에 포함한다.

@@ -19,7 +19,7 @@ Theia IDE Product Template의 제품 Spec 작성을 위해 설계가 필요한 �
 | AC-011 | `getSkillFileContent` 보조 파일 API 및 경로 안전성 | Quality bar (architectural) | designed | — | ASR-016 |
 | AC-012 | 구조화 최종 응답 파싱 및 UI 경계 | Integration & dependencies | designed | adr/cocrates-structured-response-parsing.md | — |
 | AC-013 | JSON side effect 실행 및 안전성 경계 | Quality bar (architectural) | designed | adr/cocrates-json-side-effect-safety.md | — |
-| AC-014 | Compaction 이력의 저장·재구성 경계 | Structure & organization | reviewing | adr/cocrates-compaction-history-boundary.md | — |
+| AC-014 | Compaction 이력의 저장·재구성 경계 | Structure & organization | designed | adr/cocrates-compaction-history-boundary.md | — |
 
 ## Dependency Order (recommended review path)
 
@@ -206,12 +206,12 @@ Theia IDE Product Template의 제품 Spec 작성을 위해 설계가 필요한 �
 ### AC-014 — Compaction 이력의 저장·재구성 경계
 
 - **Category:** Structure & organization
-- **Status:** reviewing
+- **Status:** designed
 - **Statement:** JSON의 `compaction`과 이전 최종 `answer`를 어디에 저장하고 다음 요청에서 `user: <compaction>`, `assistant: <last answer>`, `user: <input>` 순서를 어떻게 보장할 것인가? Theia chat model 영속화, Agent-local request shaping, 별도 세션 메타데이터 중 어느 경계를 사용할지 정해야 한다.
 - **Why it matters:** UI에 보이는 transcript와 모델에 전송되는 이력이 달라질 수 있으며, 재로드·branch·다음 agent 전환 시 순서가 깨지면 모델이 작업 맥락을 잘못 이해한다. 기존 server-side compaction marker와 충돌하지 않는 저장·재생 전략도 필요하다.
 - **Depends on:** AC-012
 - **Related ADRs:**
-  - `adr/cocrates-compaction-history-boundary.md` — proposed
+  - `adr/cocrates-compaction-history-boundary.md` — approved
 - **Resolution path:** adr
-- **Resolution:**
-- **Notes:** `docs/theia/message-compaction.md`와 `docs/theia/local-message-compaction.md`의 server-side/local 차이를 기준으로 검토한다. ADR 승인 후 결정 내용을 복사한다.
+- **Resolution:** Option A를 선택한다. Cocrates의 `compaction` 상태와 이전 `answer`를 세션 대화 모델에 영속화 가능한 content/메타데이터로 기록하고, 다음 요청 조립 시 `user: <compaction message>`, `assistant: <last answer>`, `user: <input>` 순서를 보장한다. compaction은 일반 Chat UI 본문에 노출하지 않고 기존 provider compaction marker와 별도 취급한다.
+- **Notes:** 사용자가 Option A를 선택해 AC-014를 designed로 확정했다. branch·agent 전환별 무효화는 deferred assumption으로 기록했다.
