@@ -40,3 +40,16 @@
 - AC-005 → AC-006 및 AC-007의 의존 순서를 제안했으며, 아직 어느 결정도 임의로 확정하지 않았다.
 - 현재 T-003 AC 식별이 완료되었고, AC 목록 승인 게이트를 기다리고 있다.
 - **Asked user:** `spec/AC.md`의 새 blocking AC-005~AC-007과 Dependency Order를 검토하고 승인해 달라.
+
+## TURN-004
+
+### 사용자 요청
+> AC 목록과 Dependency Order를 승인하고 계속해줘.
+
+### Cocrates 응답
+- AC 목록 승인을 기록하고 T-003과 T-004를 완료 처리했다.
+- Dependency Order에 따라 첫 unsettled concern인 AC-005를 `reviewing` 상태로 전환했다.
+- `adr/cocrates-target-identifiers.md`를 제안 상태로 작성해 Cocrates/`Cocrates Next`의 앱 식별자·URI scheme·configuration folder·패키지 식별자에 대한 세 가지 대안을 비교했다.
+- Option A(`com.cocrates.ide` / `cocrates` / `.cocrates`, Next는 `.next` 분리)를 권장했으며, 실제 reverse-domain 정책과 기존 Theia 사용자 데이터 마이그레이션은 별도 확인이 필요하다.
+- 아직 AC-005를 확정하지 않았고, AC-006과 AC-007 검토는 AC-005 결정 뒤에 진행한다.
+- **Asked user:** `adr/cocrates-target-identifiers.md`의 옵션을 검토하고 Cocrates 타깃 식별자 체계를 선택해 달라.

@@ -10,7 +10,7 @@ Theia IDE Product Template의 제품 Spec 작성을 위해 설계가 필요한 �
 | AC-002 | 제품 확장의 구성 및 의존성 경계 | Integration & dependencies | designed | — | ASR-003 |
 | AC-003 | 채택자 커스터마이징 표면의 지원 범위 | Deliverable form | designed | — | ASR-004 |
 | AC-004 | 제품 Spec-구현 일치 검증의 증거 수준 | Quality bar (architectural) | designed | — | ASR-007 |
-| AC-005 | Cocrates 타깃 식별자 체계 | Constraints (structural) | identified | — | — |
+| AC-005 | Cocrates 타깃 식별자 체계 | Constraints (structural) | reviewing | adr/cocrates-target-identifiers.md | — |
 | AC-006 | 제품 브랜드와 Theia 업스트림 명칭의 경계 | Structure & organization | identified | — | — |
 | AC-007 | 업데이트·배포 메타데이터의 제품 소유 범위 | Integration & dependencies | identified | — | — |
 
@@ -63,13 +63,13 @@ Theia IDE Product Template의 제품 Spec 작성을 위해 설계가 필요한 �
 ### AC-005 — Cocrates 타깃 식별자 체계
 
 - **Category:** Constraints (structural)
-- **Status:** identified
+- **Status:** reviewing
 - **Statement:** Browser, Stable Electron, Electron Next(`Cocrates Next`)에 사용할 `name`, `productName`, `applicationName`, `appId`, `appUserModelId`, URI scheme, configuration folder, executable·artifact 이름을 어떤 일관된 식별자 체계로 정할 것인가?
 - **Why it matters:** 앱 식별자와 사용자 데이터·딥링크·패키징 산출물은 설치·업데이트·동시 사용·기존 데이터와의 충돌에 영향을 주며, 임의의 값은 되돌리기 어려운 배포 계약이 된다.
 - **Depends on:** AC-001
 - **Related ADRs:**
   - —
-- **Resolution path:** direct-input | adr
+- **Resolution path:** adr
 - **Resolution:**
 - **Notes:** `docs/rebranding.md`는 예시 값만 제공하므로 Cocrates의 실제 reverse-domain 식별자, Next 접미사 규칙, 기존 Theia 사용자 데이터와의 마이그레이션·분리 정책을 확정해야 한다.
 

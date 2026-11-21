@@ -12,8 +12,8 @@
 | 2    | 8    | 0       | 0       |
 
 **Sprint goal:** Browser, Stable Electron, Electron Next를 Cocrates 브랜드로 전환하기 위한 승인된 요구사항과 Spec을 확정한다.
-**Current focus:** T-003
-**Recommended next:** T-003 — 리브랜딩 blocking AC 식별
+**Current focus:** T-005
+**Recommended next:** T-005 — 리브랜딩 AC 결정
 
 ## Tasks
 
@@ -27,12 +27,12 @@
   - Artifact: `spec/PRD.md`
   - Depends: T-001
   - Notes: 사용자 승인 후 다음 단계로 진행한다.
-- [ ] **T-003** — 리브랜딩 blocking AC 식별
+- [x] **T-003** — 리브랜딩 blocking AC 식별
   - Phase: SDD ② AC identification
   - Artifact: `spec/AC.md`
   - Depends: T-002
   - Notes: 식별자·URI scheme·설정 폴더·패키징·브랜드 리소스·CI/문서의 사용자 결정을 식별한다.
-- [ ] **T-004** — AC 목록 및 Dependency Order 승인
+- [x] **T-004** — AC 목록 및 Dependency Order 승인
   - Phase: SDD ② AC gate
   - Artifact: `spec/AC.md`
   - Depends: T-003
