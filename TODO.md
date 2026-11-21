@@ -9,11 +9,11 @@
 
 | Done | Open | Blocked | Skipped |
 |------|------|---------|---------|
-| 4    | 4    | 0       | 0       |
+| 7    | 1    | 0       | 0       |
 
 **Sprint goal:** Cocrates Default Chat Agent와 내장 Skills 배포를 위한 승인된 Spec과 구현 backlog를 확정한다.
-**Current focus:** T-005
-**Recommended next:** T-005 — 구현·검증 Spec 작성
+**Current focus:** T-008
+**Recommended next:** T-008 — Sprint Boundary → sprint-04
 
 ## Tasks
 
@@ -41,17 +41,17 @@
   - Phase: ⑤ Spec writing
   - Artifact: `spec/cocrates-ai-agent-skills.md`
   - Depends: T-004
-  - Notes: R-001~R-020과 C-001~C-007을 작성했다. Spec review 승인을 기다린다.
-- [ ] **T-006** — Spec review 및 승인
+  - Notes: R-001~R-020과 C-001~C-007을 작성했다.
+- [x] **T-006** — Spec review 및 승인
   - Phase: ⑥ Spec review
   - Artifact: `spec-review/cocrates-ai-agent-skills.md`
   - Depends: T-005
-  - Notes: 승인된 Spec을 구현 SSOT로 확정
-- [ ] **T-007** — PB-007 backlog encode
+  - Notes: 3 pass, 0 fail, 0 needs-clarification으로 검토하고 사용자가 Spec을 SSOT로 승인했다.
+- [x] **T-007** — PB-007 backlog encode
   - Phase: backlog encode
   - Artifact: `scrum/product-backlog.md`
   - Depends: T-006
-  - Notes: 승인된 Spec 기반 구현·검증 DoD를 backlog에 반영
+  - Notes: 승인된 Spec 경로와 구현·검증 DoD를 PB-007에 반영했다.
 - [ ] **T-008** — Sprint Boundary → sprint-04
   - Phase: cross-cutting
   - Artifact: `scrum/TODO-03.md`, `scrum/PROMPTS-03.md`

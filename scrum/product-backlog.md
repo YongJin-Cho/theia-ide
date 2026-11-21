@@ -1,7 +1,7 @@
 # 제품 백로그 — Eclipse Theia IDE Product Template
 
 > **실행 보드:** [`../TODO.md`](../TODO.md)
-> **Updated:** 2026-11-21 — sprint-02 경계 완료
+> **Updated:** 2026-11-21 — sprint-03 PB-007 Spec review 승인 및 backlog encode
 
 ## 스토리
 
@@ -52,4 +52,4 @@
   - Spec: `spec/cocrates-ai-agent-skills.md` §Requirements, §Constraints
   - Sprint: sprint-03
   - Depends: PB-002, PB-003
-  - Notes: 현재 sprint-03 Spec→backlog 범위. 실제 세 스킬 명세 본문은 사용자가 제공한 뒤 지정 폴더에 복사하며, 이번 범위는 배치·발견·도구·에이전트 계약과 구현·검증 DoD를 확정한다.
+  - Notes: sprint-03 Spec→backlog 범위로 승인된 Spec과 review 결과(3 pass, 0 fail, 0 needs-clarification)를 반영했다. 구현·검증은 다음 Backlog→Implementation 스프린트에서 수행한다. 실제 세 스킬 명세 본문은 사용자가 제공한 뒤 지정 폴더에 복사하며, 이번 범위는 배치·발견·도구·에이전트 계약과 구현·검증 DoD를 확정한다.
