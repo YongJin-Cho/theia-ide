@@ -141,3 +141,26 @@
 - frontend deserializer를 등록해 세션 재로드 후에도 상태와 순서를 복원하도록 했다.
 - 제품 확장 build(`build - theia-extensions/product`)가 통과했으며 T-004를 완료 처리하고 T-005를 Current focus로 이동했다. 검증 결과는 `verification/cocrates-structured-final-response.md`에 기록했다.
 - **Asked user:** —
+
+## TURN-013
+
+### User Request
+> T-005 기존 Agent·Skills·도구 계약 회귀 점검을 진행해줘.
+
+### Cocrates Response
+- 기존 Cocrates Agent 등록과 `ai-features.chat.defaultChatAgent` 기본 선택 계약에 회귀가 없음을 확인했다.
+- Skills discovery, 동일 `getSkillFileContent` tool ID rebind, 일반 도구 function ID, Browser·Stable Electron·Electron Next 제품 확장 조립 및 Skills 패키징 계약을 정적 대조했다.
+- `verification/cocrates-structured-final-response.md`에 R-014 결과를 기록하고 T-005를 완료 처리했다.
+- **Asked user:** —
+
+## TURN-014
+
+### User Request
+> T-006 build/lint 및 가능한 제품 경로 검증을 계속 진행해줘.
+
+### Cocrates Response
+- 전체 build, Browser·Stable Electron·Electron Next production build, Stable/Next Electron E2E를 실행해 build와 테스트는 통과했다.
+- 제품 및 저장소 lint는 기존 `cocrates-chat-agent-prompt.ts`의 file header/max-len 오류 때문에 실패했으며 새 변경 파일 오류는 없었다.
+- Browser UI smoke는 launch configuration의 debug adapter 실행 불가로 not-verifiable로 기록했다.
+- `verification/cocrates-structured-final-response.md`에 C-006 결과를 기록하고 T-006을 완료 처리했다.
+- **Asked user:** Sprint Boundary 검토를 승인하고 sprint-06 아카이브 및 다음 sprint 계획 단계로 진행할까요?

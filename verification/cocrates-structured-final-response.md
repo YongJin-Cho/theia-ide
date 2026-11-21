@@ -73,3 +73,42 @@
 - 저장 content는 UI 표시 문자열을 제공하지 않지만 `toLanguageModelMessage()`는 provider-agnostic text message 두 개를 반환한다.
 - compaction 이후 요청에서는 의도적으로 저장된 compaction 경계 뒤에 현재 입력만 추가한다. 이미지/context variable의 일반적인 전체 history 재조립은 이번 Spec의 텍스트 순서 계약 밖이며, 회귀 점검에서 확인 대상이다.
 - 세션 복원은 Theia의 기존 chat session store와 deserializer lifecycle을 사용하므로 별도 제품 `StorageService` 상태를 만들지 않는다.
+
+## T-005 검증 — 기존 Agent·Skills·도구 계약 회귀 점검
+
+**범위:** `R-014`
+
+| 계약 | 상태 | 근거 |
+|---|---|---|
+| Cocrates Agent 등록·기본 Agent 선택 | pass | `cocrates-chat-agent.ts`가 `AbstractStreamParsingChatAgent`를 확장하고 `Cocrates` ID를 유지한다. `theia-ide-frontend-module.ts`가 동일 singleton을 `Agent`와 `ChatAgent`에 등록하고 `ai-features.chat.defaultChatAgent` 기본값을 `Cocrates`로 제공한다. |
+| Skills discovery | pass | `CocratesSkillDirectoryContribution`이 `SkillDirectoryContribution`으로 등록되고, bundled Skills 경로를 `plugin` tier의 `cocrates` qualifier로 반환한다. 경로 확인 실패는 빈 목록과 warning으로 처리한다. |
+| `getSkillFileContent` | pass | 제품 확장은 upstream `GET_SKILL_FILE_CONTENT_FUNCTION_ID`를 유지한 `ExtendedGetSkillFileContent`로 조건부 rebind한다. 기존 `skillName` 계약과 기본 `SKILL.md` 동작을 유지하면서 선택적 상대 `path`를 추가하고 절대 경로·root 탈출·디렉터리·누락 파일을 거부한다. |
+| 일반 도구 계약 | pass | Cocrates prompt가 Theia workspace/file/search/task/launch/browser 도구의 기존 function ID를 참조하며 구조화 응답·compaction 변경은 tool ID나 handler 등록을 대체하지 않는다. |
+| Browser 조립 | pass | `applications/browser/package.json`이 `theia-ide-product-ext`를 의존하고 제품 확장의 frontend entrypoint가 Theia extension에 선언되어 있다. |
+| Stable Electron 조립 | pass | `applications/electron/package.json`이 product/updater/launcher 확장을 의존하고 `electron-builder.yml`이 `app/skills` 리소스를 포함한다. Stable 식별자와 `.cocrates` configuration folder도 유지한다. |
+| Electron Next 조립 | pass | `applications/electron-next/package.json`이 product/updater/launcher 확장을 의존하고 `electron-builder.yml`이 `app/skills` 리소스를 포함한다. Next 식별자와 `.cocrates-next` configuration folder도 유지한다. |
+
+### T-005 판정
+
+정적 소스·설정 대조에서 R-014 회귀를 발견하지 못했다. T-005 전용 자동화 테스트는 없으므로 런타임 계약은 T-006의 가능한 build/test 및 제품 경로 검증으로 보강한다.
+
+## T-006 검증 — build/lint 및 가능한 제품 경로
+
+**범위:** `C-006` 및 sprint-06 Demo Checklist
+
+| Check | Result | Evidence / Notes |
+|---|---|---|
+| 제품 확장 build | pass | `build - theia-extensions/product` 성공 (`tsc -b`). |
+| 전체 production build | pass | `build` 성공. Lerna가 launcher/product/updater 확장을 build하고 Stable Electron 및 Browser production build를 완료했으며 Theia browser/node/electron 단계가 0 errors였다. |
+| Browser production build | pass | `build:prod - applications/browser`를 단독 재실행해 browser/node 0 errors를 확인했다. 병렬 native rebuild 간섭으로 발생한 첫 실행의 task exit 1은 재실행으로 배제했다. |
+| Stable Electron production build | pass | `build:prod - applications/electron` 성공. browser/node/electron 0 errors. |
+| Electron Next production build | pass | `build:prod - applications/electron-next` 실행에서 browser/node/electron 단계가 오류 없이 완료됐다. |
+| Stable/Next Electron E2E | pass | 저장소 `test` 성공. Stable Electron 10 passing, Electron Next 10 passing. |
+| 제품 확장 lint | fail (기존 오류) | `cocrates-chat-agent-prompt.ts:1` file header 누락, `:33` max-len 초과가 원인이다. 구조화 응답·compaction·side-effect 파일의 lint 오류는 없다. deprecation warning 2건은 오류가 아니다. |
+| 저장소 lint | fail (기존 오류 전파) | 전체 `lint`가 위 제품 prompt 오류로 중단됐다. 새 변경 파일의 추가 lint 오류는 없다. |
+| Browser UI smoke | not-verifiable | `Launch Browser Backend & Frontend`가 `It is not possible to provide debug adapter executable`로 시작되지 않아 DOM smoke를 수행하지 못했다. |
+| 구조화 응답 전용 자동화 테스트 | not-verifiable | 제품 확장에 T-002~T-006 전용 자동화 테스트 task가 없다. |
+
+### T-006 판정
+
+C-006의 실행 가능한 build/test 범위는 통과했다. lint 실패와 Browser UI smoke 미실행은 각각 기존 파일 오류와 환경의 debug adapter 제약으로 기록하며, PB-008 구현 실패로 판정하지 않는다.

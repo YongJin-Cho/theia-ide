@@ -9,11 +9,11 @@
 
 | Done | Open | Blocked | Skipped |
 |------|------|---------|---------|
-| 4    | 3    | 0       | 0       |
+| 6    | 1    | 0       | 0       |
 
 **Sprint goal:** 승인된 구조화 최종 응답 Spec을 구현하고 제품 확장 경계에서 검증한다.
-**Current focus:** T-005
-**Recommended next:** T-005 — 기존 Agent·Skills·도구 계약 회귀 점검
+**Current focus:** T-007
+**Recommended next:** T-007 — Sprint Boundary → sprint-07
 
 ## Tasks
 
@@ -41,17 +41,17 @@
   - Depends: T-002
   - Notes: PB-008; R-010~R-013, C-004~C-005. 제품 전용 직렬화 response content를 추가하고, 복원 가능한 compaction/answer를 다음 Cocrates 요청에서 `user → assistant → user`로 재구성한다. provider marker와 분리되며 UI 문자열에는 노출되지 않는다. 제품 확장 build 통과.
 
-- [ ] **T-005** — 기존 Agent·Skills·도구 계약 회귀 점검
+- [x] **T-005** — 기존 Agent·Skills·도구 계약 회귀 점검
   - Phase: demo
   - Artifact: `theia-extensions/product/`, `applications/browser/`, `applications/electron/`, `applications/electron-next/`
   - Depends: T-003, T-004
-  - Notes: PB-008; R-014. 기존 기본 Agent, Skills discovery, getSkillFileContent, 일반 도구 및 세 타깃 조립 계약을 확인한다.
+  - Notes: PB-008; R-014. 기존 기본 Agent, Skills discovery, getSkillFileContent, 일반 도구 및 세 타깃 조립 계약을 정적 대조했다. 회귀 없음.
 
-- [ ] **T-006** — build/lint 및 가능한 제품 경로 검증
+- [x] **T-006** — build/lint 및 가능한 제품 경로 검증
   - Phase: demo
   - Artifact: `verification/cocrates-structured-final-response.md`
   - Depends: T-005
-  - Notes: PB-008; C-006. 대상 build/lint/test와 가능한 Browser/Electron 검증을 실행하고 실행 불가 사유를 기록한다.
+  - Notes: PB-008; C-006. 전체 build, Browser·Stable Electron·Electron Next build, Stable/Next E2E를 실행했다. lint는 기존 prompt 파일 오류로 실패했고 Browser UI smoke는 debug adapter 제약으로 not-verifiable이다.
 
 - [ ] **T-007** — Sprint Boundary → sprint-07
   - Phase: cross-cutting
