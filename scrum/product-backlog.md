@@ -1,7 +1,7 @@
 # 제품 백로그 — Eclipse Theia IDE Product Template
 
 > **실행 보드:** [`../TODO.md`](../TODO.md)
-> **Updated:** 2026-11-21 — sprint-04 Boundary 종료 및 PB-007 완료
+> **Updated:** 2026-11-21 — sprint-05 계획 초안 및 PB-008 범위 등록
 
 ## 스토리
 
@@ -53,3 +53,10 @@
     - Sprint: sprint-04
     - Depends: PB-002, PB-003
     - Notes: sprint-03 Spec→backlog 범위와 Boundary를 완료했다. 승인된 Spec과 review 결과(3 pass, 0 fail, 0 needs-clarification)를 유지하며 sprint-04에서 구현·검증했다. 공식 build/package와 Stable·Electron Next E2E(각 10 passing)를 통과했으며, Browser UI smoke는 launch configuration의 debug adapter 제약으로 보류했다.
+
+  - [ ] **PB-008** — Cocrates 구조화 최종 응답 및 메시지 이력 side effect
+  - Story: 사용자가 Cocrates의 일반 Markdown 또는 JSON object 최종 응답을 사용할 때, JSON이면 `answer`만 채팅 UI에 보이고 `session`, `commit`, `compaction` 필드는 정의된 제품 side effect와 다음 대화 이력 계약에 따라 처리된다.
+  - Spec: `spec/cocrates-structured-final-response.md` §Requirements — sprint-05 Spec→backlog에서 확정
+  - Sprint: sprint-05
+  - Depends: PB-007
+  - Notes: `docs/cocrates/agent2.md`, `docs/theia/structured-output-side-effects.md`, `docs/theia/message-compaction.md`, `docs/theia/local-message-compaction.md` 기반 변경 범위. 구현 방식과 side effect 안전 경계는 Spec/ADR 승인 후 확정한다.
