@@ -31,7 +31,7 @@ const PREVIEW_CHANNEL_LINUX = 'https://download.eclipse.org/theia/ide-preview/la
 
 // Next updates are currently only available for Linux.
 // The feed is served from GitHub Release assets (rolling "next" tag).
-const NEXT_CHANNEL_LINUX = 'https://github.com/eclipse-theia/theia-ide/releases/download/next';
+const NEXT_CHANNEL_LINUX = 'https://github.com/cocrates/theia-ide/releases/download/next';
 
 // `electron-updater` defines `autoUpdater` with a getter and `electron-log` assigns `module.exports`,
 // so Node can't detect their named exports: import them as a whole.

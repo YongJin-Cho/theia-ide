@@ -1,5 +1,5 @@
-appId: eclipse.theia
-productName: TheiaIDE
+appId: com.cocrates.ide
+productName: Cocrates
 copyright: Copyright © 2020-2026 Eclipse Foundation, Inc
 electronDist: ../../node_modules/electron/dist
 electronVersion: 44.9.1
@@ -39,9 +39,9 @@ mac:
   icon: resources/icons/MacLauncherIcons/icon.icns
   category: public.app-category.developer-tools
   protocols:
-    - name: theia
+    - name: cocrates
       schemes:
-        - theia
+        - cocrates
   darkModeSupport: true
   target:
     - dmg

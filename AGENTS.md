@@ -23,7 +23,7 @@
 
 1. 저장소의 기능 변경은 Theia 1.77.0 및 Node.js 24, Yarn 1.x 제약과 각 패키지의 기존 구조를 따른다.
 2. 요구사항이 있는 작업은 `spec/`의 승인된 Spec을 기준으로 구현하고, 조사 결과는 `docs/`, 진행 상태는 `TODO.md`와 `scrum/`에 기록한다.
-3. 루트 작업은 Lerna를 통해 애플리케이션과 확장을 함께 조정한다. 특정 패키지 작업은 해당 패키지 디렉터리의 스크립트를 우선 사용한다.
+3. 루트 작업은 Lerna를 통해 Cocrates 애플리케이션(`cocrates*app`)과 Theia 호환 확장(`theia-ide*ext`)을 함께 조정한다. 특정 패키지 작업은 해당 패키지 디렉터리의 스크립트를 우선 사용한다.
 4. Theia upstream 코드를 직접 수정하기보다 확장으로 기능을 연결하고, 꼭 필요한 upstream 수정은 patch 메커니즘과 기존 `postinstall` 흐름을 따른다.
 5. 제품 브랜딩·앱 식별자·설정 폴더·아이콘을 바꿀 때는 `ADOPTER.md`와 `docs/rebranding.md`의 패키징 주의사항을 함께 확인한다.
 
@@ -36,9 +36,9 @@
 - `applications/electron-next`: Next 채널용 Electron 애플리케이션이다. 일반 Electron 앱과 설정을 공유하지만 `brandingVariant`, update channel, URI scheme, configuration folder가 다르다.
 - `theia-extensions/product`: 제품 브랜딩과 About/Getting Started UI 및 Electron main 기여.
 - `theia-extensions/updater`: Electron 업데이트 기능과 UI.
-- `theia-extensions/launcher`: AppImage에서 `theia` 명령을 만들기 위한 launcher 기여.
+- `theia-extensions/launcher`: AppImage에서 타깃별 Cocrates 명령을 만들기 위한 launcher 기여.
 
-애플리케이션 패키지의 Theia 설정은 각 `package.json`의 `theia` 필드에 두며, 의존성은 필요한 `@theia/*` 모듈과 로컬 제품 확장을 명시한다. 확장의 소스는 `src/` 아래에 두고 패키지 빌드 결과는 `lib/`에 생성한다.
+애플리케이션 패키지의 Theia 설정은 각 `package.json`의 `theia` 필드에 두며, 의존성은 필요한 `@theia/*` 모듈과 로컬 제품 확장을 명시한다. Stable은 Cocrates 식별자(`com.cocrates.ide`, `cocrates`, `.cocrates`), Next는 `Cocrates Next` 식별자(`com.cocrates.ide.next`, `cocrates-next`, `.cocrates-next`)를 사용한다. 확장의 소스는 `src/` 아래에 두고 패키지 빌드 결과는 `lib/`에 생성한다.
 
 ### How to implement
 
@@ -73,4 +73,5 @@
 - Electron 배포는 `applications/electron/electron-builder.yml`의 asar 패키징을 사용한다. 네이티브 바이너리나 런타임에 실제 파일 경로가 필요한 스크립트는 `asarUnpack` 및 `.asar.unpacked` 경로 처리를 검토해야 한다.
 - 루트 `package.json`의 `postinstall`은 `theia-patch`다. Theia가 유지하는 upstream 패치가 설치 과정에 적용되므로 이 흐름을 제거하지 않는다.
 - 일반 앱과 Next 앱은 서로 다른 configuration folder와 Electron 식별자를 사용한다. 둘 중 하나를 바꾸면 해당 앱의 `package.json`과 리소스를 함께 확인한다.
-- 저장소 README는 이 프로젝트를 Eclipse Theia IDE의 제품이자 데스크톱 Theia 제품용 템플릿으로 설명한다. 제품 기능보다 플랫폼 조합·패키징·확장 연결이 이 저장소의 중심 책임이다.
+- 저장소 README는 이 프로젝트를 Cocrates 제품이자 데스크톱 Theia 제품용 템플릿으로 설명한다. 제품 기능보다 플랫폼 조합·패키징·확장 연결이 이 저장소의 중심 책임이다.
+- 제품 표면은 Cocrates/Cocrates Next로 표시하지만 `@theia/*`, Theia API, 업스트림 도구명은 호환성 때문에 유지한다.

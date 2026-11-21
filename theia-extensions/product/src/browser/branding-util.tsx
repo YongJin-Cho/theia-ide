@@ -19,13 +19,16 @@ export interface ExternalBrowserLinkProps {
     windowService: WindowService;
 }
 
-export function renderProductName(): React.ReactNode {
+export function getProductName(): string {
     const variant = getBrandingVariant();
-    const suffix = variant !== 'stable' ? ` ${variant.charAt(0).toUpperCase() + variant.slice(1)}` : '';
-    return <h1>Eclipse Theia <span className="tide-branding-accent">IDE</span>{suffix}</h1>;
+    return variant === 'next' ? 'Cocrates Next' : 'Cocrates';
 }
 
-export const DOWNLOAD_URL = 'https://theia-ide.org/#theiaidedownload';
+export function renderProductName(): React.ReactNode {
+    return <h1>{getProductName()}</h1>;
+}
+
+export const DOWNLOAD_URL = 'https://github.com/cocrates/theia-ide/releases';
 
 function BrowserLink(props: ExternalBrowserLinkProps): React.JSX.Element {
     return <a
@@ -50,7 +53,7 @@ export function renderWhatIs(windowService: WindowService): React.ReactNode {
             What is this?
         </h3>
         <div>
-            The Eclipse Theia IDE is a modern and open IDE for cloud and desktop, built on
+            Cocrates is a modern and open IDE for cloud and desktop, built on
             the <BrowserLink text="Theia platform" url="https://theia-ide.org" windowService={windowService} />.
         </div>
         <div>
@@ -101,7 +104,7 @@ export function renderSupport(windowService: WindowService): React.ReactNode {
             Professional Support
         </h3>
         <div>
-            Professional support, implementation services, consulting and training for the Theia IDE and for other tools based on Eclipse Theia are available
+            Professional support, implementation services, consulting and training for Cocrates and for other tools based on Eclipse Theia are available
             from selected companies. They are listed on
             the <BrowserLink text="Theia support page" url="https://theia-ide.org/support/" windowService={windowService} />.
         </div>
@@ -115,14 +118,14 @@ export function renderCommunity(windowService: WindowService): React.ReactNode {
             Community
         </h3>
         <div>
-            The features of the Theia IDE come from Theia and the included extensions, while this project packages them into a product and its installers. So
+            The features of Cocrates come from Theia and the included extensions, while this project packages them into a product and its installers. So
             please report a bug in a feature to the <BrowserLink text="Theia project"
                 url="https://github.com/eclipse-theia/theia/issues/new/choose" windowService={windowService} />, and anything wrong with the packaging or the
-            installers to the <BrowserLink text="Theia IDE project" url="https://github.com/eclipse-theia/theia-ide/issues/new/choose"
+            installers to the <BrowserLink text="Cocrates project" url="https://github.com/cocrates/theia-ide/issues/new/choose"
                 windowService={windowService} />.
         </div>
         <div>
-            The <BrowserLink text="source code" url="https://github.com/eclipse-theia/theia-ide" windowService={windowService} /> of the Theia IDE is available
+            The <BrowserLink text="source code" url="https://github.com/cocrates/theia-ide" windowService={windowService} /> of Cocrates is available
             on GitHub.
         </div>
     </div>;
@@ -146,7 +149,7 @@ export function renderUpdates(props: BrandingProps): React.ReactNode {
             Updates
         </h3>
         <div>
-            You can update the Theia IDE directly in this application from Help {'>'} Check for Updates… It also checks for updates automatically
+            You can update {getProductName()} directly in this application from Help {'>'} Check for Updates… It also checks for updates automatically
             after each launch.
         </div>
         <div>

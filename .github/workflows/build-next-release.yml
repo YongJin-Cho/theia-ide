@@ -1,4 +1,4 @@
-name: Build Theia IDE Next Release (Linux)
+name: Build Cocrates Next Release (Linux)
 
 on:
   workflow_dispatch:
@@ -66,8 +66,8 @@ jobs:
         with:
           name: theia-ide-next-linux
           path: |
-            applications/electron-next/dist/TheiaIDENext.AppImage
-            applications/electron-next/dist/TheiaIDENext.deb
+            applications/electron-next/dist/CocratesNext.AppImage
+            applications/electron-next/dist/CocratesNext.deb
           retention-days: 7
 
       - name: Publish to rolling next release
@@ -81,8 +81,8 @@ jobs:
             --notes "Automated next build of the Ubuntu AppImage and .deb from \`master\` ($(date -u '+%Y-%m-%d %H:%M UTC'))." \
             --prerelease \
             --target ${{ github.sha }} \
-            applications/electron-next/dist/TheiaIDENext.AppImage \
-            applications/electron-next/dist/TheiaIDENext.deb \
+            applications/electron-next/dist/CocratesNext.AppImage \
+            applications/electron-next/dist/CocratesNext.deb \
             applications/electron-next/dist/latest-linux.yml
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

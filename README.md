@@ -2,19 +2,19 @@
 <div id="theia-logo" align="center">
     <br />
     <img src="https://raw.githubusercontent.com/eclipse-theia/theia-ide/master/theia-extensions/product/src/browser/icons/TheiaIDE.png" alt="Theia Logo" width="300"/>
-    <h3>Eclipse Theia IDE</h3>
+    <h3>Cocrates</h3>
 </div>
 
 <div id="badges" align="center">
 
-The Eclipse Theia IDE is built with this project.\
-Eclipse Theia IDE also serves as a template for building desktop-based products based on the Eclipse Theia platform.
+Cocrates is built with this project.\
+This repository also serves as a template for building desktop-based products based on the Eclipse Theia platform.
 
 </div>
 
-[![Installers](https://img.shields.io/badge/download-installers-blue.svg?style=flat-curved)](https://theia-ide.org/#theiaidedownload)
-[![Build](https://github.com/eclipse-theia/theia-ide/actions/workflows/build.yml/badge.svg?event=schedule)](https://github.com/eclipse-theia/theia-ide/actions/workflows/build.yml?query=event%3Aschedule)
-[![Next Build](https://github.com/eclipse-theia/theia-ide/actions/workflows/build-next-release.yml/badge.svg?branch=master)](https://github.com/eclipse-theia/theia-ide/actions/workflows/build-next-release.yml)
+[![Installers](https://img.shields.io/badge/download-installers-blue.svg?style=flat-curved)](https://github.com/cocrates/theia-ide/releases)
+[![Build](https://github.com/cocrates/theia-ide/actions/workflows/build.yml/badge.svg?event=schedule)](https://github.com/cocrates/theia-ide/actions/workflows/build.yml?query=event%3Aschedule)
+[![Next Build](https://github.com/cocrates/theia-ide/actions/workflows/build-next-release.yml/badge.svg?branch=master)](https://github.com/cocrates/theia-ide/actions/workflows/build-next-release.yml)
 
 [Main Theia Repository](https://github.com/eclipse-theia/theia)
 
@@ -32,7 +32,7 @@ Eclipse Theia IDE also serves as a template for building desktop-based products 
 ## What is this?
 
 The Eclipse Theia IDE is a modern and open IDE for cloud and desktop. The Theia IDE is based on the [Theia platform](https://theia-ide.org).
-The Theia IDE is available as a [downloadable desktop application](https://theia-ide.org/#theiaidedownload). You can also try the latest version of the Theia IDE online. The online test version is limited to 30 minutes per session and hosted via Theia.cloud. Finally, we provide an [experimental Docker image](#docker) for hosting the Theia IDE online.
+The Theia IDE is available as a [downloadable desktop application](https://github.com/cocrates/theia-ide/releases). You can also try the latest version of the Theia IDE online. The online test version is limited to 30 minutes per session and hosted via Theia.cloud. Finally, we provide an [experimental Docker image](#docker) for hosting the Theia IDE online.
 
 The Eclipse Theia IDE also serves as a **template** for building desktop-based products based on the Eclipse Theia platform, as well as to showcase Eclipse Theia capabilities. It is made up of a subset of existing Eclipse Theia features and extensions. [Documentation is available](https://theia-ide.org/docs/composing_applications/) to help you customize and build your own Eclipse Theia-based product.
 

@@ -3,13 +3,13 @@
   "version": "1.77.0",
   "license": "MIT",
   "author": "Rob Moran <github@thegecko.org>",
-  "homepage": "https://github.com/eclipse-theia/theia-ide#readme",
+  "homepage": "https://github.com/cocrates/theia-ide#readme",
   "bugs": {
     "url": "https://github.com/eclipse-theia/theia/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/eclipse-theia/theia-ide.git"
+    "url": "git+https://github.com/cocrates/theia-ide.git"
   },
   "engines": {
     "yarn": ">=1.7.0 <2",
@@ -39,17 +39,17 @@
     "clean": "lerna run clean && rimraf node_modules",
     "build": "yarn build:extensions && yarn build:applications",
     "build:dev": "yarn build:extensions && yarn build:applications:dev",
-    "build:applications": "lerna run --scope=\"theia-ide*app\" --ignore=\"theia-ide-next*\" build:prod --concurrency 1",
-    "build:applications:dev": "lerna run --scope=\"theia-ide*app\" --ignore=\"theia-ide-next*\" build --concurrency 1",
-    "build:applications:next": "lerna run --scope=\"theia-ide-next*\" build:prod --concurrency 1",
-    "build:applications:next:dev": "lerna run --scope=\"theia-ide-next*\" build --concurrency 1",
+    "build:applications": "lerna run --scope=\"cocrates*app\" --ignore=\"cocrates-next*\" build:prod --concurrency 1",
+    "build:applications:dev": "lerna run --scope=\"cocrates*app\" --ignore=\"cocrates-next*\" build --concurrency 1",
+    "build:applications:next": "lerna run --scope=\"cocrates-next*\" build:prod --concurrency 1",
+    "build:applications:next:dev": "lerna run --scope=\"cocrates-next*\" build --concurrency 1",
     "build:extensions": "lerna run --scope=\"theia-ide*ext\" build",
     "build:local-theia": "node scripts/build-with-local-theia.js",
     "download:plugins": "theia download:plugins --rate-limit=15 --parallel=false && yarn permissions:writeable",
-    "package:applications": "lerna run --scope=\"theia-ide*app\" --ignore=\"theia-ide-next*\" package --concurrency 1",
-    "package:applications:preview": "lerna run --scope=\"theia-ide*app\" --ignore=\"theia-ide-next*\" package:preview --concurrency 1",
-    "package:applications:prod": "lerna run --scope=\"theia-ide*app\" --ignore=\"theia-ide-next*\" package:prod --concurrency 1",
-    "package:applications:next": "lerna run --scope=\"theia-ide-next*\" package --concurrency 1",
+    "package:applications": "lerna run --scope=\"cocrates*app\" --ignore=\"cocrates-next*\" package --concurrency 1",
+    "package:applications:preview": "lerna run --scope=\"cocrates*app\" --ignore=\"cocrates-next*\" package:preview --concurrency 1",
+    "package:applications:prod": "lerna run --scope=\"cocrates*app\" --ignore=\"cocrates-next*\" package:prod --concurrency 1",
+    "package:applications:next": "lerna run --scope=\"cocrates-next*\" package --concurrency 1",
     "permissions:writeable": "ts-node scripts/make-files-writeable.ts plugins",
     "watch": "lerna run --parallel watch",
     "test": "lerna run test",

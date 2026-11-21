@@ -14,6 +14,6 @@ import { getBrandingVariant } from './theia-ide-config.js';
 @injectable()
 export class TheiaIDEAIRegistryConfiguration extends AIRegistryConfiguration {
     override getToolName(): string {
-        return getBrandingVariant() === 'next' ? 'theia-ide-next' : 'theia-ide';
+        return getBrandingVariant() === 'next' ? 'cocrates-next' : 'cocrates';
     }
 }

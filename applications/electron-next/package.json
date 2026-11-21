@@ -1,19 +1,19 @@
 {
   "private": true,
-  "name": "theia-ide-next-electron-app",
-  "description": "Eclipse Theia IDE Next product",
-  "productName": "Theia IDE Next",
+  "name": "cocrates-next-electron-app",
+  "description": "Cocrates Next product",
+  "productName": "Cocrates Next",
   "version": "1.77.0",
   "main": "scripts/theia-electron-main.js",
   "license": "MIT",
   "author": "Eclipse Theia <theia-dev@eclipse.org>",
-  "homepage": "https://github.com/eclipse-theia/theia-ide#readme",
+  "homepage": "https://github.com/cocrates/theia-ide#readme",
   "bugs": {
     "url": "https://github.com/eclipse-theia/theia/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/eclipse-theia/theia-ide.git"
+    "url": "git+https://github.com/cocrates/theia-ide.git"
   },
   "engines": {
     "yarn": ">=1.7.0 <2",
@@ -23,7 +23,7 @@
     "target": "electron",
     "frontend": {
       "config": {
-        "applicationName": "Theia IDE Next",
+        "applicationName": "Cocrates Next",
         "brandingVariant": "next",
         "availableUpdateChannels": [
           "next"
@@ -35,8 +35,8 @@
           "ai-features.chat.tokenUsageIndicator.enabled": true
         },
         "electron": {
-          "uriScheme": "theia-next",
-          "appUserModelId": "eclipse.theia.next",
+          "uriScheme": "cocrates-next",
+          "appUserModelId": "com.cocrates.ide.next",
           "showWindowEarly": false,
           "splashScreenOptions": {
             "content": "resources/TheiaIDENextSplash.svg",
@@ -51,7 +51,7 @@
         "frontendConnectionTimeout": -1,
         "startupTimeout": -1,
         "resolveSystemPlugins": false,
-        "configurationFolder": ".theia-ide-next"
+        "configurationFolder": ".cocrates-next"
       }
     },
     "generator": {

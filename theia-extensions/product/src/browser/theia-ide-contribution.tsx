@@ -36,8 +36,8 @@ export class TheiaIDEContribution implements CommandContribution, MenuContributi
     @inject(WindowService)
     protected readonly windowService: WindowService;
 
-    static REPORT_ISSUE_URL = 'https://github.com/eclipse-theia/theia-ide/issues/new?assignees=&labels=&template=bug_report.md';
-    static DOCUMENTATION_URL = 'https://theia-ide.org/docs/user_getting_started/';
+    static REPORT_ISSUE_URL = 'https://github.com/cocrates/theia-ide/issues/new?assignees=&labels=&template=bug_report.md';
+    static DOCUMENTATION_URL = 'https://github.com/cocrates/theia-ide/tree/master/docs';
 
     registerCommands(commandRegistry: CommandRegistry): void {
         commandRegistry.registerCommand(TheiaIDECommands.REPORT_ISSUE, {

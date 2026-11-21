@@ -7,12 +7,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/eclipse-theia/theia-ide.git"
+    "url": "https://github.com/cocrates/theia-ide.git"
   },
   "bugs": {
-    "url": "https://github.com/eclipse-theia/theia-ide/issues"
+    "url": "https://github.com/cocrates/theia-ide/issues"
   },
-  "homepage": "https://github.com/eclipse-theia/theia-ide",
+  "homepage": "https://github.com/cocrates/theia-ide",
   "files": [
     "lib",
     "src"
