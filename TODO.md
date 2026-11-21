@@ -9,11 +9,11 @@
 
 | Done | Open | Blocked | Skipped |
 |------|------|---------|---------|
-| 2    | 5    | 0       | 0       |
+| 6    | 1    | 0       | 0       |
 
 **Sprint goal:** 승인된 PB-007 Spec을 구현하고 Browser·Stable Electron·Electron Next에서 Cocrates Agent·Skills·도구 계약을 검증한다.
-**Current focus:** T-003
-**Recommended next:** T-003 — Cocrates ChatAgent 및 생성 시스템 프롬프트 구현
+**Current focus:** T-007
+**Recommended next:** T-007 — Sprint Boundary → sprint-05
 
 ## Tasks
 
@@ -27,26 +27,26 @@
   - Artifact: `adr/cocrates-skills-runtime-path-channel.md`
   - Depends: T-001
   - Notes: Option B(전용 backend RPC)를 사용해 `CocratesSkillsPathService`가 번들 Skills 경로를 반환하도록 결정·승인했다.
-  - [ ] **T-003** — Cocrates ChatAgent 및 생성 시스템 프롬프트 구현
+  - [x] **T-003** — Cocrates ChatAgent 및 생성 시스템 프롬프트 구현
   - Phase: implementation
   - Artifact: `theia-extensions/product/`
   - Depends: T-002
-  - Notes: `AbstractStreamParsingChatAgent`, Agent·ChatAgent 등록, default preference, `agent1.md` 빌드 생성 소스를 구현한다.
-- [ ] **T-004** — Skills 번들·발견·타깃 패키징 구현
+  - Notes: `AbstractStreamParsingChatAgent` 기반 Agent를 이중 등록하고 Cocrates default preference를 추가했다. `agent1.md`를 빌드 시 TypeScript prompt fragment로 생성한다. product extension build와 lint를 통과했다.
+  - [x] **T-004** — Skills 번들·발견·타깃 패키징 구현
   - Phase: implementation
   - Artifact: `theia-extensions/product/`, `applications/`
   - Depends: T-002, T-003
-  - Notes: 실제 사용자 제공 전까지 `adr`, `todo`, `sdd` 본문은 만들거나 복사하지 않는다. 제품 Skills 경로·contribution·asar 외부 리소스 계약을 구현한다.
-- [ ] **T-005** — `getSkillFileContent` 확장 구현
+  - Notes: backend RPC `CocratesSkillsPathService`와 frontend `SkillDirectoryContribution`을 연결했다. 개발 경로와 Electron `resources/app/skills` 경로를 지원하고 Stable/Next electron-builder에 asar 외부 리소스를 추가했다. product extension build와 lint를 통과했다.
+- [x] **T-005** — `getSkillFileContent` 확장 구현
   - Phase: implementation
   - Artifact: `theia-extensions/product/`
   - Depends: T-001, T-002
-  - Notes: 기존 tool ID와 `SKILL.md` 호환성을 유지하며 path, 보조 파일 원문, 경로 가드, 오류 JSON, DI rebind를 구현한다.
-- [ ] **T-006** — PB-007 구현·패키징·검증 기록
+  - Notes: 기존 `getSkillFileContent` ID를 유지한 DI rebind를 추가했다. `path`로 skill-root 상대 보조 파일을 읽고 `SKILL.md` frontmatter 제거 호환성, 파일/디렉터리 오류, 절대경로·root 탈출 가드를 구현했다. product extension build와 lint를 통과했다.
+- [x] **T-006** — PB-007 구현·패키징·검증 기록
   - Phase: verification
   - Artifact: `verification/cocrates-ai-agent-skills.md`
   - Depends: T-003, T-004, T-005
-  - Notes: Browser·Stable Electron·Electron Next 및 가능한 lint/build/package/E2E 증거를 Spec 요구사항과 대조한다.
+  - Notes: 제품 확장 build/lint와 저장소 lint, Stable/Next Electron E2E 결과 및 세 타깃 build/package 실행 제약을 Spec 요구사항과 대조해 기록했다. 애플리케이션 build는 TypeScript 5.9.3의 TS5101 호환성 오류로 실행 불가했고, Electron E2E는 각 9 passing/1 failing으로 Builtin extensions 시나리오가 실패했다.
 - [ ] **T-007** — Sprint Boundary → sprint-05
   - Phase: cross-cutting
   - Artifact: `scrum/TODO-04.md`, `scrum/PROMPTS-04.md`

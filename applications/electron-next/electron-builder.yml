@@ -26,6 +26,8 @@ files:
 extraResources:
   - from: ../../plugins
     to: app/plugins
+  - from: ../../theia-extensions/product/skills
+    to: app/skills
 
 linux:
   icon: resources/icons/LinuxLauncherIcons
