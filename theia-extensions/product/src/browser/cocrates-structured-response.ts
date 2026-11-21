@@ -23,11 +23,11 @@ export function parseCocratesStructuredResponse(text: string): CocratesStructure
         return undefined;
     }
 
-    if (!isRecord(value) || typeof value.answer !== 'string') {
+    if (!isRecord(value) || !isStructuredResponse(value)) {
         return undefined;
     }
 
-    return value as CocratesStructuredResponse;
+    return value;
 }
 
 function parseJsonCandidate(text: string): unknown {
@@ -47,5 +47,16 @@ function parseJsonCandidate(text: string): unknown {
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
-    return typeof value === 'object' && value !== null && !Array.isArray(value);
+    return Object(value) === value && !Array.isArray(value);
+}
+
+function isStructuredResponse(value: Record<string, unknown>): value is CocratesStructuredResponse {
+    return typeof value.answer === 'string'
+        && isOptionalString(value, 'session')
+        && isOptionalString(value, 'commit')
+        && isOptionalString(value, 'compaction');
+}
+
+function isOptionalString(value: Record<string, unknown>, key: string): boolean {
+    return value[key] === undefined || typeof value[key] === 'string';
 }

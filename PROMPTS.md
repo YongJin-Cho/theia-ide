@@ -25,3 +25,14 @@
 - `cocrates-structured-response.ts`에 fenced/object JSON 추출과 `answer` 필드 검증을 구현하고, Cocrates Agent의 완료 응답 경로에서 유효한 JSON은 `answer`만 Markdown으로 표시하도록 연결했다.
 - 제품 확장 빌드(`build - theia-extensions/product`)가 통과했다. T-001을 완료하고 T-002를 Current focus로 이동했다.
 - **Asked user:** —
+
+## TURN-003
+
+### User Request
+> 이어서 진행해줘.
+
+### Cocrates Response
+- T-002를 완료하고 prompt-only JSON 파서의 `answer` 및 선택 필드 문자열 검증을 보강했다.
+- 제품 확장 build는 통과했다. 제품 lint는 이번 변경과 무관한 기존 `cocrates-chat-agent-prompt.ts`의 file header/max-len 오류 때문에 실패했으며, 새 파서 파일에서는 오류가 발생하지 않았다.
+- 승인된 side effect 안전성 ADR의 후속 미결정 항목인 commit 실행 어댑터를 확인해 T-003을 해당 결정 전까지 blocked 상태로 표시했다.
+- **Asked user:** commit 실행을 기존 shell/git tool, Theia SCM API, 전용 backend service 중 어떤 경계로 구현할지 ADR을 열어 비교·결정할까요?

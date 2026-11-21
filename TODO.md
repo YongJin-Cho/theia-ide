@@ -9,11 +9,11 @@
 
 | Done | Open | Blocked | Skipped |
 |------|------|---------|---------|
-| 1    | 6    | 0       | 0       |
+| 2    | 5    | 1       | 0       |
 
 **Sprint goal:** 승인된 구조화 최종 응답 Spec을 구현하고 제품 확장 경계에서 검증한다.
-**Current focus:** T-002
-**Recommended next:** T-002 — prompt-only JSON 계약 포함 및 완료 응답 파서 구현
+**Current focus:** T-003
+**Recommended next:** T-003 — session·commit side effect adapter 구현 (commit 실행 어댑터 결정 필요)
 
 ## Tasks
 
@@ -23,17 +23,17 @@
   - Depends: —
   - Notes: PB-008; Theia 1.77에는 제품 JSON 자동 라우팅 훅이 없고, `AbstractStreamParsingChatAgent.addContentsToResponse`가 제품 확장 경계다. 세션 제목은 `ChatService.renameSession`, provider compaction은 제품 local state와 분리해야 한다. 조사 결과는 기존 `docs/theia/` 문서와 이 보드에 반영했다.
 
-- [ ] **T-002** — prompt-only JSON 계약 포함 및 완료 응답 파서 구현
+- [x] **T-002** — prompt-only JSON 계약 포함 및 완료 응답 파서 구현
   - Phase: implementation
   - Artifact: `theia-extensions/product/src/`
   - Depends: T-001
-  - Notes: PB-008; R-001~R-005, C-001~C-002. fenced/object JSON 추출, answer-only 표시, malformed fallback, 완료 전 side effect 금지를 구현하고 테스트한다.
+  - Notes: PB-008; R-001~R-005, C-001~C-002. fenced/object JSON 추출, answer-only 표시, malformed fallback, 완료 전 side effect 금지를 구현했다. answer와 선택 필드의 문자열 타입을 검증하며 제품 확장 build를 통과했다. 제품 lint는 기존 prompt 파일의 header/max-len 오류로 실패했다.
 
 - [ ] **T-003** — session·commit side effect adapter 구현
   - Phase: implementation
   - Artifact: `theia-extensions/product/src/`
   - Depends: T-002
-  - Notes: PB-008; R-006~R-009, C-003. 세션 제목 검증, 저장소·staged 상태·message 검증, 성공/실패/거부·idempotency·revert 경계를 구현하고 테스트한다.
+  - Notes: PB-008; R-006~R-009, C-003. (blocked: 승인된 ADR의 Downstream Concern인 commit execution adapter가 아직 결정되지 않음.)
 
 - [ ] **T-004** — compaction 저장·복원 및 메시지 순서 구현
   - Phase: implementation
