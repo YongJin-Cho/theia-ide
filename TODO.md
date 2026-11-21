@@ -46,7 +46,7 @@
   - Phase: verification
   - Artifact: `verification/cocrates-ai-agent-skills.md`
   - Depends: T-003, T-004, T-005
-  - Notes: 제품 확장 build/lint와 저장소 lint, Stable/Next Electron E2E 결과 및 세 타깃 build/package 실행 제약을 Spec 요구사항과 대조해 기록했다. 애플리케이션 build는 TypeScript 5.9.3의 TS5101 호환성 오류로 실행 불가했고, Electron E2E는 각 9 passing/1 failing으로 Builtin extensions 시나리오가 실패했다.
+  - Notes: 제품 확장 build/lint와 저장소 lint, Browser production build, Stable/Next Electron 공식 build/package, 양 Electron E2E를 검증 기록에 반영했다. 초기 개별 `tsc -b` 작업의 TS5101 결과와 package 전 9 passing/1 failing 결과는 공식 파이프라인 결과가 아니므로 정정했으며, 최종 공식 E2E는 양 타깃 모두 10 passing이다. 사용자 제공 `adr`·`todo`·`sdd` Skills와 Electron 패키지의 `resources/app/skills` 포함도 확인했다. Browser UI smoke는 launch configuration의 debug adapter 제약으로 보류했다.
 - [ ] **T-007** — Sprint Boundary → sprint-05
   - Phase: cross-cutting
   - Artifact: `scrum/TODO-04.md`, `scrum/PROMPTS-04.md`

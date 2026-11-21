@@ -87,3 +87,15 @@
 - Browser·Stable Electron·Electron Next 애플리케이션 build는 현재 TypeScript 5.9.3의 TS5101 호환성 오류로 실행 불가했고, 최신 패키지·런타임 Skills 검증은 성공으로 표시하지 않았다.
 - T-006을 완료하고 T-007 Sprint Boundary를 현재 작업으로 이동했다. `PB-007`은 아직 전체 DoD 충족으로 닫지 않는다.
 - **Asked user:** sprint-04 Boundary 검토 결과를 승인하고 sprint-05로 이관·아카이브를 진행할까요? (PB-007은 구현/정적 검증 완료분을 기록한 채 미완료 검증을 carry-over로 남기는 안을 제안합니다.)
+
+## TURN-008
+
+### User Request
+> yarn build , electron package, E2E test 모두 잘 되는데, 무슨 문제가 있는 것이지?
+
+### Cocrates Response
+- 이전 검증에서 공식 `yarn build`가 아닌 VS Code 개별 `tsc -b applications/.../tsconfig.json` 작업을 실행한 것이 원인이었다. 이 작업은 저장소 공식 build 경로와 다르며 TS5101을 보고했다.
+- 사용자가 제공한 실제 `adr`, `todo`, `sdd` Skills가 `theia-extensions/product/skills/`에 추가된 것을 확인했고, Stable/Next 패키지의 `resources/app/skills`에 포함되는 것을 확인했다.
+- 공식 `yarn build`, `yarn package:applications`, `yarn package:applications:next`, `yarn test`, Browser `build:prod`를 다시 실행했고 모두 성공했다. Stable과 Electron Next E2E는 각각 10 passing이다.
+- `verification/cocrates-ai-agent-skills.md`와 T-006 Notes를 공식 파이프라인 결과 기준으로 정정했다. Browser UI smoke만 launch configuration의 debug adapter 실행 실패로 보류되어 있다.
+- **Asked user:** 수정된 검증 결과를 기준으로 sprint-04 Boundary에서 PB-007을 완료 처리하고 아카이빙할까요?
