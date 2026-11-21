@@ -4,7 +4,7 @@
 Cocrates와 `Cocrates Next`의 앱 식별자, URI scheme, configuration folder, 실행 파일·패키지 이름을 어떤 일관된 체계로 정할 것인가?
 
 ## Status
-proposed
+approved
 
 ## Context
 - Browser, Stable Electron, Electron Next를 하나의 제품군으로 리브랜딩하지만 Electron Next는 별도 채널 변형으로 유지한다.
@@ -13,6 +13,7 @@ proposed
 - 기존 Theia 식별자와 새 Cocrates 식별자를 동시에 사용하면 설치 충돌과 사용자 데이터 혼동이 생길 수 있다.
 
 ## Decision
+**Option A — Cocrates 전용 reverse-domain 식별자**를 채택한다. Stable은 `com.cocrates.ide`, `cocrates`, `.cocrates`를 사용하고, Electron Next는 `com.cocrates.ide.next`, `cocrates-next`, `.cocrates-next`를 사용해 앱 식별자·URI scheme·사용자 설정 디렉터리를 분리한다. 이는 Cocrates를 독립 제품으로 배포하면서 Stable과 Next의 충돌을 방지하기 위한 선택이다.
 
 ## Options
 ### Option A — Cocrates 전용 reverse-domain 식별자
@@ -50,8 +51,8 @@ proposed
 - Option C는 Cocrates 독립 제품 식별자 요구와 맞지 않으므로 채택하지 않는 방향이다.
 
 ## Downstream Concerns
-- [ ] **ADR candidate — 기존 사용자 데이터 마이그레이션:** `.theia-ide` 계열 설정과 기존 설치를 새 `.cocrates` 계열로 자동 이전할지 결정한다.
-- [ ] **ADR candidate — Cocrates 배포 도메인:** `com.cocrates`가 공식 OS 식별자 네임스페이스인지 확인한다.
+- [x] **directly resolved — 기존 사용자 데이터 마이그레이션:** 기존 `.theia-ide` 계열 데이터를 새 `.cocrates` 계열로 자동 이전하지 않는다. 새 제품은 새 설정 디렉터리를 사용한다.
+- [x] **directly resolved — Cocrates 배포 도메인:** `com.cocrates`를 공식 OS 식별자 네임스페이스로 사용한다.
 - [x] **deferred assumption — 실제 릴리스 버전 규칙:** 현재 concern에서는 다루지 않으며 기존 버전 관리 규칙을 유지한다.
 
 ## Related
@@ -60,3 +61,5 @@ proposed
 
 ## Notes
 - 현재 세션: AC-005의 식별자 체계 선택을 위해 Options A~C를 제안했다.
+- 현재 세션: Status → approved; Option A를 선택하고 Stable/Next 식별자 매핑을 기록했다.
+- 현재 세션: 기존 사용자 데이터는 마이그레이션하지 않고 `com.cocrates`를 공식 reverse-domain으로 사용하기로 결정했다.

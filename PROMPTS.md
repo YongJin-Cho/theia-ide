@@ -53,3 +53,58 @@
 - Option A(`com.cocrates.ide` / `cocrates` / `.cocrates`, Next는 `.next` 분리)를 권장했으며, 실제 reverse-domain 정책과 기존 Theia 사용자 데이터 마이그레이션은 별도 확인이 필요하다.
 - 아직 AC-005를 확정하지 않았고, AC-006과 AC-007 검토는 AC-005 결정 뒤에 진행한다.
 - **Asked user:** `adr/cocrates-target-identifiers.md`의 옵션을 검토하고 Cocrates 타깃 식별자 체계를 선택해 달라.
+
+## TURN-005
+
+### 사용자 요청
+> 좋아.
+
+### Cocrates 응답
+- `좋아`를 권장안인 Option A 승인으로 기록했다.
+- `adr/cocrates-target-identifiers.md`를 `approved`로 갱신하고 Stable/Next 식별자 매핑을 Decision에 기록했다.
+- AC-005에 Option A의 구체적 Resolution과 승인된 ADR 링크를 반영했다.
+- 기존 사용자 데이터 마이그레이션과 실제 `com.cocrates` reverse-domain 정책은 새 식별자 계약에 직접 영향을 주므로 후속 concern으로 남겼다.
+- 후속 concern이 정리되기 전까지 AC-005는 `reviewing` 상태를 유지한다.
+- **Asked user:** 기존 `.theia-ide` 사용자 데이터 마이그레이션과 `com.cocrates` reverse-domain을 이번 범위에서 별도 결정하지 않고 deferred assumption으로 두고 AC-005를 완료 처리할지 결정해 달라.
+
+## TURN-006
+
+### 사용자 요청
+> 1. 마이그레이션은 하지 않음.
+> 2. com.cocrates OK.
+
+### Cocrates 응답
+- 기존 `.theia-ide` 사용자 데이터는 새 `.cocrates` 계열로 자동 마이그레이션하지 않는다고 결정했다.
+- `com.cocrates`를 Stable/Next 앱 식별자의 공식 reverse-domain으로 확정했다.
+- `adr/cocrates-target-identifiers.md`의 두 후속 concern을 직접 해결로 닫고, AC-005를 `designed`로 변경했다.
+- 다음 unsettled concern인 AC-006을 `reviewing`으로 전환했다.
+- 제안하는 경계는 사용자에게 보이는 UI·패키징·CLI·문서·배포 메타데이터의 Theia 제품 문자열은 Cocrates로 변경하되, `@theia/*` 패키지명·Theia API·업스트림 도구명처럼 호환성에 필요한 내부 식별자는 유지하는 것이다.
+- **Asked user:** 이 사용자 표면/업스트림 호환 식별자 경계를 AC-006 Resolution으로 승인해 달라.
+
+## TURN-007
+
+### 사용자 요청
+> ok
+
+### Cocrates 응답
+- AC-006 Resolution 승인을 기록했다.
+- 사용자 표면·패키징·CLI·문서·배포 메타데이터는 Cocrates 브랜드로 변경하고, `@theia/*`·Theia API·업스트림 도구명은 호환성에 필요한 내부 명칭으로 유지하는 경계를 AC-006에 반영했다.
+- AC-006을 `designed`로 닫고, 다음 concern인 AC-007을 `reviewing`으로 전환했다.
+- 현재 구현 대조에서 updater의 Next 다운로드 URL은 `https://github.com/eclipse-theia/theia-ide/releases/download/next`, Docker 이미지 태그는 `theia-ide`를 사용한다.
+- 실제 Cocrates 릴리스 저장소·CDN·컨테이너 경로는 아직 제공되지 않았다.
+- **Asked user:** 실제 배포 엔드포인트가 없는 동안 제품 식별자·artifact/image 이름은 Cocrates로 바꾸되 updater URL·publish URL·문서 링크는 명시적 자리표시자로 남길지, 아니면 예상되는 Cocrates 경로로 확정할지 결정해 달라.
+
+## TURN-008
+
+### 사용자 요청
+> github link는 https://github.com/cocrates/theia-ide 로해줘. docker image tag도 cocrates-ide로 해주고.
+
+### Cocrates 응답
+- AC-007을 `designed`로 확정했다.
+- GitHub 배포 저장소를 `https://github.com/cocrates/theia-ide`로 결정했다.
+- Electron Next updater URL은 해당 저장소의 기존 `/releases/download/next` 채널 경로를 사용하도록 정했다.
+- Docker image tag는 `cocrates-ide`로 결정했다.
+- 별도로 제공되지 않은 CDN·registry 호스트는 추정하지 않도록 범위를 제한했다.
+- AC-005, AC-006, AC-007을 모두 확정해 모든 blocking AC가 `designed` 상태가 되었다.
+- 현재 AC review stage-exit gate에서 대기 중이다.
+- **Asked user:** 확정된 AC-005~AC-007을 포함한 전체 AC review 결과를 승인하고 ASR delta 통합 단계로 진행할지 결정해 달라.

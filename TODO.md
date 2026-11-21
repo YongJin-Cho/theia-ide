@@ -9,11 +9,11 @@
 
 | Done | Open | Blocked | Skipped |
 |------|------|---------|---------|
-| 2    | 8    | 0       | 0       |
+| 5    | 5    | 0       | 0       |
 
 **Sprint goal:** Browser, Stable Electron, Electron Next를 Cocrates 브랜드로 전환하기 위한 승인된 요구사항과 Spec을 확정한다.
-**Current focus:** T-005
-**Recommended next:** T-005 — 리브랜딩 AC 결정
+**Current focus:** T-006
+**Recommended next:** T-006 — ASR delta 통합 및 승인
 
 ## Tasks
 
@@ -37,7 +37,7 @@
   - Artifact: `spec/AC.md`
   - Depends: T-003
   - Notes: 사용자 승인 후 AC별 설계를 시작한다.
-- [ ] **T-005** — 리브랜딩 AC 결정
+- [x] **T-005** — 리브랜딩 AC 결정
   - Phase: SDD ③ AC review
   - Artifact: `spec/AC.md` 또는 `adr/`
   - Depends: T-004

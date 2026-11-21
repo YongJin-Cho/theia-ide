@@ -10,9 +10,9 @@ Theia IDE Product Template의 제품 Spec 작성을 위해 설계가 필요한 �
 | AC-002 | 제품 확장의 구성 및 의존성 경계 | Integration & dependencies | designed | — | ASR-003 |
 | AC-003 | 채택자 커스터마이징 표면의 지원 범위 | Deliverable form | designed | — | ASR-004 |
 | AC-004 | 제품 Spec-구현 일치 검증의 증거 수준 | Quality bar (architectural) | designed | — | ASR-007 |
-| AC-005 | Cocrates 타깃 식별자 체계 | Constraints (structural) | reviewing | adr/cocrates-target-identifiers.md | — |
-| AC-006 | 제품 브랜드와 Theia 업스트림 명칭의 경계 | Structure & organization | identified | — | — |
-| AC-007 | 업데이트·배포 메타데이터의 제품 소유 범위 | Integration & dependencies | identified | — | — |
+| AC-005 | Cocrates 타깃 식별자 체계 | Constraints (structural) | designed | adr/cocrates-target-identifiers.md | — |
+| AC-006 | 제품 브랜드와 Theia 업스트림 명칭의 경계 | Structure & organization | designed | — | — |
+| AC-007 | 업데이트·배포 메타데이터의 제품 소유 범위 | Integration & dependencies | designed | — | — |
 
 ## Dependency Order (recommended review path)
 
@@ -63,41 +63,41 @@ Theia IDE Product Template의 제품 Spec 작성을 위해 설계가 필요한 �
 ### AC-005 — Cocrates 타깃 식별자 체계
 
 - **Category:** Constraints (structural)
-- **Status:** reviewing
+- **Status:** designed
 - **Statement:** Browser, Stable Electron, Electron Next(`Cocrates Next`)에 사용할 `name`, `productName`, `applicationName`, `appId`, `appUserModelId`, URI scheme, configuration folder, executable·artifact 이름을 어떤 일관된 식별자 체계로 정할 것인가?
 - **Why it matters:** 앱 식별자와 사용자 데이터·딥링크·패키징 산출물은 설치·업데이트·동시 사용·기존 데이터와의 충돌에 영향을 주며, 임의의 값은 되돌리기 어려운 배포 계약이 된다.
 - **Depends on:** AC-001
 - **Related ADRs:**
-  - —
+  - `adr/cocrates-target-identifiers.md` — approved
 - **Resolution path:** adr
-- **Resolution:**
-- **Notes:** `docs/rebranding.md`는 예시 값만 제공하므로 Cocrates의 실제 reverse-domain 식별자, Next 접미사 규칙, 기존 Theia 사용자 데이터와의 마이그레이션·분리 정책을 확정해야 한다.
+- **Resolution:** Option A를 채택한다. Stable은 `com.cocrates.ide`, `cocrates`, `.cocrates`를 사용하고 Electron Next는 `com.cocrates.ide.next`, `cocrates-next`, `.cocrates-next`를 사용해 앱 식별자·URI scheme·사용자 설정 디렉터리를 분리한다.
+- **Notes:** `docs/rebranding.md`는 예시 값만 제공했으나 `com.cocrates`를 공식 reverse-domain으로 확정했다. 기존 `.theia-ide` 사용자 데이터는 새 `.cocrates` 계열로 자동 마이그레이션하지 않는다.
 
 ### AC-006 — 제품 브랜드와 Theia 업스트림 명칭의 경계
 
 - **Category:** Structure & organization
-- **Status:** identified
+- **Status:** designed
 - **Statement:** 소스 코드 식별자·내부 패키지명·업스트림 도구명에 남아 있는 `theia`/`theia-ide` 문자열 중 어떤 것을 Cocrates 제품 표면에서 반드시 제거하고, 어떤 내부 호환 명칭을 유지할 것인가?
 - **Why it matters:** 모든 문자열을 기계적으로 바꾸면 업스트림 API·패키지 계약을 깨뜨릴 수 있고, 반대로 경계를 정의하지 않으면 사용자에게 Theia 브랜드가 남는다.
 - **Depends on:** AC-005
 - **Related ADRs:**
   - —
 - **Resolution path:** direct-input
-- **Resolution:**
-- **Notes:** PRD는 사용자 표면에서 Theia IDE 브랜드를 제거하되 업스트림 도구명은 필요한 곳에 남길 수 있다고 정의했으므로, 사용자 표면·배포 메타데이터·내부 호환 식별자의 판정 기준을 구체화해야 한다.
+- **Resolution:** 사용자에게 보이는 UI·패키징·CLI·문서·배포 메타데이터의 Theia 제품 문자열은 Cocrates 또는 `Cocrates Next`로 변경한다. `@theia/*` 패키지명, Theia API, 업스트림 빌더·도구명처럼 호환성에 필요한 내부 식별자는 유지한다. 유지되는 내부 명칭은 제품 사용자 표면이나 제품 배포 식별자로 노출하지 않는다.
+- **Notes:** PRD의 사용자 표면 브랜드 제거 원칙을 직접 입력으로 구체화했다. 내부 호환 식별자를 기계적으로 변경해 Theia 의존성 계약을 깨뜨리지 않는다.
 
 ### AC-007 — 업데이트·배포 메타데이터의 제품 소유 범위
 
 - **Category:** Integration & dependencies
-- **Status:** identified
+- **Status:** designed
 - **Statement:** updater URL, electron-builder publish 설정, CI release artifact/image 이름, Docker registry 경로와 문서 링크를 Cocrates 배포 인프라로 확정할 것인가, 아니면 템플릿 변수·자리표시자로 남길 것인가?
 - **Why it matters:** 잘못된 updater·publish URL은 설치된 사용자를 잘못된 릴리스로 연결할 수 있고, 실제 Cocrates 배포 인프라 정보가 없는 상태에서 임의 URL을 넣으면 구현 후 재작업이 발생한다.
 - **Depends on:** AC-005
 - **Related ADRs:**
   - —
-- **Resolution path:** direct-input | adr
-- **Resolution:**
-- **Notes:** `docs/rebranding.md`는 자체 CDN/릴리스 서버로 바꾸라고 안내하지만 실제 Cocrates 배포 엔드포인트는 아직 제공되지 않았다.
+- **Resolution path:** direct-input
+- **Resolution:** Cocrates의 실제 GitHub 배포 저장소는 `https://github.com/cocrates/theia-ide`로 사용한다. Electron Next updater의 release URL과 관련 문서 링크는 이 저장소를 기준으로 갱신하고, Docker 이미지 태그는 `cocrates-ide`로 변경한다. 제품 artifact·CI 이름도 Cocrates 식별자 체계에 맞추되, 별도로 제공되지 않은 CDN·registry 호스트는 새로 추정하지 않는다.
+- **Notes:** 사용자가 실제 GitHub 저장소와 Docker image tag를 직접 결정했다. updater URL은 기존 `/releases/download/next` 채널 경로를 새 저장소에 적용한다.
 
 ### AC-004 — 제품 Spec-구현 일치 검증의 증거 수준
 
