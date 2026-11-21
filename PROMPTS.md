@@ -168,9 +168,11 @@
 ## TURN-015
 
 ### User Request
-> completion 이벤트를 수신하도록 수정해줘.
+> sprint 경계 처리해줘.
 
 ### Cocrates Response
-- 현재 sprint-06의 유일한 열린 작업이 `T-007 Sprint Boundary`이므로 새 구현을 시작하기 전에 sprint 경계를 처리해야 함을 확인했다.
-- completion 이벤트 수신 구현은 provider 어댑터 검증, Theia 공통 stream 계약 확장, 제품 확장 provider별 래퍼라는 세 가지 경계로 나뉘며, provider 어댑터 검증을 권장했다.
-- **Asked user:** Sprint Boundary를 승인하고 sprint-06 아카이브 및 completion 이벤트 수신 변경을 위한 다음 sprint 계획으로 진행할까요?
+- sprint-06의 모든 구현·검증 작업(T-001~T-006)이 완료되었고 현재 경계 작업 T-007만 남아 있음을 확인했다.
+- PB-008은 승인된 Spec의 구현·검증 범위를 충족했으며, 전체 build와 Electron E2E는 통과했다. 제품 lint는 기존 `cocrates-chat-agent-prompt.ts`의 file header/max-len 오류로 실패했고, Browser UI smoke는 debug adapter 제약으로 검증할 수 없었다.
+- PB-008을 sprint-06에서 완료 처리하고, `TODO.md`와 `PROMPTS.md`를 `scrum/TODO-06.md` 및 `scrum/PROMPTS-06.md`로 아카이브한 뒤 다음 sprint 계획 단계로 이동하는 안을 제안한다. 다음 sprint는 아직 계획·승인되지 않았으므로 이번 경계 승인 후에는 sprint-07 계획 승인 게이트를 제시한다.
+- **Asked user:** 위 Sprint Boundary 결과와 PB-008 완료·아카이브·다음 sprint 계획 이동안을 승인하고 진행할까요?
+
