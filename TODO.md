@@ -9,15 +9,15 @@
 
 | Done | Open | Blocked | Skipped |
 |------|------|---------|---------|
-| 0    | 8    | 0       | 0       |
+| 1    | 7    | 0       | 0       |
 
 **Sprint goal:** Cocrates Default Chat Agent와 내장 Skills 배포를 위한 승인된 Spec과 구현 backlog를 확정한다.
-**Current focus:** T-001
-**Recommended next:** T-001 — PRD 검토 및 승인
+**Current focus:** T-002
+**Recommended next:** T-002 — Blocking AC 목록 검토 및 승인
 
 ## Tasks
 
-- [ ] **T-001** — PRD 작성 및 승인
+- [x] **T-001** — PRD 작성 및 승인
   - Phase: ① PRD
   - Artifact: `spec/PRD.md`
   - Depends: —

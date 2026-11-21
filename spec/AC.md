@@ -18,6 +18,7 @@ Theia IDE Product Template의 제품 Spec 작성을 위해 설계가 필요한 �
 
 1. AC-001 → AC-005 → AC-006 → AC-007
 2. 기존 결정: AC-001 → AC-002 → AC-003 → AC-004
+3. 신규 결정: AC-008 → AC-009 → AC-010 → AC-011
 
 ## AC Detail
 
@@ -114,3 +115,55 @@ Theia IDE Product Template의 제품 Spec 작성을 위해 설계가 필요한 �
 - **Resolution path:** direct-input
 - **Resolution:** 제품 Spec-구현 일치 검증은 정적 대조를 기본 증거로 하고, 가능한 범위에서 `yarn lint`, `yarn test`, `yarn build:dev` 또는 대상별 build, Browser 기동, Electron preview package 및 Electron E2E를 추가 실행한다. 환경·시간·외부 플러그인·native module 때문에 실행할 수 없는 항목은 검증을 통과한 것으로 간주하지 않고, 실행 불가 사유와 정적 대조 근거를 검증 기록에 분리해 남긴다.
 - **Notes:** 직접 입력으로 결정했다. 실행 검증을 원칙으로 하되, 환경 제약을 숨기지 않고 증거 수준을 항목별로 기록한다.
+
+### AC-008 — Cocrates ChatAgent 등록 및 기본 Agent 선택
+
+- **Category:** Integration & dependencies
+- **Status:** identified
+- **Statement:** Cocrates ChatAgent를 어느 제품 확장 모듈에 등록하고, `ai-features.chat.defaultChatAgent` preference 또는 DI fallback 중 어떤 Theia 계약으로 Default Chat Agent를 보장할 것인가?
+- **Why it matters:** Agent 등록 위치와 기본 Agent 선택 경로가 분리되면 mention을 사용하지 않은 채팅에서 Cocrates가 선택되지 않거나 Browser/Electron 타깃별 동작이 달라질 수 있다.
+- **Depends on:** AC-001, AC-002
+- **Related ADRs:**
+  - —
+- **Resolution path:** direct-input | adr
+- **Resolution:**
+- **Notes:** `adding-ai-agents.md`의 Agent/ChatAgent 이중 등록과 default preference·DI fallback 우선순위를 검토한다.
+
+### AC-009 — 내장 Skills의 배치·발견·패키징 전략
+
+- **Category:** Structure & organization
+- **Status:** identified
+- **Statement:** 사용자가 나중에 제공할 `adr`, `todo`, `sdd` 스킬 트리를 Browser·Stable Electron·Electron Next에서 어떻게 배치하고 런타임 discovery root를 제공할 것인가?
+- **Why it matters:** 스킬 파일을 패키지에 복사하는 것만으로는 `DefaultSkillService`가 발견하지 못할 수 있다. Electron asar·AppImage 읽기 전용 경로와 Browser/Docker 경로까지 함께 결정하지 않으면 배포물에서 Skills 목록이 비게 된다.
+- **Depends on:** AC-008
+- **Related ADRs:**
+  - —
+- **Resolution path:** adr
+- **Resolution:**
+- **Notes:** `shipping-ai-skills.md`의 Contribution + 번들 디렉터리, preference, config dir 복사, plugin/registry 대안을 비교한다.
+
+### AC-010 — Cocrates 시스템 프롬프트의 소스 연결 방식
+
+- **Category:** Integration & dependencies
+- **Status:** identified
+- **Statement:** `docs/cocrates/agent1.md`의 내용을 제품 ChatAgent system prompt에 어떤 시점과 형식으로 연결하고, 이후 문서 변경이 Agent 번들에 반영되는 단일 소스를 어떻게 유지할 것인가?
+- **Why it matters:** 프롬프트를 수동 복사하면 `agent1.md`와 실행 프롬프트가 달라질 수 있고, 런타임 파일 로드는 패키징·보안·Browser/Electron 차이를 만든다.
+- **Depends on:** AC-008
+- **Related ADRs:**
+  - —
+- **Resolution path:** direct-input
+- **Resolution:**
+- **Notes:** 사용자 요구가 `agent1.md` 사용을 직접 지정했으므로, 구현 시 허용되는 동기화 방식과 프롬프트 기능 토큰 보존 여부를 명시한다.
+
+### AC-011 — `getSkillFileContent` 보조 파일 API 및 경로 안전성
+
+- **Category:** Quality bar (architectural)
+- **Status:** identified
+- **Statement:** 기존 tool id와 `SKILL.md` 본문 호환성을 유지하면서 skill-root 상대 `path`를 지원하는 rebind 구현의 입력·반환·경로 탈출 방지 계약을 어디까지 보장할 것인가?
+- **Why it matters:** 새 tool id를 만들면 기존 Agent 프롬프트와 연결이 끊기고, 경로 가드가 부족하면 스킬 디렉터리 밖의 파일을 읽는 보안 문제가 생긴다.
+- **Depends on:** AC-009
+- **Related ADRs:**
+  - —
+- **Resolution path:** direct-input
+- **Resolution:**
+- **Notes:** `extending-get-skill-file-content.md`의 `path` 규칙, `SKILL.md` 본문 호환, skill root 탈출 차단, 오류 JSON 계약을 구현 Spec에 반영한다.
