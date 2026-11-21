@@ -42,3 +42,15 @@
 - dependency order를 AC-012 → AC-013/AC-014로 확장했다.
 - 현재 AC 목록 승인 게이트(T-004)에서 대기한다.
 - **Asked user:** 위 AC-012~AC-014 목록과 dependency order를 승인하고 다음 AC 검토 단계로 진행할까요?
+
+## TURN-004
+
+### User Request
+> AC-012~AC-014 목록과 dependency order를 승인하고 다음 AC 검토 단계로 진행해줘.
+
+### Cocrates Response
+- AC 목록 승인 게이트를 통과 처리했다.
+- dependency order의 첫 항목인 AC-012를 `reviewing`으로 전환했다.
+- `adr/cocrates-structured-response-parsing.md`를 `proposed` 상태로 작성했다.
+- Option A(structured response hook + JSON fallback)를 권장하며, Option B(prompt-only parsing)와 Option C(tool-based side effects)를 비교했다.
+- **Asked user:** AC-012에 대해 Option A를 승인하고 구조화 응답 파싱 결정을 기록한 뒤 다음 AC로 진행할까요?

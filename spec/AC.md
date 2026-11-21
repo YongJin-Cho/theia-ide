@@ -17,7 +17,7 @@ Theia IDE Product Template의 제품 Spec 작성을 위해 설계가 필요한 �
 | AC-009 | 내장 Skills의 배치·발견·패키징 전략 | Structure & organization | designed | `adr/cocrates-skills-packaging.md` | ASR-014 |
 | AC-010 | Cocrates 시스템 프롬프트의 소스 연결 방식 | Integration & dependencies | designed | — | ASR-015 |
 | AC-011 | `getSkillFileContent` 보조 파일 API 및 경로 안전성 | Quality bar (architectural) | designed | — | ASR-016 |
-| AC-012 | 구조화 최종 응답 파싱 및 UI 경계 | Integration & dependencies | identified | — | — |
+| AC-012 | 구조화 최종 응답 파싱 및 UI 경계 | Integration & dependencies | reviewing | adr/cocrates-structured-response-parsing.md | — |
 | AC-013 | JSON side effect 실행 및 안전성 경계 | Quality bar (architectural) | identified | — | — |
 | AC-014 | Compaction 이력의 저장·재구성 경계 | Structure & organization | identified | — | — |
 
@@ -180,15 +180,15 @@ Theia IDE Product Template의 제품 Spec 작성을 위해 설계가 필요한 �
 ### AC-012 — 구조화 최종 응답 파싱 및 UI 경계
 
 - **Category:** Integration & dependencies
-- **Status:** identified
+- **Status:** reviewing
 - **Statement:** Cocrates Agent가 일반 Markdown과 JSON object 최종 응답을 구분하고 JSON의 `answer`만 Chat UI에 표시하도록 어떤 응답 파싱 경계와 Theia Chat response hook을 사용할 것인가? JSON schema 강제·텍스트 JSON 폴백·스트리밍 종료 처리의 조합도 정해야 한다.
 - **Why it matters:** Theia 1.77 기본 Chat 파이프라인은 `response_format`을 자동 전달하지 않고 parsed JSON 전체가 UI에 노출될 수 있다. 파싱 경계를 잘못 선택하면 일반 Markdown 호환성, 스트리밍 UX 또는 모델 제공자 호환성이 깨진다.
 - **Depends on:** AC-010
 - **Related ADRs:**
-  - —
-- **Resolution path:** adr | mixed
+  - `adr/cocrates-structured-response-parsing.md` — proposed
+- **Resolution path:** adr
 - **Resolution:**
-- **Notes:** `docs/theia/structured-output-side-effects.md`의 옵션 1~4를 검토 대상으로 등록한다.
+- **Notes:** `docs/theia/structured-output-side-effects.md`의 옵션 1~4를 검토 대상으로 등록했다. ADR 승인 후 결정 내용을 복사한다.
 
 ### AC-013 — JSON side effect 실행 및 안전성 경계
 

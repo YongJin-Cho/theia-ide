@@ -9,11 +9,11 @@
 
 | Done | Open | Blocked | Skipped |
 |------|------|---------|---------|
-| 3    | 7    | 0       | 0       |
+| 4    | 6    | 0       | 0       |
 
 **Sprint goal:** Cocrates Agent의 구조화 JSON 최종 응답과 `answer` 표시, `session`·`commit`·`compaction` side effect를 구현·검증한다.
-**Current focus:** T-004
-**Recommended next:** T-004 — AC 목록 승인 게이트
+**Current focus:** T-005
+**Recommended next:** T-005 — blocking AC 순차 검토 및 ADR/Direct Input 결정
 
 ## Tasks
 
@@ -32,10 +32,11 @@
   - Artifact: `spec/AC.md`
   - Depends: T-002
   - Notes: AC-012~AC-014를 identified로 등록하고 dependency order를 확장했다.
-- [ ] **T-004** — AC 목록 승인 게이트
+- [x] **T-004** — AC 목록 승인 게이트
   - Phase: AC gate
   - Artifact: `spec/AC.md`
   - Depends: T-003
+  - Notes: 사용자가 AC-012~AC-014 목록과 dependency order를 승인했다.
 - [ ] **T-005** — blocking AC 순차 검토 및 ADR/Direct Input 결정
   - Phase: AC review
   - Artifact: `spec/AC.md`, `adr/`
