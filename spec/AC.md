@@ -14,8 +14,8 @@ Theia IDE Product Template의 제품 Spec 작성을 위해 설계가 필요한 �
 | AC-006 | 제품 브랜드와 Theia 업스트림 명칭의 경계 | Structure & organization | designed | — | ASR-011 |
 | AC-007 | 업데이트·배포 메타데이터의 제품 소유 범위 | Integration & dependencies | designed | — | ASR-012 |
 | AC-008 | Cocrates ChatAgent 등록 및 기본 Agent 선택 | Integration & dependencies | designed | adr/cocrates-chat-agent-registration.md |  |
-| AC-009 | 내장 Skills의 배치·발견·패키징 전략 | Structure & organization | identified | — |  |
-| AC-010 | Cocrates 시스템 프롬프트의 소스 연결 방식 | Integration & dependencies | identified | — |  |
+| AC-009 | 내장 Skills의 배치·발견·패키징 전략 | Structure & organization | designed | `adr/cocrates-skills-packaging.md` |  |
+| AC-010 | Cocrates 시스템 프롬프트의 소스 연결 방식 | Integration & dependencies | reviewing | — |  |
 | AC-011 | `getSkillFileContent` 보조 파일 API 및 경로 안전성 | Quality bar (architectural) | identified | — |  |
 
 ## Dependency Order (recommended review path)
@@ -136,20 +136,20 @@ Theia IDE Product Template의 제품 Spec 작성을 위해 설계가 필요한 �
 ### AC-009 — 내장 Skills의 배치·발견·패키징 전략
 
 - **Category:** Structure & organization
-- **Status:** reviewing
+- **Status:** designed
 - **Statement:** 사용자가 나중에 제공할 `adr`, `todo`, `sdd` 스킬 트리를 Browser·Stable Electron·Electron Next에서 어떻게 배치하고 런타임 discovery root를 제공할 것인가?
 - **Why it matters:** 스킬 파일을 패키지에 복사하는 것만으로는 `DefaultSkillService`가 발견하지 못할 수 있다. Electron asar·AppImage 읽기 전용 경로와 Browser/Docker 경로까지 함께 결정하지 않으면 배포물에서 Skills 목록이 비게 된다.
 - **Depends on:** AC-008
 - **Related ADRs:**
-  - `theia-ide/adr/cocrates-skills-packaging.md` — proposed
+  - `theia-ide/adr/cocrates-skills-packaging.md` — approved
 - **Resolution path:** adr
-- **Resolution:**
-- **Notes:** `shipping-ai-skills.md`의 Contribution + 번들 디렉터리, preference, config dir 복사, plugin/registry 대안을 비교한다.
+- **Resolution:** Option A를 선택한다. 제품 소유 스킬 트리를 번들 디렉터리에 포함하고, backend/main이 타깃별 런타임 경로를 시드하며, frontend의 `SkillDirectoryContribution`이 해당 경로를 plugin discovery tier에 제공한다. Electron에서는 스킬 트리를 asar 외부의 읽기 가능한 배포 리소스로 두고, 사용자·workspace 스킬과 제품 번들을 분리한다. 실제 `adr`, `todo`, `sdd` 스킬 본문은 사용자가 제공하기 전까지 생성하지 않는다.
+- **Notes:** 사용자가 Option A를 선택했다. 런타임 경로 시드 채널은 구현 전 후속 관심사로 남긴다.
 
 ### AC-010 — Cocrates 시스템 프롬프트의 소스 연결 방식
 
 - **Category:** Integration & dependencies
-- **Status:** identified
+- **Status:** reviewing
 - **Statement:** `docs/cocrates/agent1.md`의 내용을 제품 ChatAgent system prompt에 어떤 시점과 형식으로 연결하고, 이후 문서 변경이 Agent 번들에 반영되는 단일 소스를 어떻게 유지할 것인가?
 - **Why it matters:** 프롬프트를 수동 복사하면 `agent1.md`와 실행 프롬프트가 달라질 수 있고, 런타임 파일 로드는 패키징·보안·Browser/Electron 차이를 만든다.
 - **Depends on:** AC-008

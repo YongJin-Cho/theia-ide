@@ -63,3 +63,14 @@
 - 다음 AC-009를 reviewing으로 전환하고 `adr/cocrates-skills-packaging.md`를 proposed로 작성했다.
 - Option A(번들 디렉터리 + SkillDirectoryContribution + 런타임 경로 시드), Option B(config dir 복사), Option C(preference 절대 경로)를 비교했으며 Option A를 권장한다.
 - **Asked user:** AC-009 ADR에서 Option A를 선택하고 승인할지 결정해 달라.
+
+## TURN-006
+
+### User Request
+> AC-009 ADR의 Option A를 선택하고 승인해줘.
+
+### Cocrates Response
+- `adr/cocrates-skills-packaging.md`를 `approved`로 기록하고 Option A를 Decision으로 확정했다.
+- AC-009를 `designed`로 전환했다. 제품 번들 디렉터리, `SkillDirectoryContribution`, backend/main 런타임 경로 시드, Electron asar 외부 리소스 배치를 사용한다.
+- 다음 의존 항목인 AC-010을 `reviewing`으로 전환했다. `docs/cocrates/agent1.md`를 시스템 프롬프트의 단일 소스로 유지하는 연결 방식을 결정해야 한다.
+- **Asked user:** AC-010에서 `agent1.md`를 빌드 시 코드 번들에 포함할지, 런타임 파일로 읽을지, 또는 생성된 소스 파일로 동기화할지 선택해줘.

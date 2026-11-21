@@ -4,7 +4,7 @@
 사용자가 제공할 `adr`, `todo`, `sdd` 스킬 트리를 Browser·Stable Electron·Electron Next 제품 패키지에 어떻게 포함하고 런타임에서 발견하게 할 것인가?
 
 ## Status
-proposed
+approved
 
 ## Context
 - Theia는 product manifest가 아니라 스킬 디렉터리와 `SKILL.md` frontmatter를 스캔해 Skills를 발견한다.
@@ -14,6 +14,7 @@ proposed
 - 사용자는 세 스킬의 실제 명세 본문을 나중에 제공한다. 이번 결정은 파일의 최종 내용보다 배치·발견 계약을 확정한다.
 
 ## Decision
+**Option A — 번들 디렉터리 + SkillDirectoryContribution + 런타임 경로 시드**를 선택한다. 제품 소유 스킬 트리를 패키지하고, backend/main이 타깃별 번들 경로를 시드하며, frontend의 `SkillDirectoryContribution`이 plugin discovery tier에 해당 경로를 제공한다. 제품 번들과 사용자·workspace 스킬을 분리하면서 Browser와 Electron의 런타임 경로 차이를 수용한다.
 
 ## Options
 ### Option A — 번들 디렉터리 + SkillDirectoryContribution + 런타임 경로 시드
@@ -48,6 +49,7 @@ proposed
 - 제품 확장 또는 제품 리소스 패키지에 세 스킬의 부모 디렉터리와 discovery contribution이 필요하다.
 - 실제 스킬 명세가 제공되기 전까지는 파일 본문을 임의로 만들지 않는다.
 - Electron 패키지 검증은 스킬 트리가 의도한 asar 외부 위치에 있고, Browser/Electron frontend 번들이 contribution을 포함하는지 확인해야 한다.
+- 제품 번들 스킬은 읽기 전용으로 취급하며, 사용자·workspace 스킬을 제품 번들에 복사하거나 덮어쓰지 않는다.
 
 ## Downstream Concerns
 - [ ] **ADR candidate — Runtime path seed:** Browser/backend와 Electron main에서 번들 스킬 절대 경로를 전달하는 구체 채널은 구현 전 확정이 필요하다.
@@ -62,3 +64,4 @@ proposed
 
 ## Notes
 - 2026-11-21: AC-009 검토를 위해 Option A/B/C를 작성하고 Option A를 권장안으로 제시했다.
+- 2026-11-21: 사용자 선택으로 Status → approved; Option A를 Decision으로 기록했다. 런타임 경로 시드 채널은 구현 전 후속 관심사로 남겼다.
