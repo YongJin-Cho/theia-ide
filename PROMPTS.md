@@ -74,3 +74,15 @@
 - AC-009를 `designed`로 전환했다. 제품 번들 디렉터리, `SkillDirectoryContribution`, backend/main 런타임 경로 시드, Electron asar 외부 리소스 배치를 사용한다.
 - 다음 의존 항목인 AC-010을 `reviewing`으로 전환했다. `docs/cocrates/agent1.md`를 시스템 프롬프트의 단일 소스로 유지하는 연결 방식을 결정해야 한다.
 - **Asked user:** AC-010에서 `agent1.md`를 빌드 시 코드 번들에 포함할지, 런타임 파일로 읽을지, 또는 생성된 소스 파일로 동기화할지 선택해줘.
+
+## TURN-007
+
+### User Request
+> AC-010에 대해 Option C를 선택하고 승인해줘.
+
+### Cocrates Response
+- AC-010을 `designed`로 전환하고 Option C를 직접 입력 결정으로 기록했다.
+- `docs/cocrates/agent1.md`를 빌드 단계에서 생성된 TypeScript 소스 또는 동등한 번들 소스로 변환하며, ChatAgent는 생성 결과만 system prompt로 사용한다.
+- 런타임 경로의 `agent1.md`나 수동 복사본은 사용하지 않고, 원본 Markdown 내용은 생성 시 의미 변경 없이 보존한다.
+- 다음 의존 항목인 AC-011을 `reviewing`으로 전환했다.
+- **Asked user:** AC-011에서 기존 `getSkillFileContent` 호환성과 skill-root 상대 보조 파일 읽기, 경로 탈출 차단을 어떤 입력·오류 계약으로 확정할지 검토해줘.

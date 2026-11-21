@@ -13,7 +13,7 @@
 
 **Sprint goal:** Cocrates Default Chat Agent와 내장 Skills 배포를 위한 승인된 Spec과 구현 backlog를 확정한다.
 **Current focus:** T-003
-**Recommended next:** T-003 — AC-010 시스템 프롬프트 소스 연결 방식 검토
+**Recommended next:** T-003 — AC-011 getSkillFileContent 보조 파일·경로 안전성 검토
 
 ## Tasks
 
@@ -31,7 +31,7 @@
   - Phase: ③ AC review
   - Artifact: `spec/AC.md`, `adr/`
   - Depends: T-002
-  - Notes: AC-008·AC-009를 설계 완료하고 AC-010을 검토 중이다.
+  - Notes: AC-008·AC-009·AC-010을 설계 완료하고 AC-011을 검토 중이다.
 - [ ] **T-004** — ASR 통합 및 승인
   - Phase: ④ ASR consolidation
   - Artifact: `spec/ASR.md`

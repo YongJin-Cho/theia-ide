@@ -15,8 +15,8 @@ Theia IDE Product Template의 제품 Spec 작성을 위해 설계가 필요한 �
 | AC-007 | 업데이트·배포 메타데이터의 제품 소유 범위 | Integration & dependencies | designed | — | ASR-012 |
 | AC-008 | Cocrates ChatAgent 등록 및 기본 Agent 선택 | Integration & dependencies | designed | adr/cocrates-chat-agent-registration.md |  |
 | AC-009 | 내장 Skills의 배치·발견·패키징 전략 | Structure & organization | designed | `adr/cocrates-skills-packaging.md` |  |
-| AC-010 | Cocrates 시스템 프롬프트의 소스 연결 방식 | Integration & dependencies | reviewing | — |  |
-| AC-011 | `getSkillFileContent` 보조 파일 API 및 경로 안전성 | Quality bar (architectural) | identified | — |  |
+| AC-010 | Cocrates 시스템 프롬프트의 소스 연결 방식 | Integration & dependencies | designed | — |  |
+| AC-011 | `getSkillFileContent` 보조 파일 API 및 경로 안전성 | Quality bar (architectural) | reviewing | — |  |
 
 ## Dependency Order (recommended review path)
 
@@ -149,20 +149,20 @@ Theia IDE Product Template의 제품 Spec 작성을 위해 설계가 필요한 �
 ### AC-010 — Cocrates 시스템 프롬프트의 소스 연결 방식
 
 - **Category:** Integration & dependencies
-- **Status:** reviewing
+- **Status:** designed
 - **Statement:** `docs/cocrates/agent1.md`의 내용을 제품 ChatAgent system prompt에 어떤 시점과 형식으로 연결하고, 이후 문서 변경이 Agent 번들에 반영되는 단일 소스를 어떻게 유지할 것인가?
 - **Why it matters:** 프롬프트를 수동 복사하면 `agent1.md`와 실행 프롬프트가 달라질 수 있고, 런타임 파일 로드는 패키징·보안·Browser/Electron 차이를 만든다.
 - **Depends on:** AC-008
 - **Related ADRs:**
   - —
 - **Resolution path:** direct-input
-- **Resolution:**
-- **Notes:** 사용자 요구가 `agent1.md` 사용을 직접 지정했으므로, 구현 시 허용되는 동기화 방식과 프롬프트 기능 토큰 보존 여부를 명시한다.
+- **Resolution:** Option C를 선택한다. 빌드 단계에서 `docs/cocrates/agent1.md`를 생성된 TypeScript 소스 또는 동등한 번들 소스로 변환하고, 제품 ChatAgent는 생성된 결과만 system prompt로 사용한다. 생성 과정은 Markdown 내용을 의미 변경 없이 보존하고, 원본이 변경되면 다음 빌드에서 결과를 재생성한다. 런타임에 workspace·설치 경로의 `agent1.md`를 읽거나 수동 복사본을 별도 소스로 사용하지 않는다.
+- **Notes:** 사용자가 Option C를 선택했다. 생성 소스가 `docs/cocrates/agent1.md`와 어긋나지 않도록 빌드·검증 단계에서 동기화 여부를 확인한다.
 
 ### AC-011 — `getSkillFileContent` 보조 파일 API 및 경로 안전성
 
 - **Category:** Quality bar (architectural)
-- **Status:** identified
+- **Status:** reviewing
 - **Statement:** 기존 tool id와 `SKILL.md` 본문 호환성을 유지하면서 skill-root 상대 `path`를 지원하는 rebind 구현의 입력·반환·경로 탈출 방지 계약을 어디까지 보장할 것인가?
 - **Why it matters:** 새 tool id를 만들면 기존 Agent 프롬프트와 연결이 끊기고, 경로 가드가 부족하면 스킬 디렉터리 밖의 파일을 읽는 보안 문제가 생긴다.
 - **Depends on:** AC-009
