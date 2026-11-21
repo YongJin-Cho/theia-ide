@@ -10,9 +10,9 @@ Theia IDE Product Template의 제품 Spec 작성을 위해 설계가 필요한 �
 | AC-002 | 제품 확장의 구성 및 의존성 경계 | Integration & dependencies | designed | — | ASR-003 |
 | AC-003 | 채택자 커스터마이징 표면의 지원 범위 | Deliverable form | designed | — | ASR-004 |
 | AC-004 | 제품 Spec-구현 일치 검증의 증거 수준 | Quality bar (architectural) | designed | — | ASR-007 |
-| AC-005 | Cocrates 타깃 식별자 체계 | Constraints (structural) | designed | adr/cocrates-target-identifiers.md | — |
-| AC-006 | 제품 브랜드와 Theia 업스트림 명칭의 경계 | Structure & organization | designed | — | — |
-| AC-007 | 업데이트·배포 메타데이터의 제품 소유 범위 | Integration & dependencies | designed | — | — |
+| AC-005 | Cocrates 타깃 식별자 체계 | Constraints (structural) | designed | adr/cocrates-target-identifiers.md | ASR-010 |
+| AC-006 | 제품 브랜드와 Theia 업스트림 명칭의 경계 | Structure & organization | designed | — | ASR-011 |
+| AC-007 | 업데이트·배포 메타데이터의 제품 소유 범위 | Integration & dependencies | designed | — | ASR-012 |
 
 ## Dependency Order (recommended review path)
 
@@ -69,6 +69,7 @@ Theia IDE Product Template의 제품 Spec 작성을 위해 설계가 필요한 �
 - **Depends on:** AC-001
 - **Related ADRs:**
   - `adr/cocrates-target-identifiers.md` — approved
+- **ASR:** ASR-010
 - **Resolution path:** adr
 - **Resolution:** Option A를 채택한다. Stable은 `com.cocrates.ide`, `cocrates`, `.cocrates`를 사용하고 Electron Next는 `com.cocrates.ide.next`, `cocrates-next`, `.cocrates-next`를 사용해 앱 식별자·URI scheme·사용자 설정 디렉터리를 분리한다.
 - **Notes:** `docs/rebranding.md`는 예시 값만 제공했으나 `com.cocrates`를 공식 reverse-domain으로 확정했다. 기존 `.theia-ide` 사용자 데이터는 새 `.cocrates` 계열로 자동 마이그레이션하지 않는다.
@@ -82,6 +83,7 @@ Theia IDE Product Template의 제품 Spec 작성을 위해 설계가 필요한 �
 - **Depends on:** AC-005
 - **Related ADRs:**
   - —
+- **ASR:** ASR-011
 - **Resolution path:** direct-input
 - **Resolution:** 사용자에게 보이는 UI·패키징·CLI·문서·배포 메타데이터의 Theia 제품 문자열은 Cocrates 또는 `Cocrates Next`로 변경한다. `@theia/*` 패키지명, Theia API, 업스트림 빌더·도구명처럼 호환성에 필요한 내부 식별자는 유지한다. 유지되는 내부 명칭은 제품 사용자 표면이나 제품 배포 식별자로 노출하지 않는다.
 - **Notes:** PRD의 사용자 표면 브랜드 제거 원칙을 직접 입력으로 구체화했다. 내부 호환 식별자를 기계적으로 변경해 Theia 의존성 계약을 깨뜨리지 않는다.
@@ -95,6 +97,7 @@ Theia IDE Product Template의 제품 Spec 작성을 위해 설계가 필요한 �
 - **Depends on:** AC-005
 - **Related ADRs:**
   - —
+- **ASR:** ASR-012
 - **Resolution path:** direct-input
 - **Resolution:** Cocrates의 실제 GitHub 배포 저장소는 `https://github.com/cocrates/theia-ide`로 사용한다. Electron Next updater의 release URL과 관련 문서 링크는 이 저장소를 기준으로 갱신하고, Docker 이미지 태그는 `cocrates-ide`로 변경한다. 제품 artifact·CI 이름도 Cocrates 식별자 체계에 맞추되, 별도로 제공되지 않은 CDN·registry 호스트는 새로 추정하지 않는다.
 - **Notes:** 사용자가 실제 GitHub 저장소와 Docker image tag를 직접 결정했다. updater URL은 기존 `/releases/download/next` 채널 경로를 새 저장소에 적용한다.

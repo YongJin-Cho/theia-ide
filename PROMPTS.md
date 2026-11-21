@@ -108,3 +108,15 @@
 - AC-005, AC-006, AC-007을 모두 확정해 모든 blocking AC가 `designed` 상태가 되었다.
 - 현재 AC review stage-exit gate에서 대기 중이다.
 - **Asked user:** 확정된 AC-005~AC-007을 포함한 전체 AC review 결과를 승인하고 ASR delta 통합 단계로 진행할지 결정해 달라.
+
+## TURN-009
+
+### 사용자 요청
+> 확정된 전체 AC review 결과를 승인하고 ASR delta 통합 단계로 진행해줘.
+
+### Cocrates 응답
+- 전체 blocking AC review 승인을 반영하고 ASR delta 통합을 시작했다.
+- 기존 ASR-001~ASR-009를 유지하면서 승인된 리브랜딩 결정을 ASR-010 `Cocrates 타깃 식별자 매핑`, ASR-011 `Cocrates 제품 브랜드 경계`, ASR-012 `Cocrates 업데이트·배포 메타데이터`로 추가했다.
+- AC-005~AC-007에 각각 ASR back-link를 기록하고 `spec/ASR.md`를 다음 단계인 Spec 갱신의 입력으로 정리했다.
+- 현재 T-006은 ASR 승인 게이트이며, 구현은 아직 시작하지 않았다.
+- **Asked user:** `spec/ASR.md`의 기존 요구사항과 리브랜딩 delta 통합 결과를 검토하고 승인해줘.

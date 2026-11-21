@@ -46,7 +46,7 @@
   - Phase: SDD ④ ASR consolidation
   - Artifact: `spec/ASR.md`
   - Depends: T-005
-  - Notes: 기존 제품 요구사항과 리브랜딩 결정을 Spec 작성 기준으로 통합한다.
+  - Notes: 기존 ASR-001~ASR-009에 승인된 리브랜딩 결정 ASR-010~ASR-012를 통합했다. 현재 `spec/ASR.md` 사용자 승인 게이트다.
 - [ ] **T-007** — 리브랜딩 Spec 갱신 및 검토 승인
   - Phase: SDD ⑤–⑥ Spec
   - Artifact: `spec/applications-integration.md`, `spec/product-extension.md`, `spec/updater-extension.md`, `spec/launcher-extension.md`, `spec-review/`
