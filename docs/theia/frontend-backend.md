@@ -238,14 +238,15 @@ Frontend 탭/창 종료
 
 Backend는 **프로세스가 기동될 때** `lib/`를 메모리에 로드한다. 디스크에 다시 빌드해도 **이미 떠 있는 backend는 옛 코드를 계속 쓴다.**
 
-Cocrates git commit이 전형적이다.
+번들 Skill 경로 시드(옵션 A)가 전형적이다. 설계 배경은 [shipping-ai-skills.md](./shipping-ai-skills.md) §2–§3.
 
-| 계층 | 경로 | 역할 |
-|------|------|------|
-| Frontend | `cocrates-agent.ts` → RPC proxy | 구조화 응답의 `commit`을 보고 호출 |
-| Backend | `src/node/cocrates-git-commit-service.ts` + `cocrates-backend-module.ts` | 실제 `git add` / `git commit` |
+| 계층 | 어디서 | 역할 |
+|------|--------|------|
+| 배치 | 빌드/패키지 | skills 트리를 런타임이 읽을 수 있는 디스크에 둠 |
+| 시드 | Electron main 또는 backend (Node) | 절대 경로를 env 등으로 심음 → `EnvVariablesServer` 스냅샷 |
+| 기여 | Frontend `SkillDirectoryContribution` | 그 경로를 `plugin` 티어로 반환 → `DefaultSkillService` 스캔 |
 
-프론트만 새로고침·창만 다시 열면 **agent UI 쪽은 새 빌드일 수 있어도**, RPC 상대인 **옛 backend**에는 새 `RpcConnectionHandler`가 없다 → “커밋 기능이 안 붙었다”처럼 보인다.
+프론트만 새로고침·창만 다시 열면 **contribution 쪽은 새 빌드일 수 있어도**, 경로를 심는 **옛 main/backend**에는 시드가 없거나 옛 env만 있다 → Skills 목록이 비어 “스킬이 안 붙었다”처럼 보인다. (`SkillDirectoryContribution`은 frontend에서 돌고, `process.resourcesPath`·패키지 cwd는 Node 쪽에서만 안전하다.)
 
 창을 모두 닫았다고 생각했는데도 옛 backend가 남는 대표 경로:
 
@@ -266,7 +267,7 @@ ps -ef | rg 'lib/backend/main|theia-electron-main|applications/electron' || true
 pkill -f 'node_modules/electron/dist/electron.*(theia-electron-main|applications/electron)' || true
 ```
 
-그다음 `yarn workspace theia-ide-cocrates-ext build`(또는 `yarn build:extensions`) 후 **backend 프로세스까지** 다시 기동한다. Electron은 창만이 아니라 터미널의 electron 프로세스가 끝난 것을 확인하는 편이 안전하다.
+그다음 `yarn build:extensions`(필요 시 application 번들까지) 후 **backend 프로세스까지** 다시 기동한다. Electron은 창만이 아니라 터미널의 electron(및 main 시드) 프로세스가 끝난 것을 확인하는 편이 안전하다.
 
 ---
 
